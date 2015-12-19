@@ -2,7 +2,7 @@
 
 cpplocate is a small C++ library that provides tools for applications to locate themselves,
 their data assets, as well as dependend modules. It is cross-platform and designed to work
-on all major platforms such as Linux, Windows, and MacOS X.
+on all major platforms such as Linux, Windows, and OS X.
 
 Especially in the context of cross-platform applications, locating data assets belonging
 to an application or library is not an easy task. Depending on the situation, data assets can
