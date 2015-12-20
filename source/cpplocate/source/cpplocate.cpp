@@ -137,8 +137,8 @@ ModuleInfo findModule(const std::string & name)
 
     // Search in standard locations
 #if defined SYSTEM_WINDOWS
-    std::string programFiles64 = getEnv("programfiles");
-    std::string programFiles32 = getEnv("programfiles(x86)");
+    std::string programFiles64 = utils::getEnv("programfiles");
+	std::string programFiles32 = utils::getEnv("programfiles(x86)");
 
     if (utils::loadModule(programFiles64 + "\\" + name, name, info))
     {
