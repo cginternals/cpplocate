@@ -104,7 +104,7 @@ std::string ModuleInfo::value(const std::string & key) const
 {
     if (m_values.count(key) > 0)
     {
-        m_values.at(key);
+        return m_values.at(key);
     }
 
     return "";
