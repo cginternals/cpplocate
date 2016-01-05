@@ -105,7 +105,7 @@ generate_module_info(examplelib
 
 ### ```export_module_info```: Create module information file in build directory.
 
-```
+```cmake
 export_module_info(<project_id>
     TARGET <target>
     [FOLDER <folder>]
