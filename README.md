@@ -1,6 +1,6 @@
 # C++ Locator Library
 
-cpplocate is a small C++ library that provides tools for applications to locate themselves,
+```cpplocate``` is a small C++ library that provides tools for applications to locate themselves,
 their data assets, as well as dependend modules. It is cross-platform and designed to work
 on all major platforms such as Linux, Windows, and OS X.
 
@@ -17,11 +17,11 @@ such as dynamic libraries or even plugins, which bring their own data. However, 
 able to locate its data assets as easy as possible and still be relocatable for typical deployment
 and installation routines to work as expected.
 
-To help resolve these problems, cpplocate provides the following features:
+To help resolve these problems, ```cpplocate``` provides the following features:
 
 ## Get absolute path to the current executable
 
-cpplocate offers a cross-platform implementation to obtain the location of the current executable
+```cpplocate``` offers a cross-platform implementation to obtain the location of the current executable
 in most cases. This can be used by the application itself to locate its data.
 
 ## Module information files
@@ -31,10 +31,10 @@ version, and vendor. They also provide the information of where to find data ass
 that module based on the location of the module information file itself, or, in some cases,
 using an absolute path.
 
-A module information file has the filename &lt;projectname&gt;.modinfo and contains an arbitrary
+A module information file has the filename ```<projectname>.modinfo``` and contains an arbitrary
 number of key/value-pairs, e.g.:
 
-```
+```cmake
   name: examplelib
   version: 1.0.0
   description: Example library
@@ -43,7 +43,7 @@ number of key/value-pairs, e.g.:
 ```
 
 The keys are purely conventional and can be used in any way as defined by the using application.
-To express file paths relative to the module information file, the placeholder variable ${ModulePath}
+To express file paths relative to the module information file, the placeholder variable ```${ModulePath}```
 can be used. When loading the module information, this variable will be replaced with the path
 to the directory containing the module information file.
 
@@ -53,15 +53,15 @@ A CMake module is provided for creating module information files automatically, 
 different situations such as build-time (finding modules and data in a development tree) and
 install-time (finding modules and data from an installed location).
 
-Use find_package(cpplocate) to find the cpplocate library, pointing CMAKE_PREFIX_PATH to the
-directory that contains cpplocate. This will locate the library and also include the necessary
+Use ```find_package(cpplocate)``` to find the cpplocate library, pointing ```CMAKE_PREFIX_PATH``` to the
+directory that contains ```cpplocate```. This will locate the library and also include the necessary
 cmake functions into your project.
 
-The following cmake functions are provided by cpplocate:
+The following cmake functions are provided by ```cpplocate```:
 
-### generate_module_info: Define a module information file.
+### ```generate_module_info```: Define a module information file.
 
-```
+```cmake
 generate_module_info(<project_id>;
     VALUES
     [<key> <value>]*
@@ -74,20 +74,20 @@ generate_module_info(<project_id>;
 )
 ```
 
-Define a module information file for a module named by project_id. The module name can be chosen
+Define a module information file for a module named by ```project_id```. The module name can be chosen
 arbitrarily and can, but does not need to, match the name of the project or a library. The
-filename will be derived as &lt;project_id&gt;.modinfo.
+filename will be derived as ```<project_id>.modinfo```.
 
-The generated module information file will contain all key/value-pairs specified after VALUES.
+The generated module information file will contain all key/value-pairs specified after ```VALUES```.
 When created into the build-directory of the current development tree, the values specified
-after BUILD_VALUES will also be added. But when installed using the cmake INSTALL-target, the
-values after INSTALL_VALUES will be used instead. This allowes for providing different values
+after ```BUILD_VALUES``` will also be added. But when installed using the cmake ```INSTALL```-target, the
+values after ```INSTALL_VALUES``` will be used instead. This allows for providing different values
 in the development tree and in installed location, e.g., the data path might point to the
 absolute path in the development tree, but be defined relative to the module file on install.
 
 Example usage:
 
-```
+```cmake
 generate_module_info(examplelib
     VALUES
     name        "examplelib"
@@ -103,7 +103,7 @@ generate_module_info(examplelib
 )
 ```
 
-### export_module_info: Create module information file in build directory.
+### ```export_module_info```: Create module information file in build directory.
 
 ```
 export_module_info(<project_id>
@@ -112,44 +112,44 @@ export_module_info(<project_id>
 )
 ```
 
-Creates the actual module information file for a module named by project_id in the build directory.
-It uses the values from VALUES and BUILD_VALUES. This is executed at build-time, providing a target
-named &lt;target&gt;-modinfo. If FOLDER is specified, the target is put into the UI folder named by folder
-by setting the target property FOLDER accordingly.
+Creates the actual module information file for a module named by ```project_id``` in the build directory.
+It uses the values from ```VALUES``` and ```BUILD_VALUES```. This is executed at build-time, providing a target
+named ```<target>-modinfo```. If ```FOLDER``` is specified, the target is put into the UI folder named by folder
+by setting the target property ```FOLDER``` accordingly.
 
 Example usage:
 
-```
+```cmake
 export_module_info(examplelib TARGET examplelib FOLDER "cmake")
 ```
 
-### install_module_info: Install modinfo file to target path.
+### ```install_module_info```: Install modinfo file to target path.
 
-```
+```cmake
 install_module_info(<project_id>
     DESTINATION <dest>
     [COMPONENT <component>]
 )
 ```
 
-Creates an installation rule to install a module information file named by project_id. It uses
-the values from VALUES and INSTALL_VALUES. The destination location is specified by dest. If
-COMPONENT is specified, the module information file is added to the specified installation component.
+Creates an installation rule to install a module information file named by ```project_id```. It uses
+the values from ```VALUES``` and ```INSTALL_VALUES```. The destination location is specified by ```dest```. If
+```COMPONENT``` is specified, the module information file is added to the specified installation component.
 
 Example usage:
 
-```
+```cmake
 install_module_info(examplelib DESTINATION "." COMPONENT dev)
 ```
 
-### copy_module_info: Copy module information file to a specific location at build-time.
+### ```copy_module_info```: Copy module information file to a specific location at build-time.
 
-```
+```cmake
 copy_module_info(<project_id> <dest>)
 ```
 
-This function creates a module information file named by project_id at the location
-specified by dest at build-time. It uses the values from VALUES and BUILD_VALUES.
+This function creates a module information file named by ```project_id``` at the location
+specified by dest at build-time. It uses the values from ```VALUES``` and ```BUILD_VALUES```.
 
 ## Resolve dependend modules
 
@@ -158,11 +158,11 @@ module information files. The search for modules is conducted in the following o
 
 1. in the directory of the current executable (not the working directory!)
 
-2. in the directories provided by the environment variable CPPLOCATE_PATH
-   - &lt;path&gt;/&lt;module&gt;-info.modinfo
-   - &lt;path&gt;/&lt;module&gt;/&lt;module&gt;-info.modinfo
+2. in the directories provided by the environment variable ```CPPLOCATE_PATH```
+   - ```<path>/<module>-info.modinfo```
+   - ```<path>/<module>/<module>-info.modinfo```
 
 3. in standard locations:
-   - C:\Program Files\\&lt;module&gt;\\&lt;module&gt;-info.modinfo
-   - /usr/share/&lt;module&gt;/&lt;module&gt;-info.modinfo
-   - /usr/local/share/&lt;module&gt;/&lt;module&gt;-info.modinfo
+   - ```C:\Program Files\<module>\<module>-info.modinfo```
+   - ```/usr/share/<module>/<module>-info.modinfo```
+   - ```/usr/local/share/<module>/<module>-info.modinfo```
