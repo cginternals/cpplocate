@@ -11,7 +11,7 @@ to the executable in a build directory, when installed into the system, they mig
 in a global directory such as /usr/share or C:\Users\...\AppData, while for self-contained
 installs they might be located relative to the executable. When projects are deployed using
 software installers or archives, the final location can be controlled by the user installing
-the software, therefore it cannot be known at build time. The situation gets even more complicated
+the software, therefore it cannot be known at build-time. The situation gets even more complicated
 when an application does not only need access to its own data assets, but depends on other modules,
 such as dynamic libraries or even plugins, which bring their own data. However, a software should be
 able to locate its data assets as easy as possible and still be relocatable for typical deployment
@@ -31,14 +31,16 @@ version, and vendor. They also provide the information of where to find data ass
 that module based on the location of the module information file itself, or, in some cases,
 using an absolute path.
 
-A module information file has the filename <projectname>.modinfo and contains an arbitrary
+A module information file has the filename &lt;projectname&gt;.modinfo and contains an arbitrary
 number of key/value-pairs, e.g.:
 
+```
   name: examplelib
   version: 1.0.0
   description: Example library
   author: Example organization
   dataPath: ${ModulePath}/data
+```
 
 The keys are purely conventional and can be used in any way as defined by the using application.
 To express file paths relative to the module information file, the placeholder variable ${ModulePath}
@@ -48,8 +50,8 @@ to the directory containing the module information file.
 ## CMake integration
 
 A CMake module is provided for creating module information files automatically, taking into account
-different situations such as build time (finding modules and data in a development tree) and
-install time (finding modules and data from an installed location).
+different situations such as build-time (finding modules and data in a development tree) and
+install-time (finding modules and data from an installed location).
 
 Use find_package(cpplocate) to find the cpplocate library, pointing CMAKE_PREFIX_PATH to the
 directory that contains cpplocate. This will locate the library and also include the necessary
@@ -59,20 +61,22 @@ The following cmake functions are provided by cpplocate:
 
 ### generate_module_info: Define a module information file.
 
-generate_module_info(<project_id>
+```
+generate_module_info(&lt;project_id&gt;
     VALUES
-    [<key> <value>]*
+    [&lt;key&gt; &lt;value&gt;]*
 
     BUILD_VALUES
-    [<key> <value>]*
+    [&lt;key&gt; &lt;value&gt;]*
 
     INSTALL_VALUES
-    [<key> <value>]*
+    [&lt;key&gt; &lt;value&gt;]*
 )
+```
 
 Define a module information file for a module named by project_id. The module name can be chosen
 arbitrarily and can, but does not need to, match the name of the project or a library. The
-filename will be derived as <project_id>.modinfo.
+filename will be derived as &lt;project_id&gt;.modinfo.
 
 The generated module information file will contain all key/value-pairs specified after VALUES.
 When created into the build-directory of the current development tree, the values specified
@@ -83,6 +87,7 @@ absolute path in the development tree, but be defined relative to the module fil
 
 Example usage:
 
+```
 generate_module_info(examplelib
     VALUES
     name        "examplelib"
@@ -96,29 +101,36 @@ generate_module_info(examplelib
     INSTALL_VALUES
     dataPath    "\${ModulePath}/data"
 )
+```
 
 ### export_module_info: Create module information file in build directory.
 
-export_module_info(<project_id>
-    TARGET <target>
-    [FOLDER <folder>]
+```
+export_module_info(&lt;project_id&gt;
+    TARGET &lt;target&gt;
+    [FOLDER &lt;folder&gt;]
 )
+```
 
 Creates the actual module information file for a module named by project_id in the build directory.
 It uses the values from VALUES and BUILD_VALUES. This is executed at build-time, providing a target
-named <target>-modinfo. If FOLDER is specified, the target is put into the UI folder named by folder
+named &lt;target&gt;-modinfo. If FOLDER is specified, the target is put into the UI folder named by folder
 by setting the target property FOLDER accordingly.
 
 Example usage:
 
+```
 export_module_info(examplelib TARGET examplelib FOLDER "cmake")
+```
 
 ### install_module_info: Install modinfo file to target path.
 
-install_module_info(<project_id>
-    DESTINATION <dest>
-    [COMPONENT <component>]
+```
+install_module_info(&lt;project_id&gt;
+    DESTINATION &lt;dest&gt;
+    [COMPONENT &lt;component&gt;]
 )
+```
 
 Creates an installation rule to install a module information file named by project_id. It uses
 the values from VALUES and INSTALL_VALUES. The destination location is specified by dest. If
@@ -126,11 +138,15 @@ COMPONENT is specified, the module information file is added to the specified in
 
 Example usage:
 
+```
 install_module_info(examplelib DESTINATION "." COMPONENT dev)
+```
 
 ### copy_module_info: Copy module information file to a specific location at build-time.
 
-copy_module_info(<project_id> <dest>)
+```
+copy_module_info(&lt;project_id&gt; &lt;dest&gt;)
+```
 
 This function creates a module information file named by project_id at the location
 specified by dest at build-time. It uses the values from VALUES and BUILD_VALUES.
@@ -143,10 +159,10 @@ module information files. The search for modules is conducted in the following o
 1. in the directory of the current executable (not the working directory!)
 
 2. in the directories provided by the environment variable CPPLOCATE_PATH
-   - <path>/<module>-info.modinfo
-   - <path>/<module>/<module>-info.modinfo
+   - &lt;path&gt;/&lt;module&gt;-info.modinfo
+   - &lt;path&gt;/&lt;module&gt;/&lt;module&gt;-info.modinfo
 
 3. in standard locations:
-   - C:\Program Files\<module>\<module>-info.modinfo
-   - /usr/share/<module>/<module>-info.modinfo
-   - /usr/local/share/<module>/<module>-info.modinfo
+   - C:\Program Files\&lt;module&gt;\&lt;module&gt;-info.modinfo
+   - /usr/share/&lt;module&gt;/&lt;module&gt;-info.modinfo
+   - /usr/local/share/&lt;module&gt;/&lt;module&gt;-info.modinfo
