@@ -126,4 +126,4 @@ CPPLOCATE_API bool loadModule(const std::string & directory, const std::string &
 
 } // namespace utils
 
-} // namespace baselib
+} // namespace cpplocate

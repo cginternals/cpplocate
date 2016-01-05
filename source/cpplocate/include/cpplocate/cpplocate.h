@@ -62,4 +62,4 @@ CPPLOCATE_API std::string getModulePath();
 CPPLOCATE_API ModuleInfo findModule(const std::string & name);
 
 
-} // namespace baselib
+} // namespace cpplocate

@@ -50,7 +50,7 @@ public:
     *  @return
     *    Reference to this value
     */
-    ModuleInfo & operator =(const ModuleInfo & rh);
+    ModuleInfo & operator=(const ModuleInfo & rh);
 
     /**
     *  @brief
@@ -110,7 +110,7 @@ public:
     *  @return
     *    Value, '' on error
     */
-    std::string value(const std::string & key) const;
+    const std::string & value(const std::string & key) const;
 
     /**
     *  @brief
@@ -135,4 +135,4 @@ private:
 };
 
 
-} // namespace baselib
+} // namespace cpplocate

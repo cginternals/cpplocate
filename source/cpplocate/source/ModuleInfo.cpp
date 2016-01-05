@@ -7,6 +7,14 @@
 #include <cpplocate/utils.h>
 
 
+namespace
+{
+
+const std::string emptyString = "";
+
+} // namespace
+
+
 namespace cpplocate
 {
 
@@ -24,7 +32,7 @@ ModuleInfo::~ModuleInfo()
 {
 }
 
-ModuleInfo & ModuleInfo::operator =(const ModuleInfo & rh)
+ModuleInfo & ModuleInfo::operator=(const ModuleInfo & rh)
 {
     clear();
 
@@ -100,14 +108,14 @@ const std::map<std::string, std::string> & ModuleInfo::values() const
     return m_values;
 }
 
-std::string ModuleInfo::value(const std::string & key) const
+const std::string & ModuleInfo::value(const std::string & key) const
 {
     if (m_values.count(key) > 0)
     {
         return m_values.at(key);
     }
 
-    return "";
+    return emptyString;
 }
 
 void ModuleInfo::setValue(const std::string & key, const std::string & value)
@@ -117,7 +125,7 @@ void ModuleInfo::setValue(const std::string & key, const std::string & value)
 
 void ModuleInfo::print() const
 {
-    for (auto item : m_values)
+    for (const auto & item : m_values)
     {
         std::cout << item.first << ": " << item.second << std::endl;
     }

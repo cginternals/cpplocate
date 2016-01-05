@@ -6,11 +6,18 @@
 #include <cpplocate/ModuleInfo.h>
 
 
+namespace
+{
+
 #ifdef SYSTEM_WINDOWS
-    static const std::string pathDelim = "\\";
+    const char pathDelim = '\\';
+    const char pathsDelim = ';';
 #else
-    static const std::string pathDelim = "/";
+    const char pathDelim = '/';
+    const char pathsDelim = ':';
 #endif
+
+} // namespace
 
 
 namespace cpplocate
@@ -24,7 +31,7 @@ void replace(std::string & str, const std::string & original, const std::string 
 {
     // Replace all occurences in the string
     size_t startPos = 0;
-    while((startPos = str.find(original, startPos)) != std::string::npos) {
+    while ((startPos = str.find(original, startPos)) != std::string::npos) {
         str.replace(startPos, original.length(), substitute);
         startPos += substitute.length();
     }
@@ -80,13 +87,7 @@ void split(const std::string & str, char delim, std::vector<std::string> & value
 
 void getPaths(const std::string & paths, std::vector<std::string> & values)
 {
-#ifdef SYSTEM_WINDOWS
-    char delim = ';';
-#else
-    char delim = ':';
-#endif
-
-    split(paths, delim, values);
+    split(paths, pathsDelim, values);
 }
 
 std::string getEnv(const std::string & name)

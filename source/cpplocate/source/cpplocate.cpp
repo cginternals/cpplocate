@@ -1,10 +1,6 @@
 
 #include <cpplocate/cpplocate.h>
 
-#include <cstdlib>
-#include <vector>
-#include <string>
-
 #if defined SYSTEM_LINUX
     #include <unistd.h>
     #include <limits.h>
@@ -20,14 +16,23 @@
     #include <sys/sysctl.h>
 #endif
 
+#include <cstdlib>
+#include <vector>
+#include <string>
+
 #include <cpplocate/utils.h>
 
 
+namespace
+{
+
 #ifdef SYSTEM_WINDOWS
-    static const std::string pathDelim = "\\";
+    const char pathDelim = '\\';
 #else
-    static const std::string pathDelim = "/";
+    const char pathDelim = '/';
 #endif
+
+} // namespace
 
 
 namespace cpplocate
