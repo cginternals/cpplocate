@@ -26,11 +26,24 @@ in most cases. This can be used by the application itself to locate its data.
 
 ## Module information files
 
-Module information files contain meta information about a module, such as project name, version, and vendor.
-They also provide the information of where to find data assets for that module based on the location
-of the module information file itself, or, in some cases, using an absolute path.
+Module information files contain meta-information about a module, such as project name,
+version, and vendor. They also provide the information of where to find data assets for
+that module based on the location of the module information file itself, or, in some cases,
+using an absolute path.
 
-[TODO] Add specification for modinfo files
+A module information file has the filename <projectname>.modinfo and contains an arbitrary
+number of key/value-pairs, e.g.:
+
+  name: examplelib
+  version: 1.0.0
+  description: Example library
+  author: Example organization
+  dataPath: ${ModulePath}/data
+
+The keys are purely conventional and can be used in any way as defined by the using application.
+To express file paths relative to the module information file, the placeholder variable ${ModulePath}
+can be used. When loading the module information, this variable will be replaced with the path
+to the directory containing the module information file.
 
 ## CMake integration
 
@@ -38,7 +51,89 @@ A CMake module is provided for creating module information files automatically, 
 different situations such as build time (finding modules and data in a development tree) and
 install time (finding modules and data from an installed location).
 
-[TODO] Describe all provided cmake functions
+Use find_package(cpplocate) to find the cpplocate library, pointing CMAKE_PREFIX_PATH to the
+directory that contains cpplocate. This will locate the library and also include the necessary
+cmake functions into your project.
+
+The following cmake functions are provided by cpplocate:
+
+### generate_module_info: Define a module information file.
+
+generate_module_info(<project_id>
+    VALUES
+    [<key> <value>]*
+
+    BUILD_VALUES
+    [<key> <value>]*
+
+    INSTALL_VALUES
+    [<key> <value>]*
+)
+
+Define a module information file for a module named by project_id. The module name can be chosen
+arbitrarily and can, but does not need to, match the name of the project or a library. The
+filename will be derived as <project_id>.modinfo.
+
+The generated module information file will contain all key/value-pairs specified after VALUES.
+When created into the build-directory of the current development tree, the values specified
+after BUILD_VALUES will also be added. But when installed using the cmake INSTALL-target, the
+values after INSTALL_VALUES will be used instead. This allowes for providing different values
+in the development tree and in installed location, e.g., the data path might point to the
+absolute path in the development tree, but be defined relative to the module file on install.
+
+Example usage:
+
+generate_module_info(examplelib
+    VALUES
+    name        "examplelib"
+    version     "1.0.0"
+    description "Example library"
+    author      "Example organization"
+
+    BUILD_VALUES
+    dataPath    "${PROJECT_SOURCE_DIR}/data"
+
+    INSTALL_VALUES
+    dataPath    "\${ModulePath}/data"
+)
+
+### export_module_info: Create module information file in build directory.
+
+export_module_info(<project_id>
+    TARGET <target>
+    [FOLDER <folder>]
+)
+
+Creates the actual module information file for a module named by project_id in the build directory.
+It uses the values from VALUES and BUILD_VALUES. This is executed at build-time, providing a target
+named <target>-modinfo. If FOLDER is specified, the target is put into the UI folder named by folder
+by setting the target property FOLDER accordingly.
+
+Example usage:
+
+export_module_info(examplelib TARGET examplelib FOLDER "cmake")
+
+### install_module_info: Install modinfo file to target path.
+
+install_module_info(<project_id>
+    DESTINATION <dest>
+    [COMPONENT <component>]
+)
+
+Creates an installation rule to install a module information file named by project_id. It uses
+the values from VALUES and INSTALL_VALUES. The destination location is specified by dest. If
+COMPONENT is specified, the module information file is added to the specified installation component.
+
+Example usage:
+
+install_module_info(examplelib DESTINATION "." COMPONENT dev)
+
+### copy_module_info: Copy module information file to a specific location at build-time.
+
+copy_module_info(<project_id> <dest>)
+
+This function creates a module information file named by project_id at the location
+specified by dest at build-time. It uses the values from VALUES and BUILD_VALUES.
 
 ## Resolve dependend modules
 
