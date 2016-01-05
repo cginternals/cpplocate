@@ -163,6 +163,6 @@ module information files. The search for modules is conducted in the following o
    - &lt;path&gt;/&lt;module&gt;/&lt;module&gt;-info.modinfo
 
 3. in standard locations:
-   - C:\Program Files\&lt;module&gt;\&lt;module&gt;-info.modinfo
+   - C:\Program Files\\&lt;module&gt;\\&lt;module&gt;-info.modinfo
    - /usr/share/&lt;module&gt;/&lt;module&gt;-info.modinfo
    - /usr/local/share/&lt;module&gt;/&lt;module&gt;-info.modinfo
