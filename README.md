@@ -62,15 +62,15 @@ The following cmake functions are provided by cpplocate:
 ### generate_module_info: Define a module information file.
 
 ```
-generate_module_info(&lt;project_id&gt;
+generate_module_info(<project_id>;
     VALUES
-    [&lt;key&gt; &lt;value&gt;]*
+    [<key> <value>]*
 
     BUILD_VALUES
-    [&lt;key&gt; &lt;value&gt;]*
+    [<key> <value>]*
 
     INSTALL_VALUES
-    [&lt;key&gt; &lt;value&gt;]*
+    [<key> <value>]*
 )
 ```
 
@@ -106,9 +106,9 @@ generate_module_info(examplelib
 ### export_module_info: Create module information file in build directory.
 
 ```
-export_module_info(&lt;project_id&gt;
-    TARGET &lt;target&gt;
-    [FOLDER &lt;folder&gt;]
+export_module_info(<project_id>
+    TARGET <target>
+    [FOLDER <folder>]
 )
 ```
 
@@ -126,9 +126,9 @@ export_module_info(examplelib TARGET examplelib FOLDER "cmake")
 ### install_module_info: Install modinfo file to target path.
 
 ```
-install_module_info(&lt;project_id&gt;
-    DESTINATION &lt;dest&gt;
-    [COMPONENT &lt;component&gt;]
+install_module_info(<project_id>
+    DESTINATION <dest>
+    [COMPONENT <component>]
 )
 ```
 
@@ -145,7 +145,7 @@ install_module_info(examplelib DESTINATION "." COMPONENT dev)
 ### copy_module_info: Copy module information file to a specific location at build-time.
 
 ```
-copy_module_info(&lt;project_id&gt; &lt;dest&gt;)
+copy_module_info(<project_id> <dest>)
 ```
 
 This function creates a module information file named by project_id at the location
