@@ -7,14 +7,6 @@
 #include <cpplocate/utils.h>
 
 
-namespace
-{
-
-const std::string emptyString = "";
-
-} // namespace
-
-
 namespace cpplocate
 {
 
@@ -108,14 +100,14 @@ const std::map<std::string, std::string> & ModuleInfo::values() const
     return m_values;
 }
 
-const std::string & ModuleInfo::value(const std::string & key) const
+const std::string & ModuleInfo::value(const std::string & key, const std::string & defaultValue) const
 {
     if (m_values.count(key) > 0)
     {
         return m_values.at(key);
     }
 
-    return emptyString;
+    return defaultValue;
 }
 
 void ModuleInfo::setValue(const std::string & key, const std::string & value)

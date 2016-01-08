@@ -110,7 +110,7 @@ public:
     *  @return
     *    Value, '' on error
     */
-    const std::string & value(const std::string & key) const;
+    const std::string & value(const std::string & key, const std::string & defaultValue = "") const;
 
     /**
     *  @brief
