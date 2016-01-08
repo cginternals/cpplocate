@@ -26,6 +26,8 @@ macro(find_modules PREFIX)
     endforeach(module_name)
 endmacro()
 
+# Include module information file functions
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/ModuleInformation.cmake)
 
 # Try install location
 set(MODULE_FOUND FALSE)
@@ -39,5 +41,3 @@ endif()
 find_modules("build/cmake")
 find_modules("build-debug/cmake")
 
-# Include module information file functions
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/ModuleInformation.cmake)
