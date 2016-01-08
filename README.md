@@ -153,7 +153,7 @@ specified by dest at build-time. It uses the values from ```VALUES``` and ```BUI
 
 ## Resolve dependend modules
 
-Similar to a dynamic linker, cpplocate can resolve dependencies to other modules by locating
+Similar to a dynamic linker, ```cpplocate``` can resolve dependencies to other modules by locating
 module information files. The search for modules is conducted in the following order:
 
 1. in the directory of the current executable (not the working directory!)
@@ -166,3 +166,37 @@ module information files. The search for modules is conducted in the following o
    - ```C:\Program Files\<module>\<module>-info.modinfo```
    - ```/usr/share/<module>/<module>-info.modinfo```
    - ```/usr/local/share/<module>/<module>-info.modinfo```
+
+This functionality can be used by a library to locate its own data at runtime.
+If it is used as a dependency for another project, such as an application or a
+plugin using the library, it cannot rely on the data being relative to the
+current executable or even the working directory. Therefore, the library can
+use ```cpplocate``` to locate itself:
+
+```C++
+namespace examplelib
+{
+
+std::string determineDataPath()
+{
+    const cpplocate::ModuleInfo moduleInfo = cpplocate::findModule("examplelib");
+    const std::string moduleInfoPath = moduleInfo.value("dataPath");
+
+    return moduleInfoPath.empty() ? "data" : moduleInfoPath;
+}
+
+const std::string & dataPath()
+{
+    static const auto path = determineDataPath();
+
+    return path;
+}
+
+}
+```
+
+And whenever data needs to be accessed, code like the following should be used:
+
+```C++
+std::string filename = dataPath() + "/textures/logo.png";
+```

@@ -53,7 +53,7 @@ CPPLOCATE_API std::string getModulePath();
 *    1. The current module path
 *    2. All pathes contained in the enironment variable CPPLOCATE_PATH
 *    2.a <path>/<name>.modinfo
-*    2.a <path>/<name>/<name>.modinfo
+*    2.b <path>/<name>/<name>.modinfo
 *    3. Standard locations:
 *    3.a C:\Program Files\<name>\<name>.modinfo
 *    3.b /usr/share/<name>/<name>.modinfo
