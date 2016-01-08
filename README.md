@@ -177,21 +177,19 @@ use ```cpplocate``` to locate itself:
 namespace examplelib
 {
 
-std::string g_dataPath;
-
-std::string dataPath()
+std::string determineDataPath()
 {
-    if (g_dataPath.empty())
-    {
-        cpplocate::ModuleInfo modInfo = cpplocate::findModule("examplelib");
-        if (!modInfo.empty()) {
-            g_dataPath = modInfo.value("dataPath");
-        } else {
-            g_dataPath = "data";
-        }
-    }
+    const cpplocate::ModuleInfo moduleInfo = cpplocate::findModule("examplelib");
+    const std::string moduleInfoPath = moduleInfo.value("dataPath");
 
-    return g_dataPath;
+    return moduleInfoPath.empty() ? "data" : moduleInfoPath;
+}
+
+const std::string & dataPath()
+{
+    static const auto path = determineDataPath();
+
+    return path;
 }
 
 }
