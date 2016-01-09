@@ -7,11 +7,11 @@
 function(generate_module_info MODNAME)
 
     # Create build-time version
-    set(file_build   "${PROJECT_BINARY_DIR}/${MODNAME}-build.modinfo")
+    set(file_build   "${PROJECT_BINARY_DIR}/ModuleInfo/${MODNAME}.modinfo.build")
     file(WRITE "${file_build}"   "")
 
     # Create install-time version
-    set(file_install "${PROJECT_BINARY_DIR}/${MODNAME}-install.modinfo")
+    set(file_install "${PROJECT_BINARY_DIR}/ModuleInfo/${MODNAME}.modinfo.install")
     file(WRITE "${file_install}" "")
 
     # Parse all remaining arguments
@@ -53,7 +53,10 @@ endfunction(generate_module_info)
 # Copy module information file to a specific location
 function(copy_module_info MODNAME DEST)
 
-    file(COPY "${PROJECT_BINARY_DIR}/${MODNAME}-build.modinfo" DESTINATION "${DEST}")
+    file(GENERATE
+        OUTPUT "${DEST}"
+        INPUT  "${PROJECT_BINARY_DIR}/ModuleInfo/${MODNAME}.modinfo.build"
+    )
 
 endfunction(copy_module_info MODNAME DEST)
 
@@ -65,12 +68,18 @@ function(export_module_info MODNAME)
     if("${ARGV1}" STREQUAL "TARGET")
         set(target "${ARGV2}")
 
+        # Determine output name
+        set(outname "${MODNAME}.modinfo")
+        if("${ARGV5}" STREQUAL "RENAME")
+            set(outname "${ARGV6}")
+        endif()
+
         # Create a target that copies the module information file alongside the generated target
         add_custom_target("${target}-modinfo" ALL
             COMMAND ${CMAKE_COMMAND} -E copy
-                    "${PROJECT_BINARY_DIR}/${MODNAME}-build.modinfo"
-                    "$<TARGET_FILE_DIR:${target}>/${MODNAME}.modinfo"
-            COMMENT "Exporting ${MODNAME}.modinfo"
+                    "${PROJECT_BINARY_DIR}/ModuleInfo/${MODNAME}.modinfo.build"
+                    "$<TARGET_FILE_DIR:${target}>/${outname}"
+            COMMENT "Exporting ${outname}"
             VERBATIM
         )
 
@@ -89,7 +98,32 @@ endfunction(export_module_info)
 # Install module information file
 function(install_module_info MODNAME)
 
+    # Set default output name
+    set(outname "${MODNAME}.modinfo")
+
+    # Parse all remaining arguments
+    set(args)
+    set(index 1)
+    while(${index} LESS ${ARGC})
+        # Get current argument
+        set(arg ${ARGV${index}})
+        math(EXPR index "${index} + 1" )
+
+        if(arg STREQUAL "RENAME")
+            # Modify output name, ignore argument and value in args
+            set(outname "${ARGV${index}}")
+            math(EXPR index "${index} + 1" )
+        else()
+            # Add argument to args
+            list(APPEND args ${arg})
+        endif()
+    endwhile()
+
     # Install module information file into install-tree
-    install(FILES "${PROJECT_BINARY_DIR}/${MODNAME}-install.modinfo" RENAME "${MODNAME}.modinfo" ${ARGN})
+    file(GENERATE
+        OUTPUT "${PROJECT_BINARY_DIR}/ModuleInfo/install/${outname}"
+        INPUT  "${PROJECT_BINARY_DIR}/ModuleInfo/${MODNAME}.modinfo.install"
+    )
+    install(FILES "${PROJECT_BINARY_DIR}/ModuleInfo/install/${outname}" ${args})
 
 endfunction(install_module_info)

@@ -62,7 +62,7 @@ The following cmake functions are provided by ```cpplocate```:
 ### ```generate_module_info```: Define a module information file.
 
 ```cmake
-generate_module_info(<project_id>;
+generate_module_info(<project_id>
     VALUES
     [<key> <value>]*
 
@@ -108,14 +108,13 @@ generate_module_info(examplelib
 ```cmake
 export_module_info(<project_id>
     TARGET <target>
-    [FOLDER <folder>]
+    [ FOLDER <folder>
+      [RENAME <filename>]
+    ]
 )
 ```
 
-Creates the actual module information file for a module named by ```project_id``` in the build directory.
-It uses the values from ```VALUES``` and ```BUILD_VALUES```. This is executed at build-time, providing a target
-named ```<target>-modinfo```. If ```FOLDER``` is specified, the target is put into the UI folder named by folder
-by setting the target property ```FOLDER``` accordingly.
+Creates the actual module information file for a module named by ```project_id``` in the output directory of target ```<target>```. It uses the values from ```VALUES``` and ```BUILD_VALUES```. This is executed at build-time, providing a target named ```<target>-modinfo```. If ```FOLDER``` is specified, the target is put into the UI folder named by ```folder```. If ```RENAME``` is specified, the target output name is set as ```<filename>```, ```filename``` can contain generator expressions.
 
 Example usage:
 
@@ -129,12 +128,11 @@ export_module_info(examplelib TARGET examplelib FOLDER "cmake")
 install_module_info(<project_id>
     DESTINATION <dest>
     [COMPONENT <component>]
+    [RENAME <filename>]
 )
 ```
 
-Creates an installation rule to install a module information file named by ```project_id```. It uses
-the values from ```VALUES``` and ```INSTALL_VALUES```. The destination location is specified by ```dest```. If
-```COMPONENT``` is specified, the module information file is added to the specified installation component.
+Creates an installation rule to install a module information file named by ```project_id```. It uses the values from ```VALUES``` and ```INSTALL_VALUES```. The destination location is specified by ```dest```. If ```RENAME``` is specified, the file will be renamed to ```<filename>``` on installation, ```filename``` can contain generator expressions. If ```COMPONENT``` is specified, the module information file is added to the specified installation component.
 
 Example usage:
 
@@ -145,11 +143,10 @@ install_module_info(examplelib DESTINATION "." COMPONENT dev)
 ### ```copy_module_info```: Copy module information file to a specific location at build-time.
 
 ```cmake
-copy_module_info(<project_id> <dest>)
+copy_module_info(<project_id> <filename>)
 ```
 
-This function creates a module information file named by ```project_id``` at the location
-specified by dest at build-time. It uses the values from ```VALUES``` and ```BUILD_VALUES```.
+This function writes the module information file named by ```project_id``` to an output file specified by ```filename``` at build-time, ```filename``` can contain generator expressions. It uses the values from ```VALUES``` and ```BUILD_VALUES```.
 
 ## Resolve dependend modules
 
