@@ -106,9 +106,11 @@ public:
     *
     *  @param[in] key
     *    Key name
+    *  @param[in] defaultValue
+    *    Default value
     *
     *  @return
-    *    Value, '' on error
+    *    Value, if the specified key does not exist, defaultValue is returned
     */
     const std::string & value(const std::string & key, const std::string & defaultValue = "") const;
 
