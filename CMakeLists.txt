@@ -161,4 +161,4 @@ install(FILES LICENSE   DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
 install(FILES README.md DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
 
 # Install cmake functions
-install(FILES cmake/ModuleInformation.cmake DESTINATION ${INSTALL_ROOT}/cmake COMPONENT dev)
+install(FILES cmake/ModuleInformation.cmake DESTINATION ${INSTALL_CMAKE} COMPONENT dev)
