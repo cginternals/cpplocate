@@ -197,3 +197,15 @@ And whenever data needs to be accessed, code like the following should be used:
 ```C++
 std::string filename = dataPath() + "/textures/logo.png";
 ```
+
+## Build Status
+
+| Service | System | Compiler | Status |
+| ------- | ------ | -------- | ------ |
+| Jenkins | Ubuntu 14.04 | GCC 4.7 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.7)](http://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.7)|
+| Jenkins | Ubuntu 14.04 | GCC 4.8| [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.8)](http://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.8)|
+| Jenkins | Ubuntu 14.04 | GCC 4.9 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.9)](http://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.9)|
+| Jenkins | Ubuntu 14.04 | GCC 5.3 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc5.3)](http://jenkins.hpi3d.de/job/cpplocate-linux-gcc5.3)|
+| Jenkins | Ubuntu 14.04 | Clang 3.5 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-clang3.5)](http://jenkins.hpi3d.de/job/cpplocate-linux-clang3.5) |
+| Jenkins | Windows 8.1 | MSVC 2013 Update 5 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-windows-msvc2013)](http://jenkins.hpi3d.de/job/cpplocate-windows-msvc2013) |
+| Jenkins | Windows 8.1 | MSVC 2015 Update 1 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-windows-msvc2015)](http://jenkins.hpi3d.de/job/cpplocate-windows-msvc2015) |
