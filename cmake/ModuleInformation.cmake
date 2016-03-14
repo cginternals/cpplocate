@@ -65,7 +65,10 @@ endfunction(copy_module_info MODNAME DEST)
 function(export_module_info MODNAME)
 
     # Target name must be set
-    if("${ARGV1}" STREQUAL "TARGET")
+    
+    # Workaround for cmake < 3.2 which misinterprets the "TARGET" value
+    string(COMPARE EQUAL "${ARGV1}" "TARGET" compare_result)
+    if(${compare_result})
         set(target "${ARGV2}")
 
         # Determine output name
@@ -120,6 +123,8 @@ function(install_module_info MODNAME)
     endwhile()
 
     # Install module information file into install-tree
+    # manually creating install directory becuase file GENERATE doesn't do so before CMake 3.2
+    file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/ModuleInfo/install")
     file(GENERATE
         OUTPUT "${PROJECT_BINARY_DIR}/ModuleInfo/install/${outname}"
         INPUT  "${PROJECT_BINARY_DIR}/ModuleInfo/${MODNAME}.modinfo.install"
