@@ -1,23 +1,152 @@
+[//]: # (Comment)
+
 # C++ Locator Library
 
-```cpplocate``` is a small C++ library that provides tools for applications to locate themselves,
-their data assets, as well as dependend modules. It is cross-platform and designed to work
-on all major platforms such as Linux, Windows, and OS X.
+*cpplocate* is an [MIT licensed](http://opensource.org/licenses/MIT), cross-platform C++ library that provides tools for applications to locate themselves, their data assets, as well as dependend modules.
 
-Especially in the context of cross-platform applications, locating data assets belonging
-to an application or library is not an easy task. Depending on the situation, data assets can
-occupy different locations on a system: in a development tree, data might be located relative
-to the executable in a build directory, when installed into the system, they might be located
-in a global directory such as /usr/share or C:\Users\...\AppData, while for self-contained
-installs they might be located relative to the executable. When projects are deployed using
-software installers or archives, the final location can be controlled by the user installing
-the software, therefore it cannot be known at build-time. The situation gets even more complicated
-when an application does not only need access to its own data assets, but depends on other modules,
-such as dynamic libraries or even plugins, which bring their own data. However, a software should be
-able to locate its data assets as easy as possible and still be relocatable for typical deployment
-and installation routines to work as expected.
+In the context of cross-platform applications, locating data assets belonging to an application or library is not an easy task. 
+Depending on the situation, data assets can occupy different locations on a system: in a development tree, data might be located relative to the executable in a build directory, when installed into the system, they might be located in a global directory such as ```/usr/share``` or ```C:\Users\...\AppData```, while for self-contained installs they might be located relative to the executable. 
+When projects are deployed using software installers or archives, the final location can be controlled by the user installing the software, therefore it cannot be known at build-time. 
+The situation gets even more complicated when an application does not only need access to its own data assets, but depends on other modules, such as dynamic libraries or even plugins, which bring their own data. 
+However, a software should be able to locate its data assets as easy as possible and still be relocatable for typical deployment and installation routines to work as expected.
 
-To help resolve these problems, ```cpplocate``` provides the following features:
+## Professional Support
+
+CG Internals offers computer graphics R&D as well as reliable technology and innovative concepts to support your computer graphics visions. 
+We provide trainings and can help you integrate and customize cpplocate in your next project.
+
+Visit [Professional Support and Services](https://www.cginternals.com) for more details.
+
+## Resources
+
+* [Project Health](#project-health)
+
+###### Installation and Development
+* [Install Instructions](#install-instructions)
+* [Build form Source](#build-instructions)
+* [Tips for Linking](#tips-for-linking)
+* [Basic Example](#basic-example)
+
+###### Feature Documentation and Code Snippets
+* [Foo Bar](#foo-bar)
+
+
+## Project Health
+
+| Service | System | Compiler | Status |
+| ------- | ------ | -------- | -----: |
+|  [Travis-CI](https://travis-ci.org/cginternals/cpplocate) | Ubuntu 14.04 | GCC 4.8, Clang 3.5 | [![Build Status](https://travis-ci.org/cginternals/cpplocate.svg?branch=master)](https://travis-ci.org/cginternals/cpplocate) |
+|  [Travis-CI](https://travis-ci.org/cginternals/cpplocate) | macOS | Clang ? | upcoming |
+| [Coverity](https://scan.coverity.com/projects/6828?tab=overview) | Ubuntu 14.04 | GCC 5.3 | upcoming |
+| Jenkins <br><br><br><br> | Ubuntu 14.04 <br><br><br><br> | GCC 4.8 <br> GCC 4.9 <br> GCC 5.4 <br> Clang 3.9 <br> | [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.8)](https://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.8) <br> [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.9)](https://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.9) <br> [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc5)](https://jenkins.hpi3d.de/job/cpplocate-linux-gcc5.4) <br> [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-clang3.9)](https://jenkins.hpi3d.de/job/cpplocate-linux-clang3.9) <br> |
+| Jenkins <br><br> | Windows 10 <br><br> | MSVC 2013 Update 5 <br>  MSVC 2015 Update 1 <br> | [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-windows-msvc2013)](https://jenkins.hpi3d.de/job/cpplocate-windows-msvc2013) <br> [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-windows-msvc2015)](https://jenkins.hpi3d.de/job/cpplocate-windows-msvc2015) <br> |
+
+
+Please note that our macOS build node is currently broken (physically). However, *cpplocate* is maintained for macOS as well and there are many people using it on macOS on a regular basis.
+
+
+## Install Instructions
+
+*cpplocate* is available for different platforms using different distribution channels. 
+
+ToDo
+
+###### Windows
+
+ToDo
+
+###### Ubuntu
+
+ToDo
+
+###### Arch Linux
+
+ToDo
+
+###### macOS
+
+ToDo
+
+
+###### Debian-based Systems
+
+There is currently no precompiled package maintained. Please download the source code and commence [building from source](#build-instructions).
+
+
+## Build Instructions
+
+##### Prerequisites and Dependencies
+
+The only mandatory run-time dependencies of *cpplocate* are the STL of the used compiler. 
+Building *cpplocate* utilizes:
+* [CMake](https://cmake.org/) 3.0 or higher for building *cpplocate* from source (mandatory for any build from source)
+* [git](https://git-scm.com/) for version control (optional)
+* [Doxygen](http://www.stack.nl/~dimitri/doxygen/) 1.8 or higher for generating the documentation on your system (optional)
+  * [graphviz](http://www.graphviz.org/) for generating diagrams (optional)
+
+##### Compile Instructions
+
+For compilation, a C++11 compliant compiler, e.g., GCC 4.8, Clang 3.3, MSVC 2013 **Update 3**, is required.
+
+First, download the source code [as archive](https://github.com/cginternals/cpplocate/releases) or via git:
+```shell
+> git clone https://github.com/cginternals/cpplocate.git
+> cd cpplocate
+```
+Then, depending on the version of *cpplocate* you want to build, choose the appropriate tag or branch, e.g., for the 1.0.0 release:
+```shell
+> git fetch --tags
+> git checkout v1.0.0
+```
+The actual compilation can be done using CMake and your favorite compiler and IDE.
+
+For building *cpplocate* CMake via command line can be used (should work on all systems):
+
+First create a build directory (we do not recommend in-source builds):
+```shell
+> mkdir build
+> cd build
+```
+
+Configure *cpplocate* with your prefered or default generator, e.g., for Visual Studio 2015 in x64 use
+(note: some IDEs have integrated support for CMake projects, e.g., Qt Creator, and allow you to skip the manual project configuration):
+```shell
+> cmake .. -G "Visual Studio 14 2015 Win64"
+```
+
+In order to compile the project, either use you favorite Editor/IDE with the created project or use CMake as follows:
+```shell
+> cmake --build .
+```
+
+
+
+## Tips for Linking
+
+We suggest using the build system of *cpplocate* for a smooth integration: [CMake](https://cmake.org/)
+For it, *cpplocate* provides a find configuration script that should be installed into your system or at least be accessible by CMake. 
+In the projects CMakeLists.txt, add one of the following lines:
+```
+find_package(cpplocate QUIET)    # if you want to check for existance
+find_package(cpplocate REQUIRED) # if it is really required in your project
+```
+
+There is no need for explicit linking (e.g., ```target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)```) anymore. 
+The find configuration script takes care of that.
+
+
+
+
+## Basic Example
+
+ToDo
+
+
+
+## Features
+
+### Foo Bar
+
 
 ## Get absolute path to the current executable
 
@@ -198,14 +327,3 @@ And whenever data needs to be accessed, code like the following should be used:
 std::string filename = dataPath() + "/textures/logo.png";
 ```
 
-## Build Status
-
-| Service | System | Compiler | Status |
-| ------- | ------ | -------- | ------ |
-| Jenkins | Ubuntu 14.04 | GCC 4.7 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.7)](http://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.7)|
-| Jenkins | Ubuntu 14.04 | GCC 4.8| [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.8)](http://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.8)|
-| Jenkins | Ubuntu 14.04 | GCC 4.9 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.9)](http://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.9)|
-| Jenkins | Ubuntu 14.04 | GCC 5.3 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc5.3)](http://jenkins.hpi3d.de/job/cpplocate-linux-gcc5.3)|
-| Jenkins | Ubuntu 14.04 | Clang 3.5 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-clang3.5)](http://jenkins.hpi3d.de/job/cpplocate-linux-clang3.5) |
-| Jenkins | Windows 8.1 | MSVC 2013 Update 5 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-windows-msvc2013)](http://jenkins.hpi3d.de/job/cpplocate-windows-msvc2013) |
-| Jenkins | Windows 8.1 | MSVC 2015 Update 1 | [![Build Status](http://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-windows-msvc2015)](http://jenkins.hpi3d.de/job/cpplocate-windows-msvc2015) |
