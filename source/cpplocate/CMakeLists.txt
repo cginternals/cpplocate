@@ -15,10 +15,11 @@ set(target cpplocate)
 message(STATUS "Lib ${target}")
 
 # Set API export file and macro
-string(TOUPPER ${target} target_upper)
+string(MAKE_C_IDENTIFIER ${target} target_id)
+string(TOUPPER ${target_id} target_id)
 set(feature_file "include/${target}/${target}_features.h")
 set(export_file  "include/${target}/${target}_api.h")
-set(export_macro "${target_upper}_API")
+set(export_macro "${target_id}_API")
 
 
 # 
@@ -125,7 +126,7 @@ target_compile_definitions(${target}
     PRIVATE
 
     PUBLIC
-    $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_upper}_STATIC_DEFINE>
+    $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_id}_STATIC_DEFINE>
     ${DEFAULT_COMPILE_DEFINITIONS}
 
     INTERFACE
