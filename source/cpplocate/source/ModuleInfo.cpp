@@ -16,8 +16,13 @@ ModuleInfo::ModuleInfo()
 }
 
 ModuleInfo::ModuleInfo(const ModuleInfo & rh)
+: m_values(rh.m_values)
 {
-    m_values = rh.m_values;
+}
+
+ModuleInfo::ModuleInfo(ModuleInfo && rh)
+: m_values(std::move(rh.m_values))
+{
 }
 
 ModuleInfo::~ModuleInfo()
@@ -26,9 +31,15 @@ ModuleInfo::~ModuleInfo()
 
 ModuleInfo & ModuleInfo::operator=(const ModuleInfo & rh)
 {
-    clear();
-
     m_values = rh.m_values;
+
+    return *this;
+}
+
+ModuleInfo & ModuleInfo::operator=(ModuleInfo && rh)
+{
+    m_values = std::move(rh.m_values);
+
     return *this;
 }
 
@@ -39,50 +50,50 @@ bool ModuleInfo::load(const std::string & filename)
     std::string modulePath = utils::getDirectoryPath(filename);
 
     std::ifstream in(filename);
-    if (in.is_open())
+
+    if (!in.is_open())
     {
-        std::string line;
-        while (std::getline(in, line))
-        {
-            size_t pos = line.find(":");
-            if (pos == std::string::npos) {
-                continue;
-            }
-
-            std::string key = line.substr(0, pos);
-            utils::trim(key);
-
-            std::string value = line.substr(pos+1);
-            utils::trim(value);
-
-            utils::replace(value, "${ModulePath}", modulePath);
-
-            setValue(key, value);
-        }
-
-        in.close();
-
-        return true;
+        return false;
     }
 
-    return false;
+    std::string line;
+    while (std::getline(in, line))
+    {
+        size_t pos = line.find(":");
+        if (pos == std::string::npos) {
+            continue;
+        }
+
+        std::string key = line.substr(0, pos);
+        utils::trim(key);
+
+        std::string value = line.substr(pos+1);
+        utils::trim(value);
+
+        utils::replace(value, "${ModulePath}", modulePath);
+
+        setValue(key, value);
+    }
+
+    in.close();
+
+    return true;
 }
 
 bool ModuleInfo::save(const std::string & filename) const
 {
     std::ofstream out(filename);
-    if (out.is_open())
-    {
-        for (auto item : m_values)
-        {
-            out << item.first << ": " << item.second << std::endl;
-        }
-        out.close();
 
-        return true;
+    if (!out.is_open())
+    {
+        return false;
     }
 
-    return false;
+    print(out);
+
+    out.close();
+
+    return true;
 }
 
 void ModuleInfo::clear()
@@ -102,12 +113,9 @@ const std::map<std::string, std::string> & ModuleInfo::values() const
 
 const std::string & ModuleInfo::value(const std::string & key, const std::string & defaultValue) const
 {
-    if (m_values.count(key) > 0)
-    {
-        return m_values.at(key);
-    }
+    auto it = m_values.find(key);
 
-    return defaultValue;
+    return it == m_values.end() ? defaultValue : it->second;
 }
 
 void ModuleInfo::setValue(const std::string & key, const std::string & value)
@@ -117,9 +125,14 @@ void ModuleInfo::setValue(const std::string & key, const std::string & value)
 
 void ModuleInfo::print() const
 {
+    print(std::cout);
+}
+
+void ModuleInfo::print(std::ostream & stream) const
+{
     for (const auto & item : m_values)
     {
-        std::cout << item.first << ": " << item.second << std::endl;
+        stream << item.first << ": " << item.second << std::endl;
     }
 }
 

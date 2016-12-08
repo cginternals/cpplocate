@@ -4,11 +4,14 @@
 
 #include <string>
 
-#include <cpplocate/ModuleInfo.h>
+#include <cpplocate/cpplocate_api.h>
 
 
 namespace cpplocate
 {
+
+
+class ModuleInfo;
 
 
 /**
