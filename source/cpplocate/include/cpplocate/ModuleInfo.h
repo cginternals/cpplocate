@@ -4,6 +4,7 @@
 
 #include <string>
 #include <map>
+#include <iosfwd>
 
 #include <cpplocate/cpplocate_api.h>
 
@@ -36,13 +37,22 @@ public:
 
     /**
     *  @brief
+    *    Move constructor
+    *
+    *  @param[in] rh
+    *    Right-hand value to move
+    */
+    ModuleInfo(ModuleInfo && rh);
+
+    /**
+    *  @brief
     *    Destructor
     */
     ~ModuleInfo();
 
     /**
     *  @brief
-    *    Copy operator
+    *    Copy assignment operator
     *
     *  @param[in] rh
     *    Right-hand value to copy
@@ -51,6 +61,18 @@ public:
     *    Reference to this value
     */
     ModuleInfo & operator=(const ModuleInfo & rh);
+
+    /**
+    *  @brief
+    *    Move assignment operator
+    *
+    *  @param[in] rh
+    *    Right-hand value to move
+    *
+    *  @return
+    *    Reference to this value
+    */
+    ModuleInfo & operator=(ModuleInfo && rh);
 
     /**
     *  @brief
@@ -130,6 +152,15 @@ public:
     *    Print module info to the console
     */
     void print() const;
+
+    /**
+    *  @brief
+    *    Print module info to stream
+    *
+    *  @param[in] stream
+    *    The stream to print to
+    */
+    void print(std::ostream & stream) const;
 
 
 private:

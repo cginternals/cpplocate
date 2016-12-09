@@ -21,6 +21,7 @@
 #include <string>
 
 #include <cpplocate/utils.h>
+#include <cpplocate/ModuleInfo.h>
 
 
 namespace
@@ -127,7 +128,8 @@ ModuleInfo findModule(const std::string & name)
     std::vector<std::string> paths;
     std::string cppLocatePath = utils::getEnv("CPPLOCATE_PATH");
     utils::getPaths(cppLocatePath, paths);
-    for (std::string path : paths)
+
+    for (const std::string & path : paths)
     {
         if (utils::loadModule(path, name, info))
         {
