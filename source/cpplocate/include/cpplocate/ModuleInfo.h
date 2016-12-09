@@ -153,10 +153,6 @@ public:
     */
     void print() const;
 
-
-private:
-    std::map<std::string, std::string> m_values; ///< Key/value map
-
     /**
     *  @brief
     *    Print module info to stream
@@ -165,6 +161,10 @@ private:
     *    The stream to print to
     */
     void print(std::ostream & stream) const;
+
+
+private:
+    std::map<std::string, std::string> m_values; ///< Key/value map
 };
 
 
