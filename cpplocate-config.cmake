@@ -31,6 +31,9 @@ macro(find_modules PREFIX)
 endmacro()
 
 
+# Include module information file functions
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/ModuleInformation.cmake)
+
 # Try install location
 set(MODULE_FOUND FALSE)
 find_modules("cmake")
