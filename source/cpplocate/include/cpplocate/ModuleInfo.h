@@ -120,7 +120,7 @@ public:
     *  @return
     *    Map
     */
-    const std::map<const std::string, std::string> & values() const;
+    const std::map<std::string, std::string> & values() const;
 
     /**
     *  @brief
@@ -178,7 +178,7 @@ public:
 
 
 private:
-    std::map<const std::string, std::string> m_values; ///< Key/value map
+    std::map<std::string, std::string> m_values; ///< Key/value map
 };
 
 

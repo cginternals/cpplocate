@@ -106,7 +106,7 @@ bool ModuleInfo::empty() const
     return m_values.empty();
 }
 
-const std::map<const std::string, std::string> & ModuleInfo::values() const
+const std::map<std::string, std::string> & ModuleInfo::values() const
 {
     return m_values;
 }
