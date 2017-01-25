@@ -120,7 +120,7 @@ public:
     *  @return
     *    Map
     */
-    const std::map<std::string, std::string> & values() const;
+    const std::map<const std::string, std::string> & values() const;
 
     /**
     *  @brief
@@ -134,7 +134,21 @@ public:
     *  @return
     *    Value, if the specified key does not exist, defaultValue is returned
     */
-    const std::string & value(const std::string & key, const std::string & defaultValue = "") const;
+    std::string value(const std::string & key, const std::string & defaultValue = "") const;
+
+    /**
+    *  @brief
+    *    Get value
+    *
+    *  @param[in] key
+    *    Key name
+    *  @param[in] defaultValue
+    *    Default value
+    *
+    *  @return
+    *    Value, if the specified key does not exist, defaultValue is returned
+    */
+    const std::string & value(const std::string & key, std::string & defaultValue) const;
 
     /**
     *  @brief
@@ -164,7 +178,7 @@ public:
 
 
 private:
-    std::map<std::string, std::string> m_values; ///< Key/value map
+    std::map<const std::string, std::string> m_values; ///< Key/value map
 };
 
 

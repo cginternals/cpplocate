@@ -106,12 +106,19 @@ bool ModuleInfo::empty() const
     return m_values.empty();
 }
 
-const std::map<std::string, std::string> & ModuleInfo::values() const
+const std::map<const std::string, std::string> & ModuleInfo::values() const
 {
     return m_values;
 }
 
-const std::string & ModuleInfo::value(const std::string & key, const std::string & defaultValue) const
+std::string ModuleInfo::value(const std::string & key, const std::string & defaultValue) const
+{
+    auto it = m_values.find(key);
+
+    return it == m_values.end() ? defaultValue : it->second;
+}
+
+const std::string & ModuleInfo::value(const std::string & key, std::string & defaultValue) const
 {
     auto it = m_values.find(key);
 
