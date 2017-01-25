@@ -168,4 +168,19 @@ private:
 };
 
 
+/**
+*  @brief
+*    Stream output operator for a ModuleInfo
+*
+*  @param[in] stream
+*    The stream to print to
+*  @param[in] info
+*    The module info
+*
+*  @return
+*    The stream to fulfill the expected fluid interface
+*/
+std::ostream & operator<<(std::ostream & stream, const ModuleInfo & info);
+
+
 } // namespace cpplocate

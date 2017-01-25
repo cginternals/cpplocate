@@ -136,5 +136,12 @@ void ModuleInfo::print(std::ostream & stream) const
     }
 }
 
+std::ostream & operator<<(std::ostream & stream, const ModuleInfo & info)
+{
+    info.print(stream);
+
+    return stream;
+}
+
 
 } // namespace cpplocate
