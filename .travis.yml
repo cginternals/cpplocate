@@ -1,16 +1,22 @@
 language: cpp
 
 sudo: required
+dist: trusty
 
 os:
   - linux
   - osx
 
-dist: trusty
-
 compiler:
   - gcc
   - clang
+
+env:
+  global:
+    - CMAKE_OPTIONS=""
+  matrix:
+    - CMAKE_CONFIGURATION=release BUILD_DIR=build
+    - CMAKE_CONFIGURATION=debug BUILD_DIR=build-debug
 
 matrix:
   exclude:
@@ -22,8 +28,8 @@ before_install:
 
 before_script:
   - ./configure
-  - ./configure
+  - if [ $CMAKE_CONFIGURATION == release ]; then ./configure; fi
+  - if [ $CMAKE_CONFIGURATION == debug ]; then ./configure debug; fi
 
 script:
-  - cd build
-  - make
+  - cmake --build $BUILD_DIR
