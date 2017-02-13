@@ -5,7 +5,7 @@
     #include <unistd.h>
     #include <limits.h>
 #elif defined SYSTEM_WINDOWS
-    #include <stdlib.h>
+    #include <Windows.h>
 #elif defined SYSTEM_SOLARIS
     #include <stdlib.h>
     #include <limits.h>
@@ -56,10 +56,10 @@ std::string getExecutablePath()
 
 #elif defined SYSTEM_WINDOWS
 
-    char * exePath;
+    char exePath[MAX_PATH];
 
-    if (_get_pgmptr(&exePath) != 0) {
-        exePath = "";
+    if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath, sizeof(exePath)) == 0) {
+        exePath[0] = '\0';
     }
 
 #elif defined SYSTEM_SOLARIS
