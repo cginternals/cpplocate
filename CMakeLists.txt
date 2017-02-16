@@ -52,7 +52,7 @@ string(TOUPPER ${META_PROJECT_ID} META_PROJECT_ID)
 # 
 
 # Project options
-option(BUILD_SHARED_LIBS "Build shared instead of static libraries." OFF)
+option(BUILD_SHARED_LIBS "Build shared instead of static libraries." ON)
 option(OPTION_BUILD_DOCS "Build documentation."                      OFF)
 
 
