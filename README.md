@@ -250,6 +250,27 @@ Example usage:
 export_module_info(examplelib TARGET examplelib FOLDER "cmake")
 ```
 
+### ```export_module_info_with_deps```: Create module information file and copy module information files of dependencies into the build directory
+
+```cmake
+export_module_info_with_deps(<target>
+    [ FOLDER <folder>
+      [RENAME <filename>]
+    ]
+    REQUIRES <module_name> <import_target> [ <module_name> <import_target> ]*
+)
+```
+
+Creates the actual module information file for a module named by ```<target>``` in the output directory of that target. It uses the values from ```VALUES``` and ```BUILD_VALUES```. This is executed at build-time, providing a target named ```<target>-modinfo```. If ```FOLDER``` is specified, the target is put into the UI folder named by ```folder```. If ```RENAME``` is specified, the target output name is set as ```<filename>```, ```filename``` can contain generator expressions. REQUIRES specifies a list of dependencies, whose module information files will be located and copied into the output directory.
+
+To locate the module information file, a file named ```<module_name>.modinfo``` is located in the directory of the given target ```<import_target>```. Therefore, the module file must reside in the same directory as the library for this mechanism to work.
+
+Example usage:
+
+```cmake
+export_module_info_with_deps(examplelib TARGET examplelib FOLDER "cmake")
+```
+
 ### ```install_module_info```: Install modinfo file to target path.
 
 ```cmake

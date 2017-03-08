@@ -1,4 +1,7 @@
 
+include(CMakeParseArguments)
+
+
 # Generate module information file (one version for build time, one for install time)
 # 
 # This function only generates the module information file internally, to deploy
@@ -96,6 +99,63 @@ function(export_module_info MODNAME)
     endif()
 
 endfunction(export_module_info)
+
+
+# Put module information file and dependencies alongside a target with
+function(export_module_info_with_deps target)
+
+    # Parse arguments
+    cmake_parse_arguments(
+        PARAM
+        ""
+        "FOLDER;RENAME" # list of names of mono-valued arguments
+        "REQUIRES"
+        ${ARGN}
+    )
+
+    # Determine output name
+    set(outname "${target}.modinfo")
+    if (NOT "${PARAM_RENAME}" STREQUAL "")
+        set(outname "${PARAM_RENAME}")
+    endif()
+
+    # Determine dependend modules
+    set(cmds)
+    list(LENGTH PARAM_REQUIRES len)
+    math(EXPR num "${len} / 2")
+    foreach(index RANGE 1 ${num})
+        math(EXPR cur  "(${index}-1) * 2")
+        math(EXPR next "(${index}-1) * 2 + 1")
+        list(GET PARAM_REQUIRES ${cur}  module_name)
+        list(GET PARAM_REQUIRES ${next} target_name)
+
+        list(APPEND cmds
+            COMMAND ${CMAKE_COMMAND}
+            -DCOPY_SRC=$<TARGET_FILE_DIR:${target_name}>/${module_name}.modinfo
+            -DCOPY_DST=$<TARGET_FILE_DIR:${target}>/
+            -P ${CPPLOCATE_COPYIFEXISTS}
+        )
+    endforeach()
+
+    # Create a target that copies the module information file alongside the generated target
+    add_custom_target("${target}-modinfo" ALL
+        COMMAND ${CMAKE_COMMAND} -E copy
+                "${PROJECT_BINARY_DIR}/ModuleInfo/${target}.modinfo.build"
+                "$<TARGET_FILE_DIR:${target}>/${outname}"
+        ${cmds}
+        COMMENT "Exporting ${outname}"
+        VERBATIM
+    )
+
+    # If specified, put target into IDE-folder
+    if (NOT "${PARAM_FOLDER}" STREQUAL "")
+        set_target_properties("${target}-modinfo"
+            PROPERTIES
+            FOLDER "${PARAM_FOLDER}"
+        )
+    endif()
+
+endfunction(export_module_info_with_deps)
 
 
 # Install module information file
