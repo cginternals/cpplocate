@@ -1,6 +1,7 @@
 
 #include <cpplocate/cpplocate.h>
 
+
 #if defined SYSTEM_LINUX
     #include <unistd.h>
     #include <limits.h>
@@ -16,6 +17,8 @@
     #include <sys/sysctl.h>
 #endif
 
+
+#include <array>
 #include <cstdlib>
 #include <vector>
 #include <string>
@@ -27,11 +30,105 @@
 namespace
 {
 
+
 #ifdef SYSTEM_WINDOWS
     const char pathDelim = '\\';
 #else
     const char pathDelim = '/';
 #endif
+
+
+std::string obtainExecutablePath()
+{
+
+#if defined SYSTEM_LINUX
+
+    std::array<char, PATH_MAX> exePath;
+
+    auto len = ::readlink("/proc/self/exe", exePath.data(), exePath.size());
+
+    if (len == -1 || len == exePath.size())
+    {
+        return "";
+    }
+
+    return std::string(exePath.data(), len);
+
+#elif defined SYSTEM_WINDOWS
+
+    std::array<char, MAX_PATH> exePath;
+
+    if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath.data(), exePath.size()) == 0)
+    {
+        return "";
+    }
+
+    return std::string(exePath.data());
+
+#elif defined SYSTEM_SOLARIS
+
+    std::array<char, PATH_MAX> exePath;
+
+    if (realpath(getexecname(), exePath.data()) == nullptr)
+    {
+        return "";
+    }
+
+    return std::string(exePath.data());
+
+#elif defined SYSTEM_DARWIN
+
+    std::array<char, PATH_MAX> exePath;
+
+    auto len = exePath.size();
+
+    if (_NSGetExecutablePath(exePath.data(), &len) != 0)
+    {
+        return "";
+    }
+
+    auto realPath = realpath(exePath.data(), nullptr);
+
+    if (realPath)
+    {
+        strncpy(exePath.data(), realPath, len);
+        free(realPath);
+    }
+
+    return std::string(exePath.data(), len);
+
+#elif defined SYSTEM_FREEBSD
+
+    std::array<char, 2048> exePath;
+
+    auto len = exePath.size();
+
+    int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME -1 };
+
+    if (sysctl(mib, 4, exePath, &len, nullptr, 0) != 0)
+    {
+        return "";
+    }
+
+    return std::string(exePath.data(), len);
+
+#else
+
+    return "";
+
+#endif
+}
+
+std::vector<std::string> getPaths()
+{
+    std::vector<std::string> paths;
+    const auto cppLocatePath = cpplocate::utils::getEnv("CPPLOCATE_PATH");
+
+    cpplocate::utils::getPaths(cppLocatePath, paths);
+
+    return paths;
+}
+
 
 } // namespace
 
@@ -40,78 +137,18 @@ namespace cpplocate
 {
 
 
-std::string getExecutablePath()
+const std::string & getExecutablePath()
 {
+    static const auto executablePath = obtainExecutablePath();
 
-#if defined SYSTEM_LINUX
-
-    char exePath[PATH_MAX];
-
-    ssize_t len = ::readlink("/proc/self/exe", exePath, sizeof(exePath));
-
-    if (len == -1 || len == sizeof(exePath)) {
-        len = 0;
-    }
-    exePath[len] = '\0';
-
-#elif defined SYSTEM_WINDOWS
-
-    char exePath[MAX_PATH];
-
-    if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath, sizeof(exePath)) == 0) {
-        exePath[0] = '\0';
-    }
-
-#elif defined SYSTEM_SOLARIS
-
-    char exePath[PATH_MAX];
-
-    if (realpath(getexecname(), exePath) == nullptr) {
-        exePath[0] = '\0';
-    }
-
-#elif defined SYSTEM_DARWIN
-
-    char exePath[PATH_MAX];
-    uint32_t len = sizeof(exePath);
-
-    if (_NSGetExecutablePath(exePath, &len) == 0) {
-        char * realPath = realpath(exePath, nullptr);
-        if (realPath) {
-            strncpy(exePath, realPath, len);
-            free(realPath);
-        }
-    } else {
-        exePath[0] = '\0';
-    }
-
-#elif defined SYSTEM_FREEBSD
-
-    char exePath[2048];
-    size_t len = sizeof(exePath);
-
-    int mib[4];
-    mib[0] = CTL_KERN;
-    mib[1] = KERN_PROC;
-    mib[2] = KERN_PROC_PATHNAME;
-    mib[3] = -1;
-
-    if (sysctl(mib, 4, exePath, &len, nullptr, 0) != 0) {
-        exePath[0] = '\0';
-    }
-
-#else
-
-    char * exePath = "";
-
-#endif
-
-    return std::string(exePath);
+    return executablePath;
 }
 
-std::string getModulePath()
+const std::string & getModulePath()
 {
-    return utils::getDirectoryPath(getExecutablePath());
+    static const auto modulePath = utils::getDirectoryPath(getExecutablePath());
+
+    return modulePath;
 }
 
 ModuleInfo findModule(const std::string & name)
@@ -125,11 +162,8 @@ ModuleInfo findModule(const std::string & name)
     }
 
     // Search all paths in CPPLOCATE_PATH
-    std::vector<std::string> paths;
-    std::string cppLocatePath = utils::getEnv("CPPLOCATE_PATH");
-    utils::getPaths(cppLocatePath, paths);
-
-    for (const std::string & path : paths)
+    static const auto paths = getPaths();
+    for (const auto & path : paths)
     {
         if (utils::loadModule(path, name, info))
         {
@@ -144,8 +178,8 @@ ModuleInfo findModule(const std::string & name)
 
     // Search in standard locations
 #if defined SYSTEM_WINDOWS
-    std::string programFiles64 = utils::getEnv("programfiles");
-	std::string programFiles32 = utils::getEnv("programfiles(x86)");
+    auto programFiles64 = utils::getEnv("programfiles");
+    auto programFiles32 = utils::getEnv("programfiles(x86)");
 
     if (utils::loadModule(programFiles64 + "\\" + name, name, info))
     {

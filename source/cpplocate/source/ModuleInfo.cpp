@@ -47,7 +47,7 @@ bool ModuleInfo::load(const std::string & filename)
 {
     clear();
 
-    std::string modulePath = utils::getDirectoryPath(filename);
+    auto modulePath = utils::getDirectoryPath(filename);
 
     std::ifstream in(filename);
 
@@ -59,15 +59,16 @@ bool ModuleInfo::load(const std::string & filename)
     std::string line;
     while (std::getline(in, line))
     {
-        size_t pos = line.find(":");
-        if (pos == std::string::npos) {
+        auto pos = line.find(":");
+        if (pos == std::string::npos)
+        {
             continue;
         }
 
-        std::string key = line.substr(0, pos);
+        auto key = line.substr(0, pos);
         utils::trim(key);
 
-        std::string value = line.substr(pos+1);
+        auto value = line.substr(pos+1);
         utils::trim(value);
 
         utils::replace(value, "${ModulePath}", modulePath);

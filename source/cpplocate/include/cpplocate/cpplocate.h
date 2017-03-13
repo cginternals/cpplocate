@@ -23,8 +23,9 @@ class ModuleInfo;
 *
 *  @remarks
 *    The path is returned in native format, e.g., backslashes on Windows.
+*    It is assumed the executable name is static throughout the process.
 */
-CPPLOCATE_API std::string getExecutablePath();
+CPPLOCATE_API const std::string & getExecutablePath();
 
 /**
 *  @brief
@@ -36,8 +37,9 @@ CPPLOCATE_API std::string getExecutablePath();
 *  @remarks
 *    The path is returned in native format, e.g., backslashes on Windows,
 *    and with no trailing slash.
+*    It is assumed the executable name is static throughout the process.
 */
-CPPLOCATE_API std::string getModulePath();
+CPPLOCATE_API const std::string & getModulePath();
 
 /**
 *  @brief
@@ -51,6 +53,8 @@ CPPLOCATE_API std::string getModulePath();
 *
 *  @remarks
 *    This functions looks for the filename "<name>.modinfo".
+*    It is assumed the 'CPPLOCATE_PATH' environment variable
+*    is static throughout the process.
 *
 *    It searches the following locations:
 *    1. The current module path
