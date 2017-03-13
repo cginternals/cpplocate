@@ -38,6 +38,16 @@ namespace
 #endif
 
 
+/**
+*  @brief
+*    Get path to the current executable
+*
+*  @return
+*    Path to executable (including filename)
+*
+*  @remarks
+*    The path is returned in native format, e.g., backslashes on Windows.
+*/
 std::string obtainExecutablePath()
 {
 
@@ -119,6 +129,16 @@ std::string obtainExecutablePath()
 #endif
 }
 
+/**
+*  @brief
+*    Get list of paths in the 'CPPLOCATE_PATHS' environment variable
+*
+*  @return
+*    List of paths
+*
+*  @remarks
+*    The paths are returned in native format, e.g., backslashes on Windows.
+*/
 std::vector<std::string> getPaths()
 {
     std::vector<std::string> paths;
