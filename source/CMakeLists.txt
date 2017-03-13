@@ -15,6 +15,12 @@ configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/${META_PROJECT_N
 set(IDE_FOLDER "")
 add_subdirectory(cpplocate)
 
+# Tests
+if(OPTION_BUILD_TESTS)
+    set(IDE_FOLDER "Tests")
+    add_subdirectory(tests)
+endif()
+
 
 # 
 # Deployment

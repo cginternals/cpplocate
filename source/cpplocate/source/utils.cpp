@@ -51,7 +51,7 @@ void replace(std::string & str, const std::string & original, const std::string 
     /*auto*/ pos = str.find(original, 0);
     auto current = result.begin();
 
-    while (lastPos != std::string::npos)
+    while (pos != std::string::npos)
     {
         std::copy(str.begin()+lastPos, str.begin()+pos, current);
 
