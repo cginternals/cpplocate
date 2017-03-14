@@ -114,12 +114,18 @@ std::string getModulePath()
     return utils::getDirectoryPath(getExecutablePath());
 }
 
-ModuleInfo findModule(const std::string & name)
+ModuleInfo findModule(const std::string & name, const std::string & dllPath)
 {
     ModuleInfo info;
 
-    // Search at current module location
+    // Search at current executable location
     if (utils::loadModule(getModulePath(), name, info))
+    {
+        return info;
+    }
+
+    // Search at current dll location
+    if (utils::loadModule(utils::getDirectoryPath(dllPath), name, info))
     {
         return info;
     }

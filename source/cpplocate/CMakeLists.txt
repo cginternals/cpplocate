@@ -31,6 +31,7 @@ set(source_path  "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 set(headers
     ${include_path}/cpplocate.h
+    ${include_path}/cpplocate.inl
     ${include_path}/utils.h
     ${include_path}/ModuleInfo.h
 )
