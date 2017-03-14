@@ -113,7 +113,7 @@ std::string obtainExecutablePath()
 
     auto len = exePath.size();
 
-    int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME -1 };
+    int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
 
     if (sysctl(mib, 4, exePath, &len, nullptr, 0) != 0)
     {
