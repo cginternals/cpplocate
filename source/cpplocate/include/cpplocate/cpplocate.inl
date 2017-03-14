@@ -6,8 +6,7 @@
 #include <cpplocate/ModuleInfo.h>
 
 #if defined SYSTEM_LINUX
-#include <unistd.h>
-#include <limits.h>
+#include <dlfcn.h>
 #elif defined SYSTEM_WINDOWS
 #include <Windows.h>
 #elif defined SYSTEM_SOLARIS
@@ -37,9 +36,15 @@ static std::string getDllPath()
     {
         GetModuleFileNameA(module, path, sizeof path);
     }
-#endif
-    
+
     return path;
+#else
+    Dl_info dlInfo;
+    dladdr(reinterpret_cast<void*>(getDllPath), &dlInfo);
+
+    return dlInfo.dli_fname;
+#endif
+
 }
 
 
