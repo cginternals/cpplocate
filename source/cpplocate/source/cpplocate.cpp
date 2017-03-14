@@ -90,7 +90,7 @@ std::string obtainExecutablePath()
 
     std::array<char, PATH_MAX> exePath;
 
-    auto len = exePath.size();
+    auto len = std::uint32_t(exePath.size());
 
     if (_NSGetExecutablePath(exePath.data(), &len) != 0)
     {
