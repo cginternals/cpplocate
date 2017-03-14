@@ -5,18 +5,10 @@
 #include <cpplocate/cpplocate.h>
 #include <cpplocate/ModuleInfo.h>
 
-#if defined SYSTEM_LINUX
-#include <dlfcn.h>
-#elif defined SYSTEM_WINDOWS
+#if defined SYSTEM_WINDOWS
 #include <Windows.h>
-#elif defined SYSTEM_SOLARIS
-#include <stdlib.h>
-#include <limits.h>
-#elif defined SYSTEM_DARWIN
-#include <mach-o/dyld.h>
-#elif defined SYSTEM_FREEBSD
-#include <sys/types.h>
-#include <sys/sysctl.h>
+#else
+#include <dlfcn.h>
 #endif
 
 
