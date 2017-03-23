@@ -24,7 +24,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-
+#include <iostream>
 #include <cpplocate/utils.h>
 #include <cpplocate/ModuleInfo.h>
 
@@ -158,11 +158,14 @@ std::string getBundlePath()
     std::string exeDir = utils::getDirectoryPath(getExecutablePath());
     std::replace(exeDir.begin(), exeDir.end(), '\\', '/');
 
+    // Split path into components
     std::vector<std::string> components;
     utils::split(exeDir, '/', components);
 
-    if (components.size() < 3)
+    // If this is a bundle, we must have at least three components
+    if (components.size() >= 3)
     {
+        // Check for bundle
         if (components[components.size() - 1] == "MacOS" &&
             components[components.size() - 2] == "Contents"
            )
@@ -171,11 +174,12 @@ std::string getBundlePath()
             components.pop_back();
             components.pop_back();
 
+            // Compose path to bundle
             return utils::join(components, "/");
         }
     }
 
-    // [TODO]
+    // No bundle
     return "";
 }
 
