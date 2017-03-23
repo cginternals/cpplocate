@@ -67,6 +67,44 @@ CPPLOCATE_API std::string getDirectoryPath(const std::string & fullpath);
 
 /**
 *  @brief
+*    Get position right after given substring (searched from right to left)
+*
+*  @param[in] str
+*    Full string
+*  @param[in] substr
+*    Substring to search for
+*
+*  @return
+*    Position after substring if substring was found, else string::npos
+*/
+CPPLOCATE_API size_t posAfterString(const std::string & str, const std::string & substr);
+
+/**
+*  @brief
+*    Get system base path for path to library or executable
+*
+*  @param[in] path
+*    Path to library or executable (e.g., '/usr/bin/myapp')
+*
+*  @return
+*    System path path (e.g., '/usr')
+*
+*  @remarks
+*    This function returns the base path if the given file
+*    is a system path. Otherwise, it returns an empty string.
+*
+*    Examples:
+*      '/usr/bin/myapp' -> '/usr'
+*      '/usr/local/bin/myapp' -> '/usr/local'
+*      '/usr/lib/mylib.so' -> '/usr'
+*      '/usr/lib64/mylib.so' -> '/usr'
+*      '/usr/local/lib64/mylib.so' -> '/usr/local'
+*      '/crosscompile/armv4/usr/lib/mylib.so.2' -> '/crosscompile/armv4/usr'
+*/
+CPPLOCATE_API std::string getSystemBasePath(const std::string & path);
+
+/**
+*  @brief
 *    Split string into array of strings
 *
 *  @param[in] str
@@ -117,6 +155,18 @@ CPPLOCATE_API void getPaths(const std::string & str, std::vector<std::string> & 
 *    Value of the environment variable
 */
 CPPLOCATE_API std::string getEnv(const std::string & name);
+
+/**
+*  @brief
+*    Check if file or directory exists
+*
+*  @param[in] path
+*    Path to file or directory
+*
+*  @return
+*    'true' if it exists, else 'false'
+*/
+CPPLOCATE_API bool fileExists(const std::string & path);
 
 /**
 *  @brief

@@ -3,6 +3,13 @@
 
 #include <sstream>
 
+#ifdef SYSTEM_WINDOWS
+    #define WIN32_LEAN_AND_MEAN
+    #include <Windows.h>
+#else
+    #include <sys/stat.h>
+#endif
+
 #include <cpplocate/ModuleInfo.h>
 
 
@@ -71,6 +78,56 @@ std::string getDirectoryPath(const std::string & fullpath)
     return dirPath;
 }
 
+size_t posAfterString(const std::string & str, const std::string & substr)
+{
+    size_t pos = str.rfind(substr);
+
+    if (pos != std::string::npos) {
+        pos += substr.size();
+    }
+
+    return pos;
+}
+
+std::string getSystemBasePath(const std::string & path)
+{
+    size_t pos;
+
+    if ((pos = posAfterString(path, "/usr/bin/")) != std::string::npos) {
+        return path.substr(0, pos);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/local/bin/")) != std::string::npos) {
+        return path.substr(0, pos);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/lib/")) != std::string::npos) {
+        return path.substr(0, pos);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/lib32/")) != std::string::npos) {
+        return path.substr(0, pos);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/lib64/")) != std::string::npos) {
+        return path.substr(0, pos);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/local/lib/")) != std::string::npos) {
+        return path.substr(0, pos);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/local/lib32/")) != std::string::npos) {
+        return path.substr(0, pos);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/local/lib64/")) != std::string::npos) {
+        return path.substr(0, pos);
+    }
+
+    return "";
+}
+
 void split(const std::string & str, char delim, std::vector<std::string> & values)
 {
     std::stringstream stream(str);
@@ -114,6 +171,21 @@ std::string getEnv(const std::string & name)
     } else {
         return "";
     }
+}
+
+bool fileExists(const std::string & path)
+{
+#ifdef SYSTEM_WINDOWS
+
+    WIN32_FILE_ATTRIBUTE_DATA fileInfo;
+    return (GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &fileInfo) != 0);
+
+#else
+
+    struct stat fileInfo;
+    return (stat(path.c_str(), &fileInfo) == 0);
+
+#endif
 }
 
 bool loadModule(const std::string & directory, const std::string & name, ModuleInfo & info)

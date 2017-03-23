@@ -38,6 +38,7 @@ CPPLOCATE_API std::string getExecutablePath();
 *
 *  @remarks
 *    The path is returned in native format, e.g., backslashes on Windows.
+*    If symbol is nullptr, an empty string is returned.
 */
 CPPLOCATE_API std::string getLibraryPath(void * symbol);
 
@@ -52,25 +53,30 @@ CPPLOCATE_API std::string getLibraryPath(void * symbol);
 *    If the current executable is part of a macOS application bundle,
 *    this function returns the part to the bundle. Otherwise, an
 *    empty string is returned.
-*
-*    The path is returned in native format, e.g., backslashes on Windows.
 */
 CPPLOCATE_API std::string getBundlePath();
 
 /**
 *  @brief
-*    Get path to dynamic library
+*    Locate path to a file or directory
 *
+*  @param[in] relPath
+*    Relative path to a file or directory (e.g., 'data/logo.png')
+*  @param[in] systemDir
+*    Subdirectory for system installs (e.g., 'share/myappname')
 *  @param[in] symbol
 *    A symbol from the library, e.g., a function or variable pointer
 *
 *  @return
-*    Path to library (including filename)
+*    Path to file or directory
 *
 *  @remarks
-*    The path is returned in native format, e.g., backslashes on Windows.
+*    This function tries to locate the named file or directory based
+*    on the location of the current executable or library. If the
+*    file or directory could be found, the absolute path is returned.
+*    Otherwise, relPath is returned without change.
 */
-CPPLOCATE_API std::string locatePath(void * symbol);
+CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir = "", void * symbol = nullptr);
 
 /**
 *  @brief

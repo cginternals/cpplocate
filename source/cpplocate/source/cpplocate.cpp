@@ -167,8 +167,7 @@ std::string getBundlePath()
     {
         // Check for bundle
         if (components[components.size() - 1] == "MacOS" &&
-            components[components.size() - 2] == "Contents"
-           )
+            components[components.size() - 2] == "Contents")
         {
             // Remove '/Contents/MacOS' from path
             components.pop_back();
@@ -181,6 +180,52 @@ std::string getBundlePath()
 
     // No bundle
     return "";
+}
+
+std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
+{
+    std::string libDir    = utils::getDirectoryPath(getLibraryPath(symbol));
+    std::string exeDir    = utils::getDirectoryPath(getExecutablePath());
+    std::string bundleDir = utils::getDirectoryPath(getBundlePath());
+
+    for (int i=0; i<3; i++)
+    {
+        std::string path;
+
+        // Choose basedir
+        const std::string & dir = (i == 0 ? libDir : (i == 1 ? exeDir : bundleDir) );
+        if (dir.empty()) continue;
+
+        // Check <basedir>/<relpath>
+        path = dir + "/" + relPath;
+        if (utils::fileExists(path)) return path;
+
+        // Check <basedir>/../<relpath>
+        path = dir + "/../" + relPath;
+        if (utils::fileExists(path)) return path;
+
+        // Check <basedir>/../../<relpath>
+        path = dir + "/../" + relPath;
+        if (utils::fileExists(path)) return path;
+
+        // Check if it is a system path
+        std::string basePath = utils::getSystemBasePath(path);
+        if (!basePath.empty() && !systemDir.empty())
+        {
+            path = basePath + "/" + systemDir + "/" + relPath;
+            if (utils::fileExists(path)) return path;
+        }
+    }
+
+    // Check app bundle resources
+    if (!bundleDir.empty())
+    {
+        std::string path = bundleDir + "/Contents/Resources/" + relPath;
+        if (utils::fileExists(path)) return path;
+    }
+
+    // Could not find path
+    return relPath;
 }
 
 std::string getModulePath()
