@@ -85,6 +85,22 @@ void split(const std::string & str, char delim, std::vector<std::string> & value
     }
 }
 
+std::string join(const std::vector<std::string> & values, const std::string & delim)
+{
+    std::string result = "";
+
+    for (const std::string & value : values)
+    {
+        if (!result.empty()) {
+            result += delim;
+        }
+
+        result += value;
+    }
+
+    return result;
+}
+
 void getPaths(const std::string & paths, std::vector<std::string> & values)
 {
     split(paths, pathsDelim, values);

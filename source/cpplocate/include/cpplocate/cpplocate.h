@@ -28,6 +28,52 @@ CPPLOCATE_API std::string getExecutablePath();
 
 /**
 *  @brief
+*    Get path to dynamic library
+*
+*  @param[in] symbol
+*    A symbol from the library, e.g., a function or variable pointer
+*
+*  @return
+*    Path to library (including filename)
+*
+*  @remarks
+*    The path is returned in native format, e.g., backslashes on Windows.
+*/
+CPPLOCATE_API std::string getLibraryPath(void * symbol);
+
+/**
+*  @brief
+*    Get path to the current application bundle
+*
+*  @return
+*    Path to bundle (including filename)
+*
+*  @remarks
+*    If the current executable is part of a macOS application bundle,
+*    this function returns the part to the bundle. Otherwise, an
+*    empty string is returned.
+*
+*    The path is returned in native format, e.g., backslashes on Windows.
+*/
+CPPLOCATE_API std::string getBundlePath();
+
+/**
+*  @brief
+*    Get path to dynamic library
+*
+*  @param[in] symbol
+*    A symbol from the library, e.g., a function or variable pointer
+*
+*  @return
+*    Path to library (including filename)
+*
+*  @remarks
+*    The path is returned in native format, e.g., backslashes on Windows.
+*/
+CPPLOCATE_API std::string locatePath(void * symbol);
+
+/**
+*  @brief
 *    Get path to the current module
 *
 *  @return

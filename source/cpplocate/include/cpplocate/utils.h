@@ -80,6 +80,20 @@ CPPLOCATE_API void split(const std::string & str, char delim, std::vector<std::s
 
 /**
 *  @brief
+*    Join array of strings into a single string
+*
+*  @param[out] values
+*    Input vector
+*  @param[in] delim
+*    Delimiter used to join the string
+*
+*  @return
+*    Joined string
+*/
+CPPLOCATE_API std::string join(const std::vector<std::string> & values, const std::string & delim);
+
+/**
+*  @brief
 *    Split list of paths separated by : or ; into list of paths
 *
 *  @param[in] paths
