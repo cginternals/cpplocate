@@ -4,22 +4,27 @@
 #if defined SYSTEM_LINUX
     #include <unistd.h>
     #include <limits.h>
+    #include <dlfcn.h>
 #elif defined SYSTEM_WINDOWS
     #include <Windows.h>
 #elif defined SYSTEM_SOLARIS
     #include <stdlib.h>
     #include <limits.h>
+    #include <dlfcn.h>
 #elif defined SYSTEM_DARWIN
     #include <mach-o/dyld.h>
+    #include <dlfcn.h>
 #elif defined SYSTEM_FREEBSD
     #include <sys/types.h>
     #include <sys/sysctl.h>
+    #include <dlfcn.h>
 #endif
 
 #include <cstdlib>
 #include <vector>
 #include <string>
-
+#include <algorithm>
+#include <iostream>
 #include <cpplocate/utils.h>
 #include <cpplocate/ModuleInfo.h>
 
@@ -106,7 +111,127 @@ std::string getExecutablePath()
 
 #endif
 
-    return std::string(exePath);
+    return utils::unifiedPath(std::string(exePath));
+}
+
+std::string getLibraryPath(void * symbol)
+{
+    if (!symbol)
+    {
+        return "";
+    }
+
+#if defined CPPLOCATE_STATIC_DEFINE
+
+    return "";
+
+#elif defined SYSTEM_WINDOWS
+
+    char path[MAX_PATH];
+    path[0] = '\0';
+
+    HMODULE module;
+
+    if (GetModuleHandleExA(
+            GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            reinterpret_cast<LPCSTR>(symbol),
+            &module))
+    {
+        GetModuleFileNameA(module, path, sizeof(path));
+    }
+
+    return utils::unifiedPath(std::string(path));
+
+#else
+
+    Dl_info dlInfo;
+    dladdr(reinterpret_cast<void*>(symbol), &dlInfo);
+
+    return utils::unifiedPath(std::string(dlInfo.dli_fname));
+
+#endif
+}
+
+std::string getBundlePath()
+{
+    // Get directory where the executable is located
+    std::string exeDir = utils::getDirectoryPath(getExecutablePath());
+    std::replace(exeDir.begin(), exeDir.end(), '\\', '/');
+
+    // Split path into components
+    std::vector<std::string> components;
+    utils::split(exeDir, '/', components);
+
+    // If this is a bundle, we must have at least three components
+    if (components.size() >= 3)
+    {
+        // Check for bundle
+        if (components[components.size() - 1] == "MacOS" &&
+            components[components.size() - 2] == "Contents")
+        {
+            // Remove '/Contents/MacOS' from path
+            components.pop_back();
+            components.pop_back();
+
+            // Compose path to bundle
+            return utils::unifiedPath(utils::join(components, "/"));
+        }
+    }
+
+    // No bundle
+    return "";
+}
+
+std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
+{
+    std::string libDir    = utils::getDirectoryPath(getLibraryPath(symbol));
+    std::string exeDir    = utils::getDirectoryPath(getExecutablePath());
+    std::string bundleDir = utils::getDirectoryPath(getBundlePath());
+
+    for (int i=0; i<3; i++)
+    {
+        std::string path;
+        std::string subdir;
+
+        // Choose basedir
+        const std::string & dir = (i == 0 ? libDir : (i == 1 ? exeDir : bundleDir) );
+        if (dir.empty()) continue;
+
+        // Check <basedir>/<relpath>
+        subdir = dir;
+        path = subdir + "/" + relPath;
+        if (utils::fileExists(path)) return subdir;
+
+        // Check <basedir>/../<relpath>
+        subdir = dir + "/..";
+        path = subdir + "/" + relPath;
+        if (utils::fileExists(path)) return subdir;
+
+        // Check <basedir>/../../<relpath>
+        subdir = dir + "/../..";
+        path = subdir + "/" + relPath;
+        if (utils::fileExists(path)) return subdir;
+
+        // Check if it is a system path
+        std::string basePath = utils::getSystemBasePath(path);
+        if (!basePath.empty() && !systemDir.empty())
+        {
+            subdir = basePath + "/" + systemDir;
+            path = subdir + "/" + relPath;
+            if (utils::fileExists(path)) return subdir;
+        }
+    }
+
+    // Check app bundle resources
+    if (!bundleDir.empty())
+    {
+        std::string subdir = bundleDir + "/Contents/Resources";
+        std::string path = subdir + "/" + relPath;
+        if (utils::fileExists(path)) return subdir;
+    }
+
+    // Could not find path
+    return "";
 }
 
 std::string getModulePath()
@@ -118,7 +243,7 @@ ModuleInfo findModule(const std::string & name)
 {
     ModuleInfo info;
 
-    // Search at current module location
+    // Search at current executable location
     if (utils::loadModule(getModulePath(), name, info))
     {
         return info;
@@ -145,7 +270,7 @@ ModuleInfo findModule(const std::string & name)
     // Search in standard locations
 #if defined SYSTEM_WINDOWS
     std::string programFiles64 = utils::getEnv("programfiles");
-	std::string programFiles32 = utils::getEnv("programfiles(x86)");
+    std::string programFiles32 = utils::getEnv("programfiles(x86)");
 
     if (utils::loadModule(programFiles64 + "\\" + name, name, info))
     {
