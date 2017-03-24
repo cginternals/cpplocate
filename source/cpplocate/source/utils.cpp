@@ -103,35 +103,35 @@ std::string getSystemBasePath(const std::string & path)
     size_t pos;
 
     if ((pos = posAfterString(path, "/usr/bin/")) != std::string::npos) {
-        return path.substr(0, pos);
+        return path.substr(0, pos - 4);
     }
 
     else if ((pos = posAfterString(path, "/usr/local/bin/")) != std::string::npos) {
-        return path.substr(0, pos);
+        return path.substr(0, pos - 4);
     }
 
     else if ((pos = posAfterString(path, "/usr/lib/")) != std::string::npos) {
-        return path.substr(0, pos);
+        return path.substr(0, pos - 4);
     }
 
     else if ((pos = posAfterString(path, "/usr/lib32/")) != std::string::npos) {
-        return path.substr(0, pos);
+        return path.substr(0, pos - 6);
     }
 
     else if ((pos = posAfterString(path, "/usr/lib64/")) != std::string::npos) {
-        return path.substr(0, pos);
+        return path.substr(0, pos - 6);
     }
 
     else if ((pos = posAfterString(path, "/usr/local/lib/")) != std::string::npos) {
-        return path.substr(0, pos);
+        return path.substr(0, pos - 4);
     }
 
     else if ((pos = posAfterString(path, "/usr/local/lib32/")) != std::string::npos) {
-        return path.substr(0, pos);
+        return path.substr(0, pos - 6);
     }
 
     else if ((pos = posAfterString(path, "/usr/local/lib64/")) != std::string::npos) {
-        return path.substr(0, pos);
+        return path.substr(0, pos - 4);
     }
 
     return "";
