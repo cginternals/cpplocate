@@ -22,7 +22,7 @@ class ModuleInfo;
 *    Path to executable (including filename)
 *
 *  @remarks
-*    The path is returned in native format, e.g., backslashes on Windows.
+*    The path is returned in unified format (forward slashes).
 */
 CPPLOCATE_API std::string getExecutablePath();
 
@@ -37,7 +37,7 @@ CPPLOCATE_API std::string getExecutablePath();
 *    Path to library (including filename)
 *
 *  @remarks
-*    The path is returned in native format, e.g., backslashes on Windows.
+*    The path is returned in unified format (forward slashes).
 *    If symbol is nullptr, an empty string is returned.
 */
 CPPLOCATE_API std::string getLibraryPath(void * symbol);
@@ -50,6 +50,7 @@ CPPLOCATE_API std::string getLibraryPath(void * symbol);
 *    Path to bundle (including filename)
 *
 *  @remarks
+*    The path is returned in unified format (forward slashes).
 *    If the current executable is part of a macOS application bundle,
 *    this function returns the part to the bundle. Otherwise, an
 *    empty string is returned.
@@ -75,6 +76,7 @@ CPPLOCATE_API std::string getBundlePath();
 *    on the location of the current executable or library. If the
 *    file or directory could be found, the absolute path is returned.
 *    Otherwise, relPath is returned without change.
+*    The path is returned in unified format (forward slashes).
 */
 CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir = "", void * symbol = nullptr);
 
@@ -86,8 +88,7 @@ CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::str
 *    Path to module (directory in which the executable is located)
 *
 *  @remarks
-*    The path is returned in native format, e.g., backslashes on Windows,
-*    and with no trailing slash.
+*    The path is returned in unified format (forward slashes).
 */
 CPPLOCATE_API std::string getModulePath();
 

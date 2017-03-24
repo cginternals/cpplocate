@@ -111,7 +111,7 @@ std::string getExecutablePath()
 
 #endif
 
-    return std::string(exePath);
+    return utils::unifiedPath(std::string(exePath));
 }
 
 std::string getLibraryPath(void * symbol)
@@ -140,14 +140,14 @@ std::string getLibraryPath(void * symbol)
         GetModuleFileNameA(module, path, sizeof(path));
     }
 
-    return path;
+    return utils::unifiedPath(std::string(path));
 
 #else
 
     Dl_info dlInfo;
     dladdr(reinterpret_cast<void*>(symbol), &dlInfo);
 
-    return dlInfo.dli_fname;
+    return utils::unifiedPath(std::string(dlInfo.dli_fname));
 
 #endif
 }
@@ -174,7 +174,7 @@ std::string getBundlePath()
             components.pop_back();
 
             // Compose path to bundle
-            return utils::join(components, "/");
+            return utils::unifiedPath(utils::join(components, "/"));
         }
     }
 

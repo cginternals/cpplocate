@@ -1,6 +1,7 @@
 
 #include <cpplocate/utils.h>
 
+#include <algorithm>
 #include <sstream>
 
 #ifdef SYSTEM_WINDOWS
@@ -59,6 +60,14 @@ std::string trimPath(const std::string & path)
     trimmed.erase(trimmed.find_last_not_of(pathDelim) + 1);
 
     return trimmed;
+}
+
+std::string unifiedPath(const std::string & path)
+{
+    std::string str = path;
+    std::replace(str.begin(), str.end(), '\\', '/');
+
+    return str;
 }
 
 std::string getDirectoryPath(const std::string & fullpath)

@@ -55,6 +55,18 @@ CPPLOCATE_API std::string trimPath(const std::string & str);
 
 /**
 *  @brief
+*    Convert path into unified form (replace '\' with '/')
+*
+*  @param[in] path
+*    Path
+*
+*  @return
+*    Path with forward slashes
+*/
+CPPLOCATE_API std::string unifiedPath(const std::string & path);
+
+/**
+*  @brief
 *    Cut away filename portion of a path, get path to directory
 *
 *  @param[in] fullpath
