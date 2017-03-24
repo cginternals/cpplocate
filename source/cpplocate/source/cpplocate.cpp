@@ -191,41 +191,47 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
     for (int i=0; i<3; i++)
     {
         std::string path;
+        std::string subdir;
 
         // Choose basedir
         const std::string & dir = (i == 0 ? libDir : (i == 1 ? exeDir : bundleDir) );
         if (dir.empty()) continue;
 
         // Check <basedir>/<relpath>
-        path = dir + "/" + relPath;
-        if (utils::fileExists(path)) return path;
+        subdir = dir;
+        path = subdir + "/" + relPath;
+        if (utils::fileExists(path)) return subdir;
 
         // Check <basedir>/../<relpath>
-        path = dir + "/../" + relPath;
-        if (utils::fileExists(path)) return path;
+        subdir = dir + "/..";
+        path = subdir + "/" + relPath;
+        if (utils::fileExists(path)) return subdir;
 
         // Check <basedir>/../../<relpath>
-        path = dir + "/../" + relPath;
-        if (utils::fileExists(path)) return path;
+        subdir = dir + "/../..";
+        path = subdir + "/" + relPath;
+        if (utils::fileExists(path)) return subdir;
 
         // Check if it is a system path
         std::string basePath = utils::getSystemBasePath(path);
         if (!basePath.empty() && !systemDir.empty())
         {
-            path = basePath + "/" + systemDir + "/" + relPath;
-            if (utils::fileExists(path)) return path;
+            subdir = basePath + "/" + systemDir;
+            path = subdir + "/" + relPath;
+            if (utils::fileExists(path)) return subdir;
         }
     }
 
     // Check app bundle resources
     if (!bundleDir.empty())
     {
-        std::string path = bundleDir + "/Contents/Resources/" + relPath;
-        if (utils::fileExists(path)) return path;
+        std::string subdir = bundleDir + "/Contents/Resources";
+        std::string path = subdir + "/" + relPath;
+        if (utils::fileExists(path)) return subdir;
     }
 
     // Could not find path
-    return relPath;
+    return "";
 }
 
 std::string getModulePath()

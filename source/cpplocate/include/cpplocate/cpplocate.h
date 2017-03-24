@@ -74,8 +74,10 @@ CPPLOCATE_API std::string getBundlePath();
 *  @remarks
 *    This function tries to locate the named file or directory based
 *    on the location of the current executable or library. If the
-*    file or directory could be found, the absolute path is returned.
-*    Otherwise, relPath is returned without change.
+*    file or directory could be found, the base path from which the
+*    relative path can be resolved is returned. Otherwise, an empty
+*    string is returned.
+*
 *    The path is returned in unified format (forward slashes).
 */
 CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir = "", void * symbol = nullptr);
