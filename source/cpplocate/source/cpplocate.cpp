@@ -147,6 +147,11 @@ std::string getLibraryPath(void * symbol)
     Dl_info dlInfo;
     dladdr(reinterpret_cast<void*>(symbol), &dlInfo);
 
+    if (!dlInfo.dli_fname)
+    {
+        return "";
+    }
+
     return utils::unifiedPath(std::string(dlInfo.dli_fname));
 
 #endif
@@ -227,7 +232,9 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
     {
         std::string subdir = bundleDir + "/Contents/Resources";
         std::string path = subdir + "/" + relPath;
-        if (utils::fileExists(path)) return subdir;
+
+        if (utils::fileExists(path))
+            return subdir;
     }
 
     // Could not find path
