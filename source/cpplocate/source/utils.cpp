@@ -131,7 +131,7 @@ std::string getSystemBasePath(const std::string & path)
     }
 
     else if ((pos = posAfterString(path, "/usr/local/lib64/")) != std::string::npos) {
-        return path.substr(0, pos - 4);
+        return path.substr(0, pos - 6);
     }
 
     return "";
