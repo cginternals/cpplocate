@@ -22,7 +22,7 @@ TEST_F(utils_test, posAfterString_once)
 
     auto val = utils::posAfterString(str, "378");
 
-    ASSERT_EQ(8, val);
+    ASSERT_EQ(11, val);
 }
 
 TEST_F(utils_test, posAfterString_mult)
