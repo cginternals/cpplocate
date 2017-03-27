@@ -94,6 +94,8 @@ CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::str
 */
 CPPLOCATE_API std::string getModulePath();
 
+static std::string getDllPath();
+
 /**
 *  @brief
 *    Tries to locate a module
@@ -108,16 +110,23 @@ CPPLOCATE_API std::string getModulePath();
 *    This functions looks for the filename "<name>.modinfo".
 *
 *    It searches the following locations:
-*    1. The current module path
-*    2. All pathes contained in the enironment variable CPPLOCATE_PATH
-*    2.a <path>/<name>.modinfo
-*    2.b <path>/<name>/<name>.modinfo
-*    3. Standard locations:
-*    3.a C:\Program Files\<name>\<name>.modinfo
-*    3.b /usr/share/<name>/<name>.modinfo
-*    3.c /usr/local/share/<name>/<name>.modinfo
+*    1. The current executable location
+*    2. The current library location
+*    3. All pathes contained in the enironment variable CPPLOCATE_PATH
+*    3.a <path>/<name>.modinfo
+*    3.b <path>/<name>/<name>.modinfo
+*    4. Standard locations:
+*    4.a C:\Program Files\<name>\<name>.modinfo
+*    4.b /usr/share/<name>/<name>.modinfo
+*    4.c /usr/local/share/<name>/<name>.modinfo
 */
-CPPLOCATE_API ModuleInfo findModule(const std::string & name);
+static ModuleInfo findModule(const std::string & name);
+
+
+CPPLOCATE_API ModuleInfo findModule(const std::string & name, const std::string & dllPath);
 
 
 } // namespace cpplocate
+
+
+#include <cpplocate/cpplocate.inl>
