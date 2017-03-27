@@ -23,7 +23,7 @@ class ModuleInfo;
 *
 *  @remarks
 *    The path is returned in native format, e.g., backslashes on Windows.
-*    It is assumed the executable name is static throughout the process.
+*    It is assumed the executable path is static throughout the process.
 */
 CPPLOCATE_API const std::string & getExecutablePath();
 
@@ -40,6 +40,7 @@ CPPLOCATE_API const std::string & getExecutablePath();
 *  @remarks
 *    The path is returned in unified format (forward slashes).
 *    If symbol is nullptr, an empty string is returned.
+*    It is assumed the library path is static throughout the process.
 */
 CPPLOCATE_API std::string getLibraryPath(void * symbol);
 
@@ -55,6 +56,7 @@ CPPLOCATE_API std::string getLibraryPath(void * symbol);
 *    If the current executable is part of a macOS application bundle,
 *    this function returns the part to the bundle. Otherwise, an
 *    empty string is returned.
+*    It is assumed the bundle path is static throughout the process.
 */
 CPPLOCATE_API std::string getBundlePath();
 

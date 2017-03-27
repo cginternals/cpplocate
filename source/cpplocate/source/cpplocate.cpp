@@ -134,6 +134,49 @@ std::string obtainExecutablePath()
 
 /**
 *  @brief
+*    Get path to the current application bundle
+*
+*  @return
+*    Path to bundle (including filename)
+*
+*  @remarks
+*    The path is returned in unified format (forward slashes).
+*    If the current executable is part of a macOS application bundle,
+*    this function returns the part to the bundle. Otherwise, an
+*    empty string is returned.
+*/
+std::string obtainBundlePath()
+{
+    // Get directory where the executable is located
+    std::string exeDir = cpplocate::utils::getDirectoryPath(cpplocate::getExecutablePath());
+    std::replace(exeDir.begin(), exeDir.end(), '\\', '/');
+
+    // Split path into components
+    std::vector<std::string> components;
+    cpplocate::utils::split(exeDir, '/', components);
+
+    // If this is a bundle, we must have at least three components
+    if (components.size() >= 3)
+    {
+        // Check for bundle
+        if (components[components.size() - 1] == "MacOS" &&
+            components[components.size() - 2] == "Contents")
+        {
+            // Remove '/Contents/MacOS' from path
+            components.pop_back();
+            components.pop_back();
+
+            // Compose path to bundle
+            return cpplocate::utils::unifiedPath(cpplocate::utils::join(components, "/"));
+        }
+    }
+
+    // No bundle
+    return "";
+}
+
+/**
+*  @brief
 *    Get list of paths in the 'CPPLOCATE_PATHS' environment variable
 *
 *  @return
@@ -167,6 +210,64 @@ const std::string & getExecutablePath()
     return executablePath;
 }
 
+std::string getBundlePath()
+{
+    static const auto bundlePath = obtainBundlePath();
+
+    return bundlePath;
+}
+
+std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
+{
+    const auto libDir    = utils::getDirectoryPath(getLibraryPath(symbol));
+    const auto exeDir    = utils::getDirectoryPath(getExecutablePath());
+    const auto bundleDir = utils::getDirectoryPath(getBundlePath());
+
+    for (const auto & dir : { libDir, exeDir, bundleDir })
+    {
+        // Check <basedir>/<relpath>
+        auto subdir = dir;
+        auto path = subdir + "/" + relPath;
+        if (utils::fileExists(path))
+            return subdir;
+
+        // Check <basedir>/../<relpath>
+        subdir = dir + "/..";
+        path = subdir + "/" + relPath;
+        if (utils::fileExists(path))
+            return subdir;
+
+        // Check <basedir>/../../<relpath>
+        subdir = dir + "/../..";
+        path = subdir + "/" + relPath;
+        if (utils::fileExists(path))
+            return subdir;
+
+        // Check if it is a system path
+        const auto basePath = utils::getSystemBasePath(path);
+        if (!basePath.empty() && !systemDir.empty())
+        {
+            subdir = basePath + "/" + systemDir;
+            path = subdir + "/" + relPath;
+            if (utils::fileExists(path))
+                return subdir;
+        }
+    }
+
+    // Check app bundle resources
+    if (!bundleDir.empty())
+    {
+        const auto subdir = bundleDir + "/Contents/Resources";
+        const auto path = subdir + "/" + relPath;
+
+        if (utils::fileExists(path))
+            return subdir;
+    }
+
+    // Could not find path
+    return "";
+}
+
 const std::string & getModulePath()
 {
     static const auto modulePath = utils::getDirectoryPath(getExecutablePath());
@@ -184,9 +285,7 @@ ModuleInfo findModule(const std::string & name)
         return info;
     }
 
-    // Search all paths in CPPLOCATE_PATH
-    static const auto paths = getPaths();
-    for (const auto & path : paths)
+    for (const std::string & path : getPaths())
     {
         if (utils::loadModule(path, name, info))
         {
@@ -201,8 +300,8 @@ ModuleInfo findModule(const std::string & name)
 
     // Search in standard locations
 #if defined SYSTEM_WINDOWS
-    auto programFiles64 = utils::getEnv("programfiles");
-    auto programFiles32 = utils::getEnv("programfiles(x86)");
+    const auto programFiles64 = utils::getEnv("programfiles");
+    const auto programFiles32 = utils::getEnv("programfiles(x86)");
 
     if (utils::loadModule(programFiles64 + "\\" + name, name, info))
     {
