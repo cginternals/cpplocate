@@ -210,11 +210,18 @@ const std::string & getExecutablePath()
     return executablePath;
 }
 
-std::string getBundlePath()
+const std::string & getBundlePath()
 {
     static const auto bundlePath = obtainBundlePath();
 
     return bundlePath;
+}
+
+const std::string & getModulePath()
+{
+    static const auto modulePath = utils::getDirectoryPath(getExecutablePath());
+
+    return modulePath;
 }
 
 std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
@@ -266,13 +273,6 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
 
     // Could not find path
     return "";
-}
-
-const std::string & getModulePath()
-{
-    static const auto modulePath = utils::getDirectoryPath(getExecutablePath());
-
-    return modulePath;
 }
 
 ModuleInfo findModule(const std::string & name)

@@ -88,7 +88,12 @@ void trim(std::string & str)
 
 std::string trimPath(const std::string & path)
 {
-    auto trimmed = std::string(path);
+    return trimPath(std::string(path));
+}
+
+std::string trimPath(std::string && path)
+{
+    auto trimmed = std::move(path);
 
     trimmed.erase(0, trimmed.find_first_not_of(' '));
     trimmed.erase(trimmed.find_last_not_of(' ') + 1);
@@ -99,7 +104,12 @@ std::string trimPath(const std::string & path)
 
 std::string unifiedPath(const std::string & path)
 {
-    std::string str = path;
+    return unifiedPath(std::string(path));
+}
+
+std::string unifiedPath(std::string && path)
+{
+    std::string str = std::move(path);
     std::replace(str.begin(), str.end(), '\\', '/');
 
     return str;
@@ -127,7 +137,8 @@ size_t posAfterString(const std::string & str, const std::string & substr)
 {
     size_t pos = str.rfind(substr);
 
-    if (pos != std::string::npos) {
+    if (pos != std::string::npos)
+    {
         pos += substr.size();
     }
 
@@ -138,35 +149,43 @@ std::string getSystemBasePath(const std::string & path)
 {
     size_t pos;
 
-    if ((pos = posAfterString(path, "/usr/bin/")) != std::string::npos) {
+    if ((pos = posAfterString(path, "/usr/bin/")) != std::string::npos)
+    {
         return path.substr(0, pos - 4);
     }
 
-    else if ((pos = posAfterString(path, "/usr/local/bin/")) != std::string::npos) {
+    else if ((pos = posAfterString(path, "/usr/local/bin/")) != std::string::npos)
+    {
         return path.substr(0, pos - 4);
     }
 
-    else if ((pos = posAfterString(path, "/usr/lib/")) != std::string::npos) {
+    else if ((pos = posAfterString(path, "/usr/lib/")) != std::string::npos)
+    {
         return path.substr(0, pos - 4);
     }
 
-    else if ((pos = posAfterString(path, "/usr/lib32/")) != std::string::npos) {
+    else if ((pos = posAfterString(path, "/usr/lib32/")) != std::string::npos)
+    {
         return path.substr(0, pos - 6);
     }
 
-    else if ((pos = posAfterString(path, "/usr/lib64/")) != std::string::npos) {
+    else if ((pos = posAfterString(path, "/usr/lib64/")) != std::string::npos)
+    {
         return path.substr(0, pos - 6);
     }
 
-    else if ((pos = posAfterString(path, "/usr/local/lib/")) != std::string::npos) {
+    else if ((pos = posAfterString(path, "/usr/local/lib/")) != std::string::npos)
+    {
         return path.substr(0, pos - 4);
     }
 
-    else if ((pos = posAfterString(path, "/usr/local/lib32/")) != std::string::npos) {
+    else if ((pos = posAfterString(path, "/usr/local/lib32/")) != std::string::npos)
+    {
         return path.substr(0, pos - 6);
     }
 
-    else if ((pos = posAfterString(path, "/usr/local/lib64/")) != std::string::npos) {
+    else if ((pos = posAfterString(path, "/usr/local/lib64/")) != std::string::npos)
+    {
         return path.substr(0, pos - 6);
     }
 

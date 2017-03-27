@@ -29,23 +29,6 @@ CPPLOCATE_API const std::string & getExecutablePath();
 
 /**
 *  @brief
-*    Get path to dynamic library
-*
-*  @param[in] symbol
-*    A symbol from the library, e.g., a function or variable pointer
-*
-*  @return
-*    Path to library (including filename)
-*
-*  @remarks
-*    The path is returned in unified format (forward slashes).
-*    If symbol is nullptr, an empty string is returned.
-*    It is assumed the library path is static throughout the process.
-*/
-CPPLOCATE_API std::string getLibraryPath(void * symbol);
-
-/**
-*  @brief
 *    Get path to the current application bundle
 *
 *  @return
@@ -58,7 +41,36 @@ CPPLOCATE_API std::string getLibraryPath(void * symbol);
 *    empty string is returned.
 *    It is assumed the bundle path is static throughout the process.
 */
-CPPLOCATE_API std::string getBundlePath();
+CPPLOCATE_API const std::string & getBundlePath();
+
+/**
+*  @brief
+*    Get path to the current module
+*
+*  @return
+*    Path to module (directory in which the executable is located)
+*
+*  @remarks
+*    The path is returned in unified format (forward slashes).
+*    It is assumed the executable name is static throughout the process.
+*/
+CPPLOCATE_API const std::string & getModulePath();
+
+/**
+*  @brief
+*    Get path to dynamic library
+*
+*  @param[in] symbol
+*    A symbol from the library, e.g., a function or variable pointer
+*
+*  @return
+*    Path to library (including filename)
+*
+*  @remarks
+*    The path is returned in unified format (forward slashes).
+*    If symbol is nullptr, an empty string is returned.
+*/
+CPPLOCATE_API std::string getLibraryPath(void * symbol);
 
 /**
 *  @brief
@@ -84,19 +96,6 @@ CPPLOCATE_API std::string getBundlePath();
 *    The path is returned in unified format (forward slashes).
 */
 CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir = "", void * symbol = nullptr);
-
-/**
-*  @brief
-*    Get path to the current module
-*
-*  @return
-*    Path to module (directory in which the executable is located)
-*
-*  @remarks
-*    The path is returned in unified format (forward slashes).
-*    It is assumed the executable name is static throughout the process.
-*/
-CPPLOCATE_API const std::string & getModulePath();
 
 /**
 *  @brief
