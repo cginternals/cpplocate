@@ -109,7 +109,8 @@ std::string unifiedPath(const std::string & path)
 
 std::string unifiedPath(std::string && path)
 {
-    std::string str = std::move(path);
+    auto str = std::move(path);
+
     std::replace(str.begin(), str.end(), '\\', '/');
 
     return str;
@@ -147,46 +148,25 @@ size_t posAfterString(const std::string & str, const std::string & substr)
 
 std::string getSystemBasePath(const std::string & path)
 {
-    size_t pos;
+    static const std::vector<std::pair<std::string, int>> systemPaths = {
+        { "/usr/bin/", 4 },
+        { "/usr/local/bin/", 4 },
+        { "/usr/lib/", 4 },
+        { "/usr/lib32/", 6 },
+        { "/usr/lib64/", 6 },
+        { "/usr/local/lib/", 4 },
+        { "/usr/local/lib32/", 6 },
+        { "/usr/local/lib64/", 6 }
+    };
 
-    if ((pos = posAfterString(path, "/usr/bin/")) != std::string::npos)
+    for (const auto & pair : systemPaths)
     {
-        return path.substr(0, pos - 4);
-    }
+        auto pos = std::string::npos;
 
-    else if ((pos = posAfterString(path, "/usr/local/bin/")) != std::string::npos)
-    {
-        return path.substr(0, pos - 4);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/lib/")) != std::string::npos)
-    {
-        return path.substr(0, pos - 4);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/lib32/")) != std::string::npos)
-    {
-        return path.substr(0, pos - 6);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/lib64/")) != std::string::npos)
-    {
-        return path.substr(0, pos - 6);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/local/lib/")) != std::string::npos)
-    {
-        return path.substr(0, pos - 4);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/local/lib32/")) != std::string::npos)
-    {
-        return path.substr(0, pos - 6);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/local/lib64/")) != std::string::npos)
-    {
-        return path.substr(0, pos - 6);
+        if ((pos = posAfterString(path, pair.first)) != std::string::npos)
+        {
+            return path.substr(0, pos - pair.second);
+        }
     }
 
     return "";
