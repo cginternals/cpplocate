@@ -224,6 +224,54 @@ const std::string & getModulePath()
     return modulePath;
 }
 
+std::string getLibraryPath(void * symbol)
+{
+    if (!symbol)
+    {
+        return "";
+    }
+
+#if defined CPPLOCATE_STATIC_DEFINE
+
+    return "";
+
+#elif defined SYSTEM_WINDOWS
+
+    std::array<char, PATH_MAX> path;
+    path[0] = '\0';
+
+    HMODULE module;
+
+    if (GetModuleHandleExA(
+            GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            reinterpret_cast<LPCSTR>(symbol),
+            &module))
+    {
+        GetModuleFileNameA(module, path.data, path.size());
+    }
+
+    if (!path)
+    {
+        return "";
+    }
+
+    return utils::unifiedPath(std::string(path));
+
+#else
+
+    Dl_info dlInfo;
+    dladdr(reinterpret_cast<void*>(symbol), &dlInfo);
+
+    if (!dlInfo.dli_fname)
+    {
+        return "";
+    }
+
+    return utils::unifiedPath(std::string(dlInfo.dli_fname));
+
+#endif
+}
+
 std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
 {
     const auto libDir    = utils::getDirectoryPath(getLibraryPath(symbol));
