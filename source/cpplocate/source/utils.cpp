@@ -1,7 +1,15 @@
 
 #include <cpplocate/utils.h>
 
+#include <algorithm>
 #include <sstream>
+
+#ifdef SYSTEM_WINDOWS
+    #define WIN32_LEAN_AND_MEAN
+    #include <Windows.h>
+#else
+    #include <sys/stat.h>
+#endif
 
 #include <cpplocate/ModuleInfo.h>
 
@@ -89,6 +97,14 @@ std::string trimPath(const std::string & path)
     return trimmed;
 }
 
+std::string unifiedPath(const std::string & path)
+{
+    std::string str = path;
+    std::replace(str.begin(), str.end(), '\\', '/');
+
+    return str;
+}
+
 std::string getDirectoryPath(const std::string & fullpath)
 {
     if (fullpath.empty())
@@ -105,6 +121,56 @@ std::string getDirectoryPath(const std::string & fullpath)
     }
 
     return fullpath.substr(0, pos);
+}
+
+size_t posAfterString(const std::string & str, const std::string & substr)
+{
+    size_t pos = str.rfind(substr);
+
+    if (pos != std::string::npos) {
+        pos += substr.size();
+    }
+
+    return pos;
+}
+
+std::string getSystemBasePath(const std::string & path)
+{
+    size_t pos;
+
+    if ((pos = posAfterString(path, "/usr/bin/")) != std::string::npos) {
+        return path.substr(0, pos - 4);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/local/bin/")) != std::string::npos) {
+        return path.substr(0, pos - 4);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/lib/")) != std::string::npos) {
+        return path.substr(0, pos - 4);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/lib32/")) != std::string::npos) {
+        return path.substr(0, pos - 6);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/lib64/")) != std::string::npos) {
+        return path.substr(0, pos - 6);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/local/lib/")) != std::string::npos) {
+        return path.substr(0, pos - 4);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/local/lib32/")) != std::string::npos) {
+        return path.substr(0, pos - 6);
+    }
+
+    else if ((pos = posAfterString(path, "/usr/local/lib64/")) != std::string::npos) {
+        return path.substr(0, pos - 6);
+    }
+
+    return "";
 }
 
 void split(const std::string & str, const char delim, std::vector<std::string> & values)
@@ -131,6 +197,21 @@ std::string getEnv(const std::string & name)
     const auto value = std::getenv(name.c_str());
 
     return value ? std::string(value) : std::string();
+}
+
+bool fileExists(const std::string & path)
+{
+#ifdef SYSTEM_WINDOWS
+
+    WIN32_FILE_ATTRIBUTE_DATA fileInfo;
+    return (GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &fileInfo) != 0);
+
+#else
+
+    struct stat fileInfo;
+    return (stat(path.c_str(), &fileInfo) == 0);
+
+#endif
 }
 
 bool loadModule(const std::string & directory, const std::string & name, ModuleInfo & info)

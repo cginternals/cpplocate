@@ -5,6 +5,7 @@
 
 find_package(${META_PROJECT_NAME} REQUIRED HINTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../")
 
+
 # 
 # Executable name and options
 # 
@@ -20,7 +21,7 @@ message(STATUS "Test ${target}")
 
 set(sources
     main.cpp
-    utility_test.cpp
+    utils_test.cpp
 )
 
 

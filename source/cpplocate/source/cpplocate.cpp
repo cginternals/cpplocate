@@ -1,20 +1,23 @@
 
 #include <cpplocate/cpplocate.h>
 
-
 #if defined SYSTEM_LINUX
     #include <unistd.h>
     #include <limits.h>
+    #include <dlfcn.h>
 #elif defined SYSTEM_WINDOWS
     #include <Windows.h>
 #elif defined SYSTEM_SOLARIS
     #include <stdlib.h>
     #include <limits.h>
+    #include <dlfcn.h>
 #elif defined SYSTEM_DARWIN
     #include <mach-o/dyld.h>
+    #include <dlfcn.h>
 #elif defined SYSTEM_FREEBSD
     #include <sys/types.h>
     #include <sys/sysctl.h>
+    #include <dlfcn.h>
 #endif
 
 
@@ -22,7 +25,8 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
-
+#include <algorithm>
+#include <iostream>
 #include <cpplocate/utils.h>
 #include <cpplocate/ModuleInfo.h>
 
@@ -36,7 +40,6 @@ namespace
 #else
     const char pathDelim = '/';
 #endif
-
 
 /**
 *  @brief
@@ -175,7 +178,7 @@ ModuleInfo findModule(const std::string & name)
 {
     ModuleInfo info;
 
-    // Search at current module location
+    // Search at current executable location
     if (utils::loadModule(getModulePath(), name, info))
     {
         return info;
