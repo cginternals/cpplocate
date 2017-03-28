@@ -185,7 +185,7 @@ std::string obtainBundlePath()
 *  @remarks
 *    The paths are returned in native format, e.g., backslashes on Windows.
 */
-std::vector<std::string> getPaths()
+std::vector<std::string> obtainCppLocatePaths()
 {
     std::vector<std::string> paths;
     const auto cppLocatePath = cpplocate::utils::getEnv("CPPLOCATE_PATH");
@@ -325,6 +325,8 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
 
 ModuleInfo findModule(const std::string & name)
 {
+    static const auto cppLocatePaths = obtainCppLocatePaths();
+
     ModuleInfo info;
 
     // Search at current executable location
@@ -333,7 +335,7 @@ ModuleInfo findModule(const std::string & name)
         return info;
     }
 
-    for (const std::string & path : getPaths())
+    for (const std::string & path : cppLocatePaths)
     {
         if (utils::loadModule(path, name, info))
         {

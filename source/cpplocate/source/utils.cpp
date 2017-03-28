@@ -136,14 +136,9 @@ std::string getDirectoryPath(const std::string & fullpath)
 
 size_t posAfterString(const std::string & str, const std::string & substr)
 {
-    size_t pos = str.rfind(substr);
+    const auto pos = str.rfind(substr);
 
-    if (pos != std::string::npos)
-    {
-        pos += substr.size();
-    }
-
-    return pos;
+    return pos != std::string::npos ? pos + substr.size() : std::string::npos;
 }
 
 std::string getSystemBasePath(const std::string & path)

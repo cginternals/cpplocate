@@ -163,6 +163,17 @@ public:
 
     /**
     *  @brief
+    *    Set value
+    *
+    *  @param[in] key
+    *    Key name
+    *  @value
+    *    Value
+    */
+    void setValue(std::string && key, std::string && value);
+
+    /**
+    *  @brief
     *    Print module info to the console
     */
     void print() const;

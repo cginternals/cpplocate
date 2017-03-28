@@ -47,7 +47,7 @@ bool ModuleInfo::load(const std::string & filename)
 {
     clear();
 
-    auto modulePath = utils::getDirectoryPath(filename);
+    const auto modulePath = utils::getDirectoryPath(filename);
 
     std::ifstream in(filename);
 
@@ -59,7 +59,8 @@ bool ModuleInfo::load(const std::string & filename)
     std::string line;
     while (std::getline(in, line))
     {
-        auto pos = line.find(":");
+        const auto pos = line.find(":");
+
         if (pos == std::string::npos)
         {
             continue;
@@ -73,7 +74,7 @@ bool ModuleInfo::load(const std::string & filename)
 
         utils::replace(value, "${ModulePath}", modulePath);
 
-        setValue(key, value);
+        setValue(std::move(key), std::move(value));
     }
 
     in.close();
@@ -114,14 +115,14 @@ const std::map<std::string, std::string> & ModuleInfo::values() const
 
 std::string ModuleInfo::value(const std::string & key, const std::string & defaultValue) const
 {
-    auto it = m_values.find(key);
+    const auto it = m_values.find(key);
 
     return it == m_values.end() ? defaultValue : it->second;
 }
 
 const std::string & ModuleInfo::value(const std::string & key, std::string & defaultValue) const
 {
-    auto it = m_values.find(key);
+    const auto it = m_values.find(key);
 
     return it == m_values.end() ? defaultValue : it->second;
 }
@@ -129,6 +130,11 @@ const std::string & ModuleInfo::value(const std::string & key, std::string & def
 void ModuleInfo::setValue(const std::string & key, const std::string & value)
 {
     m_values[key] = value;
+}
+
+void ModuleInfo::setValue(std::string && key, std::string && value)
+{
+    m_values[std::move(key)] = std::move(value);
 }
 
 void ModuleInfo::print() const
