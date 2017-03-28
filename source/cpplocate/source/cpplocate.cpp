@@ -176,7 +176,7 @@ std::string obtainBundlePath()
 
 /**
 *  @brief
-*    Get list of paths in the 'CPPLOCATE_PATHS' environment variable
+*    Get list of paths in the 'CPPLOCATE_PATH' environment variable
 *
 *  @return
 *    List of paths
