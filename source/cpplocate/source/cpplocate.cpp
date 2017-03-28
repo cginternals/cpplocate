@@ -20,13 +20,13 @@
     #include <dlfcn.h>
 #endif
 
-
 #include <array>
 #include <cstdlib>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <iostream>
+
 #include <cpplocate/utils.h>
 #include <cpplocate/ModuleInfo.h>
 
@@ -148,8 +148,7 @@ std::string obtainExecutablePath()
 std::string obtainBundlePath()
 {
     // Get directory where the executable is located
-    std::string exeDir = cpplocate::utils::getDirectoryPath(cpplocate::getExecutablePath());
-    std::replace(exeDir.begin(), exeDir.end(), '\\', '/');
+    const auto exeDir = cpplocate::utils::unifiedPath(cpplocate::utils::getDirectoryPath(cpplocate::getExecutablePath()));
 
     // Split path into components
     std::vector<std::string> components;
@@ -167,7 +166,7 @@ std::string obtainBundlePath()
             components.pop_back();
 
             // Compose path to bundle
-            return cpplocate::utils::unifiedPath(cpplocate::utils::join(components, "/"));
+            return cpplocate::utils::join(components, "/");
         }
     }
 
