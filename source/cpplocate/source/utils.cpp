@@ -17,6 +17,7 @@
 namespace
 {
 
+
 #ifdef SYSTEM_WINDOWS
     const char pathDelim = '\\';
     const char pathsDelim = ';';
@@ -25,11 +26,13 @@ namespace
     const char pathsDelim = ':';
 #endif
 
+
 } // namespace
 
 
 namespace cpplocate
 {
+
 
 namespace utils
 {
@@ -37,12 +40,44 @@ namespace utils
 
 void replace(std::string & str, const std::string & original, const std::string & substitute)
 {
-    // Replace all occurences in the string
-    size_t startPos = 0;
-    while ((startPos = str.find(original, startPos)) != std::string::npos) {
-        str.replace(startPos, original.length(), substitute);
-        startPos += substitute.length();
+    // Count number of substring occurrences
+    auto pos = str.find(original, 0);
+    auto count = size_t(0);
+
+    while (pos != std::string::npos)
+    {
+        ++count;
+        pos += original.size();
+
+        pos = str.find(original, pos);
     }
+
+    auto result = std::string(str.size() + count * (substitute.size() - original.size()), 0);
+
+    // Build string with replacements
+    auto lastPos = size_t(0);
+    /*auto*/ pos = str.find(original, 0);
+    auto current = result.begin();
+
+    while (pos != std::string::npos)
+    {
+        std::copy(str.begin()+lastPos, str.begin()+pos, current);
+
+        current += pos - lastPos;
+
+        std::copy(substitute.begin(), substitute.end(), current);
+
+        current += substitute.size();
+        pos += original.size();
+        lastPos = pos;
+
+        pos = str.find(original, lastPos);
+    }
+
+    std::copy(str.begin()+lastPos, str.end(), current);
+
+    // Swap
+    std::swap(str, result);
 }
 
 void trim(std::string & str)
@@ -53,7 +88,12 @@ void trim(std::string & str)
 
 std::string trimPath(const std::string & path)
 {
-    std::string trimmed = path;
+    return trimPath(std::string(path));
+}
+
+std::string trimPath(std::string && path)
+{
+    auto trimmed = std::move(path);
 
     trimmed.erase(0, trimmed.find_first_not_of(' '));
     trimmed.erase(trimmed.find_last_not_of(' ') + 1);
@@ -64,7 +104,13 @@ std::string trimPath(const std::string & path)
 
 std::string unifiedPath(const std::string & path)
 {
-    std::string str = path;
+    return unifiedPath(std::string(path));
+}
+
+std::string unifiedPath(std::string && path)
+{
+    auto str = std::move(path);
+
     std::replace(str.begin(), str.end(), '\\', '/');
 
     return str;
@@ -72,72 +118,56 @@ std::string unifiedPath(const std::string & path)
 
 std::string getDirectoryPath(const std::string & fullpath)
 {
-    std::string dirPath = "";
-
-    if (fullpath.size() > 0) {
-        size_t pos     = fullpath.rfind("/");
-        size_t posBack = fullpath.rfind("\\");
-        if (pos == std::string::npos || (posBack != std::string::npos && posBack > pos)) {
-            pos = posBack;
-        }
-
-        dirPath = fullpath.substr(0, pos);
+    if (fullpath.empty())
+    {
+        return "";
     }
 
-    return dirPath;
+    auto pos           = fullpath.rfind("/");
+    const auto posBack = fullpath.rfind("\\");
+
+    if (pos == std::string::npos || (posBack != std::string::npos && posBack > pos))
+    {
+        pos = posBack;
+    }
+
+    return fullpath.substr(0, pos);
 }
 
 size_t posAfterString(const std::string & str, const std::string & substr)
 {
-    size_t pos = str.rfind(substr);
+    const auto pos = str.rfind(substr);
 
-    if (pos != std::string::npos) {
-        pos += substr.size();
-    }
-
-    return pos;
+    return pos != std::string::npos ? pos + substr.size() : std::string::npos;
 }
 
 std::string getSystemBasePath(const std::string & path)
 {
-    size_t pos;
+    static const std::vector<std::pair<std::string, int>> systemPaths = {
+        { "/usr/bin/", 4 },
+        { "/usr/local/bin/", 4 },
+        { "/usr/lib/", 4 },
+        { "/usr/lib32/", 6 },
+        { "/usr/lib64/", 6 },
+        { "/usr/local/lib/", 4 },
+        { "/usr/local/lib32/", 6 },
+        { "/usr/local/lib64/", 6 }
+    };
 
-    if ((pos = posAfterString(path, "/usr/bin/")) != std::string::npos) {
-        return path.substr(0, pos - 4);
-    }
+    for (const auto & pair : systemPaths)
+    {
+        auto pos = std::string::npos;
 
-    else if ((pos = posAfterString(path, "/usr/local/bin/")) != std::string::npos) {
-        return path.substr(0, pos - 4);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/lib/")) != std::string::npos) {
-        return path.substr(0, pos - 4);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/lib32/")) != std::string::npos) {
-        return path.substr(0, pos - 6);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/lib64/")) != std::string::npos) {
-        return path.substr(0, pos - 6);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/local/lib/")) != std::string::npos) {
-        return path.substr(0, pos - 4);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/local/lib32/")) != std::string::npos) {
-        return path.substr(0, pos - 6);
-    }
-
-    else if ((pos = posAfterString(path, "/usr/local/lib64/")) != std::string::npos) {
-        return path.substr(0, pos - 6);
+        if ((pos = posAfterString(path, pair.first)) != std::string::npos)
+        {
+            return path.substr(0, pos - pair.second);
+        }
     }
 
     return "";
 }
 
-void split(const std::string & str, char delim, std::vector<std::string> & values)
+void split(const std::string & str, const char delim, std::vector<std::string> & values)
 {
     std::stringstream stream(str);
 
@@ -153,11 +183,12 @@ void split(const std::string & str, char delim, std::vector<std::string> & value
 
 std::string join(const std::vector<std::string> & values, const std::string & delim)
 {
-    std::string result = "";
+    auto result = std::string("");
 
     for (const std::string & value : values)
     {
-        if (!result.empty()) {
+        if (!result.empty())
+        {
             result += delim;
         }
 
@@ -167,6 +198,7 @@ std::string join(const std::vector<std::string> & values, const std::string & de
     return result;
 }
 
+
 void getPaths(const std::string & paths, std::vector<std::string> & values)
 {
     split(paths, pathsDelim, values);
@@ -174,12 +206,9 @@ void getPaths(const std::string & paths, std::vector<std::string> & values)
 
 std::string getEnv(const std::string & name)
 {
-    const char * value = std::getenv(name.c_str());
-    if (value) {
-        return std::string(value);
-    } else {
-        return "";
-    }
+    const auto value = std::getenv(name.c_str());
+
+    return value ? std::string(value) : std::string();
 }
 
 bool fileExists(const std::string & path)
@@ -200,14 +229,16 @@ bool fileExists(const std::string & path)
 bool loadModule(const std::string & directory, const std::string & name, ModuleInfo & info)
 {
     // Validate directory path
-    std::string dir = trimPath(directory);
+    const auto dir = trimPath(directory);
 
     // Try to load module
-    std::string path = dir + pathDelim + name + ".modinfo";
+    const auto path = dir + pathDelim + name + ".modinfo";
+
     return info.load(path);
 }
 
 
 } // namespace utils
+
 
 } // namespace cpplocate

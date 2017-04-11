@@ -20,11 +20,13 @@
     #include <dlfcn.h>
 #endif
 
+#include <array>
 #include <cstdlib>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <iostream>
+
 #include <cpplocate/utils.h>
 #include <cpplocate/ModuleInfo.h>
 
@@ -32,11 +34,166 @@
 namespace
 {
 
+
 #ifdef SYSTEM_WINDOWS
     const char pathDelim = '\\';
 #else
     const char pathDelim = '/';
 #endif
+
+/**
+*  @brief
+*    Get path to the current executable
+*
+*  @return
+*    Path to executable (including filename)
+*
+*  @remarks
+*    The path is returned in native format, e.g., backslashes on Windows.
+*/
+std::string obtainExecutablePath()
+{
+
+#if defined SYSTEM_LINUX
+
+    std::array<char, PATH_MAX> exePath;
+
+    auto len = ::readlink("/proc/self/exe", exePath.data(), exePath.size());
+
+    if (len == -1 || len == exePath.size())
+    {
+        return "";
+    }
+
+    return std::string(exePath.data(), len);
+
+#elif defined SYSTEM_WINDOWS
+
+    std::array<char, MAX_PATH> exePath;
+
+    if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath.data(), exePath.size()) == 0)
+    {
+        return "";
+    }
+
+    return std::string(exePath.data());
+
+#elif defined SYSTEM_SOLARIS
+
+    std::array<char, PATH_MAX> exePath;
+
+    if (realpath(getexecname(), exePath.data()) == nullptr)
+    {
+        return "";
+    }
+
+    return std::string(exePath.data());
+
+#elif defined SYSTEM_DARWIN
+
+    std::array<char, PATH_MAX> exePath;
+
+    auto len = std::uint32_t(exePath.size());
+
+    if (_NSGetExecutablePath(exePath.data(), &len) != 0)
+    {
+        return "";
+    }
+
+    auto realPath = realpath(exePath.data(), nullptr);
+
+    if (realPath)
+    {
+        strncpy(exePath.data(), realPath, len);
+        free(realPath);
+    }
+
+    return std::string(exePath.data(), len);
+
+#elif defined SYSTEM_FREEBSD
+
+    std::array<char, 2048> exePath;
+
+    auto len = exePath.size();
+
+    int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
+
+    if (sysctl(mib, 4, exePath, &len, nullptr, 0) != 0)
+    {
+        return "";
+    }
+
+    return std::string(exePath.data(), len);
+
+#else
+
+    return "";
+
+#endif
+}
+
+/**
+*  @brief
+*    Get path to the current application bundle
+*
+*  @return
+*    Path to bundle (including filename)
+*
+*  @remarks
+*    The path is returned in unified format (forward slashes).
+*    If the current executable is part of a macOS application bundle,
+*    this function returns the part to the bundle. Otherwise, an
+*    empty string is returned.
+*/
+std::string obtainBundlePath()
+{
+    // Get directory where the executable is located
+    const auto exeDir = cpplocate::utils::unifiedPath(cpplocate::utils::getDirectoryPath(cpplocate::getExecutablePath()));
+
+    // Split path into components
+    std::vector<std::string> components;
+    cpplocate::utils::split(exeDir, '/', components);
+
+    // If this is a bundle, we must have at least three components
+    if (components.size() >= 3)
+    {
+        // Check for bundle
+        if (components[components.size() - 1] == "MacOS" &&
+            components[components.size() - 2] == "Contents")
+        {
+            // Remove '/Contents/MacOS' from path
+            components.pop_back();
+            components.pop_back();
+
+            // Compose path to bundle
+            return cpplocate::utils::join(components, "/");
+        }
+    }
+
+    // No bundle
+    return "";
+}
+
+/**
+*  @brief
+*    Get list of paths in the 'CPPLOCATE_PATH' environment variable
+*
+*  @return
+*    List of paths
+*
+*  @remarks
+*    The paths are returned in native format, e.g., backslashes on Windows.
+*/
+std::vector<std::string> obtainCppLocatePaths()
+{
+    std::vector<std::string> paths;
+    const auto cppLocatePath = cpplocate::utils::getEnv("CPPLOCATE_PATH");
+
+    cpplocate::utils::getPaths(cppLocatePath, paths);
+
+    return paths;
+}
+
 
 } // namespace
 
@@ -45,73 +202,25 @@ namespace cpplocate
 {
 
 
-std::string getExecutablePath()
+const std::string & getExecutablePath()
 {
+    static const auto executablePath = obtainExecutablePath();
 
-#if defined SYSTEM_LINUX
+    return executablePath;
+}
 
-    char exePath[PATH_MAX];
+const std::string & getBundlePath()
+{
+    static const auto bundlePath = obtainBundlePath();
 
-    ssize_t len = ::readlink("/proc/self/exe", exePath, sizeof(exePath));
+    return bundlePath;
+}
 
-    if (len == -1 || len == sizeof(exePath)) {
-        len = 0;
-    }
-    exePath[len] = '\0';
+const std::string & getModulePath()
+{
+    static const auto modulePath = utils::getDirectoryPath(getExecutablePath());
 
-#elif defined SYSTEM_WINDOWS
-
-    char exePath[MAX_PATH];
-
-    if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath, sizeof(exePath)) == 0) {
-        exePath[0] = '\0';
-    }
-
-#elif defined SYSTEM_SOLARIS
-
-    char exePath[PATH_MAX];
-
-    if (realpath(getexecname(), exePath) == nullptr) {
-        exePath[0] = '\0';
-    }
-
-#elif defined SYSTEM_DARWIN
-
-    char exePath[PATH_MAX];
-    uint32_t len = sizeof(exePath);
-
-    if (_NSGetExecutablePath(exePath, &len) == 0) {
-        char * realPath = realpath(exePath, nullptr);
-        if (realPath) {
-            strncpy(exePath, realPath, len);
-            free(realPath);
-        }
-    } else {
-        exePath[0] = '\0';
-    }
-
-#elif defined SYSTEM_FREEBSD
-
-    char exePath[2048];
-    size_t len = sizeof(exePath);
-
-    int mib[4];
-    mib[0] = CTL_KERN;
-    mib[1] = KERN_PROC;
-    mib[2] = KERN_PROC_PATHNAME;
-    mib[3] = -1;
-
-    if (sysctl(mib, 4, exePath, &len, nullptr, 0) != 0) {
-        exePath[0] = '\0';
-    }
-
-#else
-
-    char * exePath = "";
-
-#endif
-
-    return utils::unifiedPath(std::string(exePath));
+    return modulePath;
 }
 
 std::string getLibraryPath(void * symbol)
@@ -127,7 +236,7 @@ std::string getLibraryPath(void * symbol)
 
 #elif defined SYSTEM_WINDOWS
 
-    char path[MAX_PATH];
+    std::array<char, PATH_MAX> path;
     path[0] = '\0';
 
     HMODULE module;
@@ -137,7 +246,12 @@ std::string getLibraryPath(void * symbol)
             reinterpret_cast<LPCSTR>(symbol),
             &module))
     {
-        GetModuleFileNameA(module, path, sizeof(path));
+        GetModuleFileNameA(module, path.data, path.size());
+    }
+
+    if (!path)
+    {
+        return "";
     }
 
     return utils::unifiedPath(std::string(path));
@@ -157,81 +271,48 @@ std::string getLibraryPath(void * symbol)
 #endif
 }
 
-std::string getBundlePath()
-{
-    // Get directory where the executable is located
-    std::string exeDir = utils::getDirectoryPath(getExecutablePath());
-    std::replace(exeDir.begin(), exeDir.end(), '\\', '/');
-
-    // Split path into components
-    std::vector<std::string> components;
-    utils::split(exeDir, '/', components);
-
-    // If this is a bundle, we must have at least three components
-    if (components.size() >= 3)
-    {
-        // Check for bundle
-        if (components[components.size() - 1] == "MacOS" &&
-            components[components.size() - 2] == "Contents")
-        {
-            // Remove '/Contents/MacOS' from path
-            components.pop_back();
-            components.pop_back();
-
-            // Compose path to bundle
-            return utils::unifiedPath(utils::join(components, "/"));
-        }
-    }
-
-    // No bundle
-    return "";
-}
-
 std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
 {
-    std::string libDir    = utils::getDirectoryPath(getLibraryPath(symbol));
-    std::string exeDir    = utils::getDirectoryPath(getExecutablePath());
-    std::string bundleDir = utils::getDirectoryPath(getBundlePath());
+    const auto libDir    = utils::getDirectoryPath(getLibraryPath(symbol));
+    const auto exeDir    = utils::getDirectoryPath(getExecutablePath());
+    const auto bundleDir = utils::getDirectoryPath(getBundlePath());
 
-    for (int i=0; i<3; i++)
+    for (const auto & dir : { libDir, exeDir, bundleDir })
     {
-        std::string path;
-        std::string subdir;
-
-        // Choose basedir
-        const std::string & dir = (i == 0 ? libDir : (i == 1 ? exeDir : bundleDir) );
-        if (dir.empty()) continue;
-
         // Check <basedir>/<relpath>
-        subdir = dir;
-        path = subdir + "/" + relPath;
-        if (utils::fileExists(path)) return subdir;
+        auto subdir = dir;
+        auto path = subdir + "/" + relPath;
+        if (utils::fileExists(path))
+            return subdir;
 
         // Check <basedir>/../<relpath>
         subdir = dir + "/..";
         path = subdir + "/" + relPath;
-        if (utils::fileExists(path)) return subdir;
+        if (utils::fileExists(path))
+            return subdir;
 
         // Check <basedir>/../../<relpath>
         subdir = dir + "/../..";
         path = subdir + "/" + relPath;
-        if (utils::fileExists(path)) return subdir;
+        if (utils::fileExists(path))
+            return subdir;
 
         // Check if it is a system path
-        std::string basePath = utils::getSystemBasePath(path);
+        const auto basePath = utils::getSystemBasePath(path);
         if (!basePath.empty() && !systemDir.empty())
         {
             subdir = basePath + "/" + systemDir;
             path = subdir + "/" + relPath;
-            if (utils::fileExists(path)) return subdir;
+            if (utils::fileExists(path))
+                return subdir;
         }
     }
 
     // Check app bundle resources
     if (!bundleDir.empty())
     {
-        std::string subdir = bundleDir + "/Contents/Resources";
-        std::string path = subdir + "/" + relPath;
+        const auto subdir = bundleDir + "/Contents/Resources";
+        const auto path = subdir + "/" + relPath;
 
         if (utils::fileExists(path))
             return subdir;
@@ -241,13 +322,10 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
     return "";
 }
 
-std::string getModulePath()
-{
-    return utils::getDirectoryPath(getExecutablePath());
-}
-
 ModuleInfo findModule(const std::string & name)
 {
+    static const auto cppLocatePaths = obtainCppLocatePaths();
+
     ModuleInfo info;
 
     // Search at current executable location
@@ -256,12 +334,7 @@ ModuleInfo findModule(const std::string & name)
         return info;
     }
 
-    // Search all paths in CPPLOCATE_PATH
-    std::vector<std::string> paths;
-    std::string cppLocatePath = utils::getEnv("CPPLOCATE_PATH");
-    utils::getPaths(cppLocatePath, paths);
-
-    for (const std::string & path : paths)
+    for (const std::string & path : cppLocatePaths)
     {
         if (utils::loadModule(path, name, info))
         {
@@ -276,8 +349,8 @@ ModuleInfo findModule(const std::string & name)
 
     // Search in standard locations
 #if defined SYSTEM_WINDOWS
-    std::string programFiles64 = utils::getEnv("programfiles");
-    std::string programFiles32 = utils::getEnv("programfiles(x86)");
+    const auto programFiles64 = utils::getEnv("programfiles");
+    const auto programFiles32 = utils::getEnv("programfiles(x86)");
 
     if (utils::loadModule(programFiles64 + "\\" + name, name, info))
     {

@@ -55,6 +55,18 @@ CPPLOCATE_API std::string trimPath(const std::string & str);
 
 /**
 *  @brief
+*    Remove spaces and trailing slash/backslash from path
+*
+*  @param[in] path
+*    Path
+*
+*  @return
+*    Trimmed path
+*/
+CPPLOCATE_API std::string trimPath(std::string && str);
+
+/**
+*  @brief
 *    Convert path into unified form (replace '\' with '/')
 *
 *  @param[in] path
@@ -64,6 +76,18 @@ CPPLOCATE_API std::string trimPath(const std::string & str);
 *    Path with forward slashes
 */
 CPPLOCATE_API std::string unifiedPath(const std::string & path);
+
+/**
+*  @brief
+*    Convert path into unified form (replace '\' with '/')
+*
+*  @param[in] path
+*    Path
+*
+*  @return
+*    Path with forward slashes
+*/
+CPPLOCATE_API std::string unifiedPath(std::string && path);
 
 /**
 *  @brief

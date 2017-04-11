@@ -21,8 +21,6 @@ message(STATUS "Test ${target}")
 
 set(sources
     main.cpp
-    
-    # utils
     utils_test.cpp
 )
 
