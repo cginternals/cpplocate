@@ -95,20 +95,40 @@ std::string obtainExecutablePath()
 
     auto len = std::uint32_t(exePath.size());
 
-    if (_NSGetExecutablePath(exePath.data(), &len) != 0)
+    std::string finalPath;
+    if (_NSGetExecutablePath(exePath.data(), &len) == 0)
     {
-        return "";
+        auto realPath = realpath(exePath.data(), nullptr);
+
+        std::string finalPath;
+        if (realPath)
+        {
+            finalPath = std::string(realPath);
+            free(realPath);
+        }
+
+        return finalPath;
     }
-
-    auto realPath = realpath(exePath.data(), nullptr);
-
-    if (realPath)
+    else
     {
-        strncpy(exePath.data(), realPath, len);
-        free(realPath);
-    }
+        std::vector<char> longerExePath(len);
 
-    return std::string(exePath.data(), len);
+        if (_NSGetExecutablePath(longerExePath.data(), &len) != 0)
+        {
+            return "";
+        }
+
+        auto realPath = realpath(longerExePath.data(), nullptr);
+
+        std::string finalPath;
+        if (realPath)
+        {
+            finalPath = std::string(realPath);
+            free(realPath);
+        }
+
+        return finalPath;
+    }
 
 #elif defined SYSTEM_FREEBSD
 
