@@ -256,7 +256,7 @@ std::string getLibraryPath(void * symbol)
 
 #elif defined SYSTEM_WINDOWS
 
-    std::array<char, PATH_MAX> path;
+    std::array<char, MAX_PATH> path;
     path[0] = '\0';
 
     HMODULE module;
@@ -266,15 +266,10 @@ std::string getLibraryPath(void * symbol)
             reinterpret_cast<LPCSTR>(symbol),
             &module))
     {
-        GetModuleFileNameA(module, path.data, path.size());
+        GetModuleFileNameA(module, path.data(), path.size());
     }
 
-    if (!path)
-    {
-        return "";
-    }
-
-    return utils::unifiedPath(std::string(path));
+    return utils::unifiedPath(std::string(path.data()));
 
 #else
 
