@@ -67,6 +67,7 @@ string(TOUPPER ${META_PROJECT_ID} META_PROJECT_ID)
 option(BUILD_SHARED_LIBS  "Build shared instead of static libraries." ON)
 option(OPTION_BUILD_TESTS "Build tests."                              ON)
 option(OPTION_BUILD_DOCS  "Build documentation."                      OFF)
+option(OPTION_FORCE_SYSTEM_DIR_INSTALL "Force system dir install"     OFF)
 
 
 # 
@@ -122,7 +123,7 @@ if("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr" OR "${CMAKE_INSTALL_PREFIX}" STREQU
 endif()
 
 # Installation paths
-if(UNIX AND SYSTEM_DIR_INSTALL)
+if((UNIX AND SYSTEM_DIR_INSTALL) OR OPTION_FORCE_SYSTEM_DIR_INSTALL)
     # Install into the system (/usr/bin or /usr/local/bin)
     set(INSTALL_ROOT      "share/${project}")       # /usr/[local]/share/<project>
     set(INSTALL_CMAKE     "share/${project}/cmake") # /usr/[local]/share/<project>/cmake
