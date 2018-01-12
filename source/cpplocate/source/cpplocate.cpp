@@ -186,7 +186,9 @@ std::string obtainBundlePath()
             components.pop_back();
 
             // Compose path to bundle
-            return cpplocate::utils::join(components, "/");
+            // getExecutablePath() always returns an absolute path (at least on macOS), but
+            // the leading slash got lost during split, so we need to add it back
+            return "/" + cpplocate::utils::join(components, "/");
         }
     }
 
@@ -290,7 +292,7 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
 {
     const auto libDir    = utils::getDirectoryPath(getLibraryPath(symbol));
     const auto exeDir    = utils::getDirectoryPath(getExecutablePath());
-    const auto bundleDir = utils::getDirectoryPath(getBundlePath());
+    const auto bundleDir = getBundlePath(); // a bundle already is a directory
 
     for (const auto & dir : { libDir, exeDir, bundleDir })
     {
