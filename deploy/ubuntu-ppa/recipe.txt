@@ -1,0 +1,3 @@
+# git-build-recipe format 0.3 deb-version {debupstream}+{revno}
+lp:cpplocate v1
+nest-part packaging lp:cpplocate deploy/ubuntu-ppa/debian debian master

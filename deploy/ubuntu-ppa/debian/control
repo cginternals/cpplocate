@@ -1,0 +1,34 @@
+Source: libcpplocate
+Section: misc
+Priority: optional
+Maintainer: Willy Scheibel <willy.scheibel@cginternals.com>
+Build-Depends: build-essential, cmake, doxygen, graphviz
+Standards-Version: 3.8.0
+
+Package: libcpplocate
+Architecture: any
+Homepage: https://github.org/cginternals/cpplocate
+Description: Cross-platform C++ library providing tools for applications to locate themselves, their data assets as well as dependent modules.
+
+Package: libcpplocate-dev
+Architecture: any
+Depends: libcpplocate
+Homepage: https://github.org/cginternals/cpplocate
+Description: Cross-platform C++ library providing tools for applications to locate themselves, their data assets as well as dependent modules.
+
+Package: libcpplocate-docs
+Architecture: any
+Homepage: https://cpplocate.org
+Description: Cross-platform C++ library providing tools for applications to locate themselves, their data assets as well as dependent modules.
+
+Package: libcpplocate-dbg
+Architecture: any
+Depends: libcpplocate, libcpplocate-dev
+Homepage: https://github.org/cginternals/cpplocate
+Description: ACross-platform C++ library providing tools for applications to locate themselves, their data assets as well as dependent modules.
+
+Package: libcpplocate-all
+Architecture: any
+Depends: libcpplocate, libcpplocate-dev, libcpplocate-docs
+Homepage: https://github.org/cginternals/cpplocate
+Description: Cross-platform C++ library providing tools for applications to locate themselves, their data assets as well as dependent modules.

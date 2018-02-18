@@ -1,0 +1,70 @@
+#!/usr/bin/make -f
+
+BUILDDIR = build
+BUILDDEBUGDIR = build-debug
+
+# firstly called by launchpad
+clean:
+	rm -rf $(BUILDDIR)
+	rm -rf $(BUILDDEBUGDIR)
+
+# secondly called by launchpad
+build: build-arch
+
+build-arch:
+	mkdir $(BUILDDIR)
+	cd $(BUILDDIR);cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DOPTION_BUILD_DOCS=On ..
+	make -C $(BUILDDIR)
+	mkdir $(BUILDDEBUGDIR)
+	cd $(BUILDDEBUGDIR);cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DOPTION_BUILD_DOCS=Off ..
+	make -C $(BUILDDEBUGDIR)
+
+# thirdly called by launchpad
+binary: binary-arch
+
+binary-arch: libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all
+
+libcpplocate:
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=runtime make component_install
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -plibcpplocate
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+libcpplocate-dev:
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=dev make component_install
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -plibcpplocate-dev
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+libcpplocate-docs:
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=docs make component_install
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -plibcpplocate-docs
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+libcpplocate-dbg:
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=runtime make component_install
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev make component_install
+	rm -rf debian/tmp/usr/include
+	rm debian/tmp/usr/share/*/*-config.cmake
+	rm debian/tmp/usr/share/*/AUTHORS
+	rm debian/tmp/usr/share/*/LICENSE
+	rm debian/tmp/usr/share/*/README.md
+	rm debian/tmp/usr/share/*/VERSION
+	rm debian/tmp/usr/share/*/cmake/*/*-export.cmake
+	rm debian/tmp/usr/share/*/cmake/ModuleInformation.cmake
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -plibcpplocate-dbg
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+libcpplocate-all:
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -plibcpplocate-all
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+.PHONY: build build-arch binary binary-arch clean libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all
