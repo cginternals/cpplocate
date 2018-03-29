@@ -171,18 +171,18 @@ std::string obtainBundlePath()
     // Get directory where the executable is located
     char * executablePath = nullptr;
     unsigned int executablePathLength = 0;
-    cpplocate::getExecutablePath(&executablePath, &executablePathLength);
+    getExecutablePath(&executablePath, &executablePathLength);
 
     unsigned int executablePathDirectoryLength = 0;
-    cpplocate::utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+    utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
 
-    cpplocate::utils::unifiedPath(executablePath, executablePathDirectoryLength);
+    utils::unifiedPath(executablePath, executablePathDirectoryLength);
 
     const auto exeDir = std::string(executablePath, executablePathDirectoryLength);
 
     // Split path into components
     std::vector<std::string> components;
-    cpplocate::utils::split(exeDir, '/', components);
+    utils::split(exeDir, '/', components);
 
     // If this is a bundle, we must have at least three components
     if (components.size() >= 3)
@@ -198,7 +198,7 @@ std::string obtainBundlePath()
             // Compose path to bundle
             // getExecutablePath() always returns an absolute path (at least on macOS), but
             // the leading slash got lost during split, so we need to add it back
-            return "/" + cpplocate::utils::join(components, "/");
+            return "/" + utils::join(components, "/");
         }
     }
 
@@ -208,10 +208,6 @@ std::string obtainBundlePath()
 
 
 } // namespace
-
-
-namespace cpplocate
-{
 
 
 void getExecutablePath(char ** path, unsigned int * pathLength)
@@ -234,7 +230,7 @@ void getModulePath(const char ** path, unsigned int * pathLength)
 {
     char * executablePath = nullptr;
     unsigned int executablePathLength = 0;
-    cpplocate::getExecutablePath(&executablePath, &executablePathLength);
+    getExecutablePath(&executablePath, &executablePathLength);
     unsigned int executablePathDirectoryLength = 0;
 
     utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
@@ -259,8 +255,8 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 
 #elif defined SYSTEM_WINDOWS
 
-    char path[MAX_PATH];
-    path[0] = '\0';
+    char systemPath[MAX_PATH];
+    systemPath[0] = '\0';
 
     HMODULE module;
 
@@ -269,11 +265,12 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
             reinterpret_cast<LPCSTR>(symbol),
             &module))
     {
-        GetModuleFileNameA(module, path, MAX_PATH);
+        GetModuleFileNameA(module, systemPath, MAX_PATH);
     }
 
-    size_t length = strnlen_s(path, MAX_PATH);
-    return utils::unifiedPath(std::string(path, length));
+    *pathLength = strnlen_s(systemPath, MAX_PATH);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * *pathLength));
+    memcpy(*path, systemPath, *pathLength);
 
 #else
 
@@ -285,24 +282,26 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
         return;
     }
 
-    * pathLength = strlen(dlInfo.dli_fname);
+    *pathLength = strlen(dlInfo.dli_fname);
     *path = reinterpret_cast<char *>(malloc(sizeof(char) * *pathLength));
     memcpy(*path, dlInfo.dli_fname, *pathLength);
-    utils::unifiedPath(*path, *pathLength);
 
 #endif
+
+    utils::unifiedPath(*path, *pathLength);
 }
 
-std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
+void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
+    const char * systemDir, unsigned int systemDirLength, void * symbol)
 {
     char * executablePath = nullptr;
     unsigned int executablePathLength = 0;
-    cpplocate::getExecutablePath(&executablePath, &executablePathLength);
+    getExecutablePath(&executablePath, &executablePathLength);
     unsigned int executablePathDirectoryLength = 0;
 
     char * bundlePath = nullptr;
     unsigned int bundlePathLength = 0;
-    cpplocate::getBundlePath(&bundlePath, &bundlePathLength);
+    getBundlePath(&bundlePath, &bundlePathLength);
 
     char * libraryPath = nullptr;
     unsigned int libraryPathLength = 0;
@@ -312,54 +311,129 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
     utils::getDirectoryPath(libraryPath, libraryPathLength, &libraryPathDirectoryLength);
     utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
 
-    const auto libDir    = std::string(libraryPath, libraryPathDirectoryLength);
-    const auto exeDir    = std::string(executablePath, executablePathDirectoryLength);
-    const auto bundleDir = std::string(bundlePath, bundlePathLength); // a bundle already is a directory
+    unsigned int maxLength = 0;
+    maxLength = maxLength > executablePathDirectoryLength ? maxLength : executablePathDirectoryLength;
+    maxLength = maxLength > libraryPathDirectoryLength ? maxLength : libraryPathDirectoryLength;
+    maxLength = maxLength > bundlePathLength + 19 ? maxLength : bundlePathLength; // for "/Contents/Resources"
+    maxLength += relPathLength + 2; // for the extra path delimiter and null byte suffix
 
-    for (const auto & dir : { libDir, exeDir, bundleDir })
+    const char * dirs[3] = { libraryPath, executablePath, bundlePath };
+    const unsigned int lengths[3] = { libraryPathDirectoryLength, executablePathDirectoryLength, bundlePathLength };
+
+    char * subdir = reinterpret_cast<char *>(malloc(sizeof(char) * maxLength));
+    unsigned int subdirLength = 0;
+    for (int i = 0; i < sizeof dirs; ++i)
     {
+        const char * dir = dirs[i];
+        const unsigned int length = lengths[i];
+
+        if (length <= 0)
+        {
+            continue;
+        }
+
         // Check <basedir>/<relpath>
-        auto subdir = dir;
-        auto path = subdir + "/" + relPath;
-        if (utils::fileExists(path))
-            return subdir;
+
+        memcpy(subdir, dir, length);
+        subdirLength = length;
+        memcpy(subdir+subdirLength, "/", 1);
+        subdirLength += 1;
+        memcpy(subdir+subdirLength, relPath, relPathLength);
+        subdirLength += relPathLength;
+        subdir[subdirLength] = 0;
+        if (utils::fileExists(subdir, subdirLength))
+        {
+            *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
+            *pathLength = subdirLength;
+            memcpy(*path, subdir, subdirLength);
+
+            return;
+        }
 
         // Check <basedir>/../<relpath>
-        subdir = dir + "/..";
-        path = subdir + "/" + relPath;
-        if (utils::fileExists(path))
-            return subdir;
+
+        subdirLength = length;
+        memcpy(subdir+subdirLength, "/../", 4);
+        subdirLength += 4;
+        memcpy(subdir+subdirLength, relPath, relPathLength);
+        subdirLength += relPathLength;
+        subdir[subdirLength] = 0;
+        if (utils::fileExists(subdir, subdirLength))
+        {
+            *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
+            *pathLength = subdirLength;
+            memcpy(*path, subdir, subdirLength);
+
+            return;
+        }
 
         // Check <basedir>/../../<relpath>
-        subdir = dir + "/../..";
-        path = subdir + "/" + relPath;
-        if (utils::fileExists(path))
-            return subdir;
+        subdirLength = length;
+        memcpy(subdir+subdirLength, "/../../", 7);
+        subdirLength += 7;
+        memcpy(subdir+subdirLength, relPath, relPathLength);
+        subdirLength += relPathLength;
+        subdir[subdirLength] = 0;
+        if (utils::fileExists(subdir, subdirLength))
+        {
+            *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
+            *pathLength = subdirLength;
+            memcpy(*path, subdir, subdirLength);
+
+            return;
+        }
+
+        if (systemDirLength <= 0)
+            continue;
 
         // Check if it is a system path
-        const auto basePath = utils::getSystemBasePath(path);
-        if (!basePath.empty() && !systemDir.empty())
+
+        unsigned int systemBasePathLength;
+        utils::getSystemBasePath(dir, length, &systemBasePathLength);
+
+        if (systemBasePathLength <= 0)
+            continue;
+
+        subdirLength = systemBasePathLength;
+        memcpy(subdir+subdirLength, "/", 1);
+        subdirLength += 1;
+        memcpy(subdir+subdirLength, systemDir, systemDirLength);
+        subdirLength += systemDirLength;
+        memcpy(subdir+subdirLength, "/", 1);
+        subdirLength += 1;
+        memcpy(subdir+subdirLength, relPath, relPathLength);
+        subdirLength += relPathLength;
+        subdir[subdirLength] = 0;
+        if (utils::fileExists(subdir, subdirLength))
         {
-            subdir = basePath + "/" + systemDir;
-            path = subdir + "/" + relPath;
-            if (utils::fileExists(path))
-                return subdir;
+            *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
+            *pathLength = subdirLength;
+            memcpy(*path, subdir, subdirLength);
+
+            return;
+        }
+
+        // Check app bundle resources
+        if (i == 2) // only for bundle path
+        {
+            subdirLength = length;
+            memcpy(subdir+subdirLength, "/Contents/Resources/", 20);
+            subdirLength += 20;
+            memcpy(subdir+subdirLength, relPath, relPathLength);
+            subdirLength += relPathLength;
+            subdir[subdirLength] = 0;
+            if (utils::fileExists(subdir, subdirLength))
+            {
+                *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
+                *pathLength = subdirLength;
+                memcpy(*path, subdir, subdirLength);
+
+                return;
+            }
         }
     }
 
-    // Check app bundle resources
-    if (!bundleDir.empty())
-    {
-        const auto subdir = bundleDir + "/Contents/Resources";
-        const auto path = subdir + "/" + relPath;
-
-        if (utils::fileExists(path))
-            return subdir;
-    }
-
     // Could not find path
-    return "";
+    *path = nullptr;
+    *pathLength = 0;
 }
-
-
-} // namespace cpplocate

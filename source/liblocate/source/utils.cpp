@@ -28,10 +28,6 @@ namespace
 } // namespace
 
 
-namespace cpplocate
-{
-
-
 namespace utils
 {
 
@@ -137,37 +133,49 @@ void getDirectoryPath(const char * fullpath, unsigned int length, unsigned int *
     }
 }
 
-size_t posAfterString(const std::string & str, const std::string & substr)
+void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int * subLength)
 {
-    const auto pos = str.rfind(substr);
-
-    return pos != std::string::npos ? pos + substr.size() : std::string::npos;
-}
-
-std::string getSystemBasePath(const std::string & path)
-{
-    static const std::vector<std::pair<std::string, int>> systemPaths = {
-        { "/usr/bin/", 4 },
-        { "/usr/local/bin/", 4 },
-        { "/usr/lib/", 4 },
-        { "/usr/lib32/", 6 },
-        { "/usr/lib64/", 6 },
-        { "/usr/local/lib/", 4 },
-        { "/usr/local/lib32/", 6 },
-        { "/usr/local/lib64/", 6 }
+    static const char * systemPaths[8] = {
+        "/usr/bin/",
+        "/usr/local/bin/",
+        "/usr/lib/",
+        "/usr/lib32/",
+        "/usr/lib64/",
+        "/usr/local/lib/",
+        "/usr/local/lib32/",
+        "/usr/local/lib64/",
     };
+    static const unsigned int systemPathLengths[8] = { 9, 15, 9, 11, 11, 15, 17, 17 };
+    static const unsigned int systemPathSuffixesLength[8] = { 4, 4, 4, 6, 6, 4, 6, 6};
 
-    for (const auto & pair : systemPaths)
+    for (int i = 0; i < sizeof systemPaths; ++i)
     {
-        auto pos = std::string::npos;
+        const char * systemPath = systemPaths[i];
+        unsigned int systemPathLength = systemPathLengths[i];
 
-        if ((pos = posAfterString(path, pair.first)) != std::string::npos)
+        const char * iter = path + pathLength - 1;
+        const char * searchIter = systemPath + systemPathLength - 1;
+        while (searchIter >= systemPath)
         {
-            return path.substr(0, pos - pair.second);
+            if (*iter == *searchIter) //
+            {
+                --iter;
+                --searchIter;
+            }
+            else
+            {
+                searchIter = systemPath + systemPathLength - 1;
+            }
+        }
+
+        if (searchIter < systemPath) // sub-systemPath-string found
+        {
+            *subLength = static_cast<unsigned int>(path - iter) + systemPathLength - systemPathSuffixesLength[i];
+            return;
         }
     }
 
-    return "";
+    *subLength = 0;
 }
 
 void split(const std::string & str, const char delim, std::vector<std::string> & values)
@@ -214,23 +222,20 @@ std::string getEnv(const std::string & name)
     return value ? std::string(value) : std::string();
 }
 
-bool fileExists(const std::string & path)
+bool fileExists(const char * path, unsigned int /*pathLength*/)
 {
 #ifdef SYSTEM_WINDOWS
 
     WIN32_FILE_ATTRIBUTE_DATA fileInfo;
-    return (GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &fileInfo) != 0);
+    return (GetFileAttributesExA(path, GetFileExInfoStandard, &fileInfo) != 0);
 
 #else
 
     struct stat fileInfo;
-    return (stat(path.c_str(), &fileInfo) == 0);
+    return (stat(path, &fileInfo) == 0);
 
 #endif
 }
 
 
 } // namespace utils
-
-
-} // namespace cpplocate

@@ -2,13 +2,7 @@
 #pragma once
 
 
-#include <string>
-
 #include <liblocate/liblocate_api.h>
-
-
-namespace cpplocate
-{
 
 
 /**
@@ -68,29 +62,35 @@ LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
 *
 *  @param[in] symbol
 *    A symbol from the library, e.g., a function or variable pointer
-*
-*  @return
+*  @param[out] path
 *    Path to library (including filename)
+*  @param[out] pathLength
+*    Length of path
 *
 *  @remarks
 *    The path is returned in unified format (forward slashes).
 *    If symbol is nullptr, an empty string is returned.
 */
-LIBLOCATE_API std::string getLibraryPath(void * symbol);
+LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength);
 
 /**
 *  @brief
 *    Locate path to a file or directory
 *
+*  @param[out] path
+*    Path to file or directory
+*  @param[out] pathLength
+*    Length of path
 *  @param[in] relPath
 *    Relative path to a file or directory (e.g., 'data/logo.png')
+*  @param[in] relPathLength
+*    Length of relPath
 *  @param[in] systemDir
 *    Subdirectory for system installs (e.g., 'share/myappname')
+*  @param[in] systemDirLength
+*    Length of systemDir
 *  @param[in] symbol
 *    A symbol from the library, e.g., a function or variable pointer
-*
-*  @return
-*    Path to file or directory
 *
 *  @remarks
 *    This function tries to locate the named file or directory based
@@ -101,7 +101,5 @@ LIBLOCATE_API std::string getLibraryPath(void * symbol);
 *
 *    The path is returned in unified format (forward slashes).
 */
-LIBLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir = "", void * symbol = nullptr);
-
-
-} // namespace cpplocate
+LIBLOCATE_API void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
+    const char * systemDir, unsigned int systemDirLength, void * symbol = nullptr);

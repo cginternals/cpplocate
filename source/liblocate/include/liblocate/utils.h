@@ -8,13 +8,6 @@
 #include <liblocate/liblocate_api.h>
 
 
-namespace cpplocate
-{
-
-
-class ModuleInfo;
-
-
 namespace utils
 {
 
@@ -92,27 +85,14 @@ LIBLOCATE_API void getDirectoryPath(const char * fullpath, unsigned int length, 
 
 /**
 *  @brief
-*    Get position right after given substring (searched from right to left)
-*
-*  @param[in] str
-*    Full string
-*  @param[in] substr
-*    Substring to search for
-*
-*  @return
-*    Position after substring if substring was found, else string::npos
-*/
-LIBLOCATE_API size_t posAfterString(const std::string & str, const std::string & substr);
-
-/**
-*  @brief
 *    Get system base path for path to library or executable
 *
 *  @param[in] path
 *    Path to library or executable (e.g., '/usr/bin/myapp')
-*
-*  @return
-*    System path path (e.g., '/usr')
+*  @param[in] pathLength
+*    The length of the path
+*  @param[out] systemPathLength
+*    The last position of the system part of the path (e.g., '/usr')
 *
 *  @remarks
 *    This function returns the base path if the given file
@@ -126,7 +106,7 @@ LIBLOCATE_API size_t posAfterString(const std::string & str, const std::string &
 *      '/usr/local/lib64/mylib.so' -> '/usr/local'
 *      '/crosscompile/armv4/usr/lib/mylib.so.2' -> '/crosscompile/armv4/usr'
 */
-LIBLOCATE_API std::string getSystemBasePath(const std::string & path);
+LIBLOCATE_API void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int * systemPathLength);
 
 /**
 *  @brief
@@ -187,32 +167,13 @@ LIBLOCATE_API std::string getEnv(const std::string & name);
 *
 *  @param[in] path
 *    Path to file or directory
+*  @param[in] pathLength
+*    Length of path
 *
 *  @return
 *    'true' if it exists, else 'false'
 */
-LIBLOCATE_API bool fileExists(const std::string & path);
-
-/**
-*  @brief
-*    Load module information file
-*
-*  @param[in] directory
-*    Path to directory
-*  @param[in] name
-*    Module name
-*  @param[out] info
-*    Module information
-*
-*  @return
-*    'true' if module could be loaded successfully, else 'false'
-*
-*  @remarks
-*    The filename is constructed as <directory>/<name>.modinfo
-*/
-LIBLOCATE_API bool loadModule(const std::string & directory, const std::string & name, ModuleInfo & info);
+LIBLOCATE_API bool fileExists(const char * path, unsigned int pathLength);
 
 
 } // namespace utils
-
-} // namespace cpplocate
