@@ -100,36 +100,41 @@ std::string trimPath(std::string && path)
     return trimmed;
 }
 
-std::string unifiedPath(const std::string & path)
+void unifiedPath(char * path, unsigned int pathLength)
 {
-    return unifiedPath(std::string(path));
+    const char * end = path + pathLength;
+
+    for (char * iter = path; iter < end; ++iter)
+    {
+        if (*iter == '\\')
+        {
+            *iter = '/';
+        }
+    }
 }
 
-std::string unifiedPath(std::string && path)
+void getDirectoryPath(const char * fullpath, unsigned int length, unsigned int * newLength)
 {
-    auto str = std::move(path);
-
-    std::replace(str.begin(), str.end(), '\\', '/');
-
-    return str;
-}
-
-std::string getDirectoryPath(const std::string & fullpath)
-{
-    if (fullpath.empty())
+    if (*fullpath == 0x0 || length == 0)
     {
-        return "";
+        newLength = 0;
+        return;
     }
 
-    auto pos           = fullpath.rfind("/");
-    const auto posBack = fullpath.rfind("\\");
-
-    if (pos == std::string::npos || (posBack != std::string::npos && posBack > pos))
+    const char * iter = fullpath + length - 1;
+    while (*iter != '/' && *iter != '\\' && iter > fullpath)
     {
-        pos = posBack;
+        --iter;
     }
 
-    return fullpath.substr(0, pos);
+    if (iter > fullpath)
+    {
+        *newLength = iter - fullpath + 1;
+    }
+    else
+    {
+        *newLength = length;
+    }
 }
 
 size_t posAfterString(const std::string & str, const std::string & substr)

@@ -1,6 +1,8 @@
 
 #include <liblocate/liblocate.h>
 
+#include <string.h>
+
 #if defined SYSTEM_LINUX
     #include <unistd.h>
     #include <limits.h>
@@ -167,7 +169,16 @@ std::string obtainExecutablePath()
 std::string obtainBundlePath()
 {
     // Get directory where the executable is located
-    const auto exeDir = cpplocate::utils::unifiedPath(cpplocate::utils::getDirectoryPath(cpplocate::getExecutablePath()));
+    char * executablePath = nullptr;
+    unsigned int executablePathLength = 0;
+    cpplocate::getExecutablePath(&executablePath, &executablePathLength);
+
+    unsigned int executablePathDirectoryLength = 0;
+    cpplocate::utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+
+    cpplocate::utils::unifiedPath(executablePath, executablePathDirectoryLength);
+
+    const auto exeDir = std::string(executablePath, executablePathDirectoryLength);
 
     // Split path into components
     std::vector<std::string> components;
@@ -203,41 +214,52 @@ namespace cpplocate
 {
 
 
-const std::string & getExecutablePath()
+void getExecutablePath(char ** path, unsigned int * pathLength)
 {
     static const auto executablePath = obtainExecutablePath();
 
-    return executablePath;
+    *path = const_cast<char *>(executablePath.data());
+    *pathLength = executablePath.size();
 }
 
-const std::string & getBundlePath()
+void getBundlePath(const char ** path, unsigned int * pathLength)
 {
     static const auto bundlePath = obtainBundlePath();
 
-    return bundlePath;
+    *path = bundlePath.data();
+    *pathLength = bundlePath.size();
 }
 
-const std::string & getModulePath()
+void getModulePath(const char ** path, unsigned int * pathLength)
 {
-    static const auto modulePath = utils::getDirectoryPath(getExecutablePath());
+    char * executablePath = nullptr;
+    unsigned int executablePathLength = 0;
+    cpplocate::getExecutablePath(&executablePath, &executablePathLength);
+    unsigned int executablePathDirectoryLength = 0;
 
-    return modulePath;
+    utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+
+    *path = executablePath;
+    *pathLength = executablePathDirectoryLength;
 }
 
-std::string getLibraryPath(void * symbol)
+void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 {
+    *path = nullptr;
+    *pathLength = 0;
+
     if (!symbol)
     {
-        return "";
+        return;
     }
 
 #if defined CPPLOCATE_STATIC_DEFINE
 
-    return "";
+    return;
 
 #elif defined SYSTEM_WINDOWS
 
-    std::array<char, MAX_PATH> path;
+    char path[MAX_PATH];
     path[0] = '\0';
 
     HMODULE module;
@@ -247,10 +269,11 @@ std::string getLibraryPath(void * symbol)
             reinterpret_cast<LPCSTR>(symbol),
             &module))
     {
-        GetModuleFileNameA(module, path.data(), path.size());
+        GetModuleFileNameA(module, path, MAX_PATH);
     }
 
-    return utils::unifiedPath(std::string(path.data()));
+    size_t length = strnlen_s(path, MAX_PATH);
+    return utils::unifiedPath(std::string(path, length));
 
 #else
 
@@ -259,19 +282,39 @@ std::string getLibraryPath(void * symbol)
 
     if (!dlInfo.dli_fname)
     {
-        return "";
+        return;
     }
 
-    return utils::unifiedPath(std::string(dlInfo.dli_fname));
+    * pathLength = strlen(dlInfo.dli_fname);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * *pathLength));
+    memcpy(*path, dlInfo.dli_fname, *pathLength);
+    utils::unifiedPath(*path, *pathLength);
 
 #endif
 }
 
 std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
 {
-    const auto libDir    = utils::getDirectoryPath(getLibraryPath(symbol));
-    const auto exeDir    = utils::getDirectoryPath(getExecutablePath());
-    const auto bundleDir = getBundlePath(); // a bundle already is a directory
+    char * executablePath = nullptr;
+    unsigned int executablePathLength = 0;
+    cpplocate::getExecutablePath(&executablePath, &executablePathLength);
+    unsigned int executablePathDirectoryLength = 0;
+
+    char * bundlePath = nullptr;
+    unsigned int bundlePathLength = 0;
+    cpplocate::getBundlePath(&bundlePath, &bundlePathLength);
+
+    char * libraryPath = nullptr;
+    unsigned int libraryPathLength = 0;
+    getLibraryPath(symbol, &libraryPath, &libraryPathLength);
+    unsigned int libraryPathDirectoryLength = 0;
+
+    utils::getDirectoryPath(libraryPath, libraryPathLength, &libraryPathDirectoryLength);
+    utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+
+    const auto libDir    = std::string(libraryPath, libraryPathDirectoryLength);
+    const auto exeDir    = std::string(executablePath, executablePathDirectoryLength);
+    const auto bundleDir = std::string(bundlePath, bundlePathLength); // a bundle already is a directory
 
     for (const auto & dir : { libDir, exeDir, bundleDir })
     {

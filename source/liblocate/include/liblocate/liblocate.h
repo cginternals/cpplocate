@@ -11,29 +11,30 @@ namespace cpplocate
 {
 
 
-class ModuleInfo;
-
-
 /**
 *  @brief
 *    Get path to the current executable
 *
-*  @return
+*  @param[out] path
 *    Path to executable (including filename)
+*  @param[out] pathLength
+*    Number of characters of path without null byte
 *
 *  @remarks
 *    The path is returned in native format, e.g., backslashes on Windows.
 *
 *    It is assumed the executable path is static throughout the process.
 */
-LIBLOCATE_API const std::string & getExecutablePath();
+LIBLOCATE_API void getExecutablePath(char ** path, unsigned int * pathLength);
 
 /**
 *  @brief
 *    Get path to the current application bundle
 *
-*  @return
+*  @param[out] path
 *    Path to bundle (including filename)
+*  @param[out] pathLength
+*    Number of characters of path without null byte
 *
 *  @remarks
 *    The path is returned in unified format (forward slashes).
@@ -43,21 +44,23 @@ LIBLOCATE_API const std::string & getExecutablePath();
 *
 *    It is assumed the bundle path is static throughout the process.
 */
-LIBLOCATE_API const std::string & getBundlePath();
+LIBLOCATE_API void getBundlePath(char ** path, unsigned int * pathLength);
 
 /**
 *  @brief
 *    Get path to the current module
 *
-*  @return
+*  @param[out] path
 *    Path to module (directory in which the executable is located)
+*  @param[out] pathLength
+*    Number of characters of path without null byte
 *
 *  @remarks
 *    The path is returned in unified format (forward slashes).
 *
 *    It is assumed the executable name is static throughout the process.
 */
-LIBLOCATE_API const std::string & getModulePath();
+LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
 
 /**
 *  @brief

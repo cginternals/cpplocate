@@ -69,25 +69,13 @@ LIBLOCATE_API std::string trimPath(std::string && str);
 *  @brief
 *    Convert path into unified form (replace '\' with '/')
 *
-*  @param[in] path
+*  @param[inout] path
 *    Path
-*
-*  @return
-*    Path with forward slashes
+*  @param[in] pathLength
+*    The length of path
 */
-LIBLOCATE_API std::string unifiedPath(const std::string & path);
+LIBLOCATE_API void unifiedPath(char * path, unsigned int pathLength);
 
-/**
-*  @brief
-*    Convert path into unified form (replace '\' with '/')
-*
-*  @param[in] path
-*    Path
-*
-*  @return
-*    Path with forward slashes
-*/
-LIBLOCATE_API std::string unifiedPath(std::string && path);
 
 /**
 *  @brief
@@ -95,11 +83,12 @@ LIBLOCATE_API std::string unifiedPath(std::string && path);
 *
 *  @param[in] fullpath
 *    Path (e.g., '/path/to/file.txt')
-*
-*  @return
-*    Directory path (e.g., '/path/to')
+*  @param[in] length
+*    Length of fullpath (excluding null byte)
+*  @param[out] newLength
+*    The end of the substring representing the directory path (e.g., '/path/to')
 */
-LIBLOCATE_API std::string getDirectoryPath(const std::string & fullpath);
+LIBLOCATE_API void getDirectoryPath(const char * fullpath, unsigned int length, unsigned int * newLength);
 
 /**
 *  @brief
