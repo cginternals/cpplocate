@@ -1,8 +1,8 @@
 
 #include <liblocate/utils.h>
 
-#include <algorithm>
-#include <sstream>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef SYSTEM_WINDOWS
     #define WIN32_LEAN_AND_MEAN
@@ -28,73 +28,6 @@ namespace
 } // namespace
 
 
-namespace utils
-{
-
-
-void replace(std::string & str, const std::string & original, const std::string & substitute)
-{
-    // Count number of substring occurrences
-    auto pos = str.find(original, 0);
-    auto count = size_t(0);
-
-    while (pos != std::string::npos)
-    {
-        ++count;
-        pos += original.size();
-
-        pos = str.find(original, pos);
-    }
-
-    auto result = std::string(str.size() + count * (substitute.size() - original.size()), 0);
-
-    // Build string with replacements
-    auto lastPos = size_t(0);
-    /*auto*/ pos = str.find(original, 0);
-    auto current = result.begin();
-
-    while (pos != std::string::npos)
-    {
-        std::copy(str.begin()+lastPos, str.begin()+pos, current);
-
-        current += pos - lastPos;
-
-        std::copy(substitute.begin(), substitute.end(), current);
-
-        current += substitute.size();
-        pos += original.size();
-        lastPos = pos;
-
-        pos = str.find(original, lastPos);
-    }
-
-    std::copy(str.begin()+lastPos, str.end(), current);
-
-    // Swap
-    std::swap(str, result);
-}
-
-void trim(std::string & str)
-{
-    str.erase(0, str.find_first_not_of(' '));
-    str.erase(str.find_last_not_of(' ') + 1);
-}
-
-std::string trimPath(const std::string & path)
-{
-    return trimPath(std::string(path));
-}
-
-std::string trimPath(std::string && path)
-{
-    auto trimmed = std::move(path);
-
-    trimmed.erase(0, trimmed.find_first_not_of(' '));
-    trimmed.erase(trimmed.find_last_not_of(' ') + 1);
-    trimmed.erase(trimmed.find_last_not_of(pathDelim) + 1);
-
-    return trimmed;
-}
 
 void unifiedPath(char * path, unsigned int pathLength)
 {
@@ -178,48 +111,21 @@ void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int 
     *subLength = 0;
 }
 
-void split(const std::string & str, const char delim, std::vector<std::string> & values)
+void getEnv(const char * name, unsigned int /*nameLength*/, char ** value, unsigned int * valueLength)
 {
-    std::stringstream stream(str);
+    const char * systemValue = getenv(name);
+    unsigned int systemValueLength = strlen(systemValue);
 
-    std::string item;
-    while (std::getline(stream, item, delim))
+    if (systemValue == nullptr || systemValueLength == 0)
     {
-        if (!item.empty())
-        {
-            values.push_back(item);
-        }
-    }
-}
-
-std::string join(const std::vector<std::string> & values, const std::string & delim)
-{
-    auto result = std::string("");
-
-    for (const std::string & value : values)
-    {
-        if (!result.empty())
-        {
-            result += delim;
-        }
-
-        result += value;
+        *value = nullptr;
+        *valueLength = 0;
+        return;
     }
 
-    return result;
-}
-
-
-void getPaths(const std::string & paths, std::vector<std::string> & values)
-{
-    split(paths, pathsDelim, values);
-}
-
-std::string getEnv(const std::string & name)
-{
-    const auto value = std::getenv(name.c_str());
-
-    return value ? std::string(value) : std::string();
+    *value = reinterpret_cast<char *>(malloc(sizeof(char) * systemValueLength));
+    memcpy(*value, systemValue, systemValueLength);
+    *valueLength = systemValueLength;
 }
 
 bool fileExists(const char * path, unsigned int /*pathLength*/)
@@ -236,6 +142,3 @@ bool fileExists(const char * path, unsigned int /*pathLength*/)
 
 #endif
 }
-
-
-} // namespace utils

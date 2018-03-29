@@ -2,11 +2,13 @@
 #include <liblocate/liblocate.h>
 
 #include <string.h>
+#include <stdlib.h>
 
 #if defined SYSTEM_LINUX
     #include <unistd.h>
     #include <limits.h>
     #include <dlfcn.h>
+    #include <linux/limits.h>
 #elif defined SYSTEM_WINDOWS
     #include <Windows.h>
 #elif defined SYSTEM_SOLARIS
@@ -21,13 +23,6 @@
     #include <sys/sysctl.h>
     #include <dlfcn.h>
 #endif
-
-#include <array>
-#include <cstdlib>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <iostream>
 
 #include <liblocate/utils.h>
 
@@ -46,109 +41,140 @@ namespace
 *  @brief
 *    Get path to the current executable
 *
-*  @return
+*  @param[out] path
 *    Path to executable (including filename)
+*  @param[out] pathLength
+*    Length of path
 *
 *  @remarks
 *    The path is returned in native format, e.g., backslashes on Windows.
 */
-std::string obtainExecutablePath()
+void obtainExecutablePath(char ** path, unsigned int * pathLength)
 {
 
 #if defined SYSTEM_LINUX
 
-    std::array<char, PATH_MAX> exePath;
+    char exePath[PATH_MAX];
 
-    auto len = ::readlink("/proc/self/exe", exePath.data(), exePath.size());
+    auto len = readlink("/proc/self/exe", exePath, PATH_MAX);
 
-    if (len == -1 || len == exePath.size())
+    if (len == -1 || len == PATH_MAX || len == 0)
     {
-        return "";
+        *path = nullptr;
+        *pathLength = 0;
+        return;
     }
 
-    return std::string(exePath.data(), len);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    memcpy(*path, exePath, len);
+    *pathLength = len;
 
 #elif defined SYSTEM_WINDOWS
 
-    std::array<char, MAX_PATH> exePath;
+    char exePath[MAX_PATH];
 
-    if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath.data(), exePath.size()) == 0)
+    if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath, MAX_PATH) == 0)
     {
-        return "";
+        *path = nullptr;
+        *pathLength = 0;
+        return;
     }
 
-    return std::string(exePath.data());
+    *pathLength = strlen(exePath);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
+    memcpy(*path, exePath, pathLength);
 
 #elif defined SYSTEM_SOLARIS
 
-    std::array<char, PATH_MAX> exePath;
+    char exePath[PATH_MAX];
 
-    if (realpath(getexecname(), exePath.data()) == nullptr)
+    if (realpath(getexecname(), exePath) == nullptr)
     {
-        return "";
+        *path = nullptr;
+        *pathLength = 0;
+        return;
     }
 
-    return std::string(exePath.data());
+    *pathLength = strlen(exePath);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
+    memcpy(*path, exePath, pathLength);
 
 #elif defined SYSTEM_DARWIN
 
-    std::array<char, PATH_MAX> exePath;
+    char exePath[PATH_MAX];
 
-    auto len = std::uint32_t(exePath.size());
+    auto len = std::uint32_t(PATH_MAX);
 
-    std::string finalPath;
-    if (_NSGetExecutablePath(exePath.data(), &len) == 0)
+    if (_NSGetExecutablePath(exePath, &len) == 0)
     {
-        auto realPath = realpath(exePath.data(), nullptr);
+        auto realPath = realpath(exePath, nullptr);
 
-        std::string finalPath;
         if (realPath)
         {
-            finalPath = std::string(realPath);
-            free(realPath);
+            *pathLength = strlen(realPath);
+            *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
+            memcpy(*path, realPath, pathLength);
         }
-
-        return finalPath;
+        else
+        {
+            *path = nullptr;
+            *pathLength = 0;
+        }
     }
     else
     {
+        *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
         std::vector<char> longerExePath(len);
 
-        if (_NSGetExecutablePath(longerExePath.data(), &len) != 0)
+        if (_NSGetExecutablePath(*path, pathLength) != 0)
         {
-            return "";
+            free(*path);
+            *path = nullptr;
+            *pathLength = 0;
+
+            return;
         }
 
-        auto realPath = realpath(longerExePath.data(), nullptr);
+        auto realPath = realpath(*path, nullptr);
 
-        std::string finalPath;
+        free(*path);
+
         if (realPath)
         {
-            finalPath = std::string(realPath);
-            free(realPath);
+            *pathLength = strlen(realPath);
+            *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
+            memcpy(*path, realPath, pathLength);
         }
-
-        return finalPath;
+        else
+        {
+            *path = nullptr;
+            *pathLength = 0;
+        }
     }
 
 #elif defined SYSTEM_FREEBSD
 
-    std::array<char, 2048> exePath;
+    char exePath[2048];
 
-    auto len = exePath.size();
+    auto len = 2048;
 
     int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
 
     if (sysctl(mib, 4, exePath, &len, nullptr, 0) != 0)
     {
-        return "";
+        *path = nullptr;
+        *pathLength = 0;
+        return;
     }
 
-    return std::string(exePath.data(), len);
+    *pathLength = len;
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
+    memcpy(*path, realPath, pathLength);
 
 #else
 
-    return "";
+    *path = nullptr;
+    *pathLength = 0;
 
 #endif
 }
@@ -157,8 +183,10 @@ std::string obtainExecutablePath()
 *  @brief
 *    Get path to the current application bundle
 *
-*  @return
+*  @param[out] path
 *    Path to bundle (including filename)
+*  @param[out] pathLength
+*    Length of path
 *
 *  @remarks
 *    The path is returned in unified format (forward slashes).
@@ -166,9 +194,9 @@ std::string obtainExecutablePath()
 *    this function returns the part to the bundle. Otherwise, an
 *    empty string is returned.
 */
-std::string obtainBundlePath()
+void obtainBundlePath(char ** path, unsigned int * pathLength)
 {
-    // Get directory where the executable is located
+    /*// Get directory where the executable is located
     char * executablePath = nullptr;
     unsigned int executablePathLength = 0;
     getExecutablePath(&executablePath, &executablePathLength);
@@ -204,6 +232,7 @@ std::string obtainBundlePath()
 
     // No bundle
     return "";
+    */
 }
 
 
@@ -212,18 +241,12 @@ std::string obtainBundlePath()
 
 void getExecutablePath(char ** path, unsigned int * pathLength)
 {
-    static const auto executablePath = obtainExecutablePath();
-
-    *path = const_cast<char *>(executablePath.data());
-    *pathLength = executablePath.size();
+    obtainExecutablePath(path, pathLength);
 }
 
-void getBundlePath(const char ** path, unsigned int * pathLength)
+void getBundlePath(char ** path, unsigned int * pathLength)
 {
-    static const auto bundlePath = obtainBundlePath();
-
-    *path = bundlePath.data();
-    *pathLength = bundlePath.size();
+    obtainBundlePath(path, pathLength);
 }
 
 void getModulePath(const char ** path, unsigned int * pathLength)

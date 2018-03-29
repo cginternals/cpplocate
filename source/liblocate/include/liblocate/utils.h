@@ -2,61 +2,12 @@
 #pragma once
 
 
-#include <string>
-#include <vector>
-
 #include <liblocate/liblocate_api.h>
 
 
 namespace utils
 {
 
-
-/**
-*  @brief
-*    Replace all occurences of a substring in string
-*
-*  @param[in,out] str
-*    String
-*  @param[in] original
-*    Original string
-*  @param[in] substitute
-*    Substitute string
-*/
-LIBLOCATE_API void replace(std::string & str, const std::string & original, const std::string & substitute);
-
-/**
-*  @brief
-*    Remove spaces at the beginning and the end of a string
-*
-*  @param[in,out] str
-*    String
-*/
-LIBLOCATE_API void trim(std::string & str);
-
-/**
-*  @brief
-*    Remove spaces and trailing slash/backslash from path
-*
-*  @param[in] path
-*    Path
-*
-*  @return
-*    Trimmed path
-*/
-LIBLOCATE_API std::string trimPath(const std::string & str);
-
-/**
-*  @brief
-*    Remove spaces and trailing slash/backslash from path
-*
-*  @param[in] path
-*    Path
-*
-*  @return
-*    Trimmed path
-*/
-LIBLOCATE_API std::string trimPath(std::string && str);
 
 /**
 *  @brief
@@ -110,56 +61,21 @@ LIBLOCATE_API void getSystemBasePath(const char * path, unsigned int pathLength,
 
 /**
 *  @brief
-*    Split string into array of strings
-*
-*  @param[in] str
-*    Input string
-*  @param[in] delim
-*    Delimiter used to split the string
-*  @param[out] values
-*    Output vector
-*/
-LIBLOCATE_API void split(const std::string & str, char delim, std::vector<std::string> & values);
-
-/**
-*  @brief
-*    Join array of strings into a single string
-*
-*  @param[out] values
-*    Input vector
-*  @param[in] delim
-*    Delimiter used to join the string
-*
-*  @return
-*    Joined string
-*/
-LIBLOCATE_API std::string join(const std::vector<std::string> & values, const std::string & delim);
-
-/**
-*  @brief
-*    Split list of paths separated by : or ; into list of paths
-*
-*  @param[in] paths
-*    Input string
-*  @param[out] values
-*    Output vector
-*
-*  @remarks
-*    On windows, the separator ';' is used, ':' on all other systems
-*/
-LIBLOCATE_API void getPaths(const std::string & str, std::vector<std::string> & values);
-
-/**
-*  @brief
 *    Get value of environment variable
 *
 *  @param[in] name
 *    Name of environment variable
+*  @param[in] nameLength
+*    The length of name
+*  @param[out] value
+*    The value of the referenced environment variable
+*  @param[out] valueLength
+*    The length of value
 *
 *  @return
 *    Value of the environment variable
 */
-LIBLOCATE_API std::string getEnv(const std::string & name);
+LIBLOCATE_API void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned int * valueLength);
 
 /**
 *  @brief
