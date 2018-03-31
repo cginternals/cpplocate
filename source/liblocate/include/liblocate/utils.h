@@ -5,10 +5,6 @@
 #include <liblocate/liblocate_api.h>
 
 
-namespace utils
-{
-
-
 /**
 *  @brief
 *    Convert path into unified form (replace '\' with '/')
@@ -19,7 +15,6 @@ namespace utils
 *    The length of path
 */
 LIBLOCATE_API void unifiedPath(char * path, unsigned int pathLength);
-
 
 /**
 *  @brief
@@ -90,6 +85,3 @@ LIBLOCATE_API void getEnv(const char * name, unsigned int nameLength, char ** va
 *    'true' if it exists, else 'false'
 */
 LIBLOCATE_API bool fileExists(const char * path, unsigned int pathLength);
-
-
-} // namespace utils

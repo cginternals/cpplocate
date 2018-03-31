@@ -196,43 +196,29 @@ void obtainExecutablePath(char ** path, unsigned int * pathLength)
 */
 void obtainBundlePath(char ** path, unsigned int * pathLength)
 {
-    /*// Get directory where the executable is located
+    // Get directory where the executable is located
     char * executablePath = nullptr;
     unsigned int executablePathLength = 0;
     getExecutablePath(&executablePath, &executablePathLength);
 
     unsigned int executablePathDirectoryLength = 0;
-    utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+    getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
 
-    utils::unifiedPath(executablePath, executablePathDirectoryLength);
+    // check for /MacOS/Contents
+    const auto potentialBundleStart = executablePath + executablePathDirectoryLength - 15;
 
-    const auto exeDir = std::string(executablePath, executablePathDirectoryLength);
-
-    // Split path into components
-    std::vector<std::string> components;
-    utils::split(exeDir, '/', components);
-
-    // If this is a bundle, we must have at least three components
-    if (components.size() >= 3)
+    if (strncmp(potentialBundleStart, "/MacOS/Contents", 15) == 0)
     {
-        // Check for bundle
-        if (components[components.size() - 1] == "MacOS" &&
-            components[components.size() - 2] == "Contents")
-        {
-            // Remove '/Contents/MacOS' from path
-            components.pop_back();
-            components.pop_back();
-
-            // Compose path to bundle
-            // getExecutablePath() always returns an absolute path (at least on macOS), but
-            // the leading slash got lost during split, so we need to add it back
-            return "/" + utils::join(components, "/");
-        }
+        unifiedPath(executablePath, executablePathDirectoryLength - 15);
+        *path = executablePath;
+        *pathLength = executablePathDirectoryLength - 15;
+        return;
     }
 
     // No bundle
-    return "";
-    */
+    *path = nullptr;
+    *pathLength = 0;
+    return;
 }
 
 
@@ -256,7 +242,7 @@ void getModulePath(const char ** path, unsigned int * pathLength)
     getExecutablePath(&executablePath, &executablePathLength);
     unsigned int executablePathDirectoryLength = 0;
 
-    utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+    getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
 
     *path = executablePath;
     *pathLength = executablePathDirectoryLength;
@@ -311,7 +297,7 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 
 #endif
 
-    utils::unifiedPath(*path, *pathLength);
+    unifiedPath(*path, *pathLength);
 }
 
 void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
@@ -331,8 +317,8 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
     getLibraryPath(symbol, &libraryPath, &libraryPathLength);
     unsigned int libraryPathDirectoryLength = 0;
 
-    utils::getDirectoryPath(libraryPath, libraryPathLength, &libraryPathDirectoryLength);
-    utils::getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+    getDirectoryPath(libraryPath, libraryPathLength, &libraryPathDirectoryLength);
+    getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
 
     unsigned int maxLength = 0;
     maxLength = maxLength > executablePathDirectoryLength ? maxLength : executablePathDirectoryLength;
@@ -364,7 +350,7 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         memcpy(subdir+subdirLength, relPath, relPathLength);
         subdirLength += relPathLength;
         subdir[subdirLength] = 0;
-        if (utils::fileExists(subdir, subdirLength))
+        if (fileExists(subdir, subdirLength))
         {
             *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
             *pathLength = subdirLength;
@@ -381,7 +367,7 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         memcpy(subdir+subdirLength, relPath, relPathLength);
         subdirLength += relPathLength;
         subdir[subdirLength] = 0;
-        if (utils::fileExists(subdir, subdirLength))
+        if (fileExists(subdir, subdirLength))
         {
             *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
             *pathLength = subdirLength;
@@ -397,7 +383,7 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         memcpy(subdir+subdirLength, relPath, relPathLength);
         subdirLength += relPathLength;
         subdir[subdirLength] = 0;
-        if (utils::fileExists(subdir, subdirLength))
+        if (fileExists(subdir, subdirLength))
         {
             *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
             *pathLength = subdirLength;
@@ -412,7 +398,7 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         // Check if it is a system path
 
         unsigned int systemBasePathLength;
-        utils::getSystemBasePath(dir, length, &systemBasePathLength);
+        getSystemBasePath(dir, length, &systemBasePathLength);
 
         if (systemBasePathLength <= 0)
             continue;
@@ -427,7 +413,7 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         memcpy(subdir+subdirLength, relPath, relPathLength);
         subdirLength += relPathLength;
         subdir[subdirLength] = 0;
-        if (utils::fileExists(subdir, subdirLength))
+        if (fileExists(subdir, subdirLength))
         {
             *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
             *pathLength = subdirLength;
@@ -445,7 +431,7 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             memcpy(subdir+subdirLength, relPath, relPathLength);
             subdirLength += relPathLength;
             subdir[subdirLength] = 0;
-            if (utils::fileExists(subdir, subdirLength))
+            if (fileExists(subdir, subdirLength))
             {
                 *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
                 *pathLength = subdirLength;
