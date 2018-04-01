@@ -12,6 +12,12 @@ public:
     }
 };
 
+TEST_F(utils_test, unifiedPath_EmptyPath)
+{
+    unifiedPath(nullptr, 0);
+
+    SUCCEED();
+}
 
 TEST_F(utils_test, unifiedPath_NoPath)
 {
@@ -53,4 +59,46 @@ TEST_F(utils_test, unifiedPath_WindowsPath)
     unifiedPath(actual, length);
 
     EXPECT_STREQ(expected, actual);
+}
+
+TEST_F(utils_test, getDirectoryPath_EmptyPath)
+{
+    unsigned int newLength = 10;
+
+    getDirectoryPath(nullptr, 0, &newLength);
+
+    EXPECT_EQ(0, newLength);
+}
+
+TEST_F(utils_test, getDirectoryPath_NoPath)
+{
+    const char * source = "A-string";
+    const unsigned int length = strlen(source);
+    unsigned int newLength = 0;
+
+    getDirectoryPath(source, length, &newLength);
+
+    EXPECT_EQ(8, newLength);
+}
+
+TEST_F(utils_test, getDirectoryPath_UnixPath)
+{
+    const char * source = "/usr/include/c++/v1/tuple";
+    const unsigned int length = strlen(source);
+    unsigned int newLength = 0;
+
+    getDirectoryPath(source, length, &newLength);
+
+    EXPECT_EQ(20, newLength);
+}
+
+TEST_F(utils_test, getDirectoryPath_WindowsPath)
+{
+    const char * source = "C:\\dev\\include\\c++\\v1\\tuple";
+    const unsigned int length = strlen(source);
+    unsigned int newLength = 0;
+
+    getDirectoryPath(source, length, &newLength);
+
+    EXPECT_EQ(22, newLength);
 }

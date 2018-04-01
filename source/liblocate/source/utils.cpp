@@ -16,12 +16,18 @@ namespace
 {
 
 
+const char windowsPathDelim = '\\';
+const char windowssPathDelim = ';';
+
+const char unixPathDelim = '/';
+const char unixPathsDelim = ':';
+
 #ifdef SYSTEM_WINDOWS
-    const char pathDelim = '\\';
-    const char pathsDelim = ';';
+    const char pathDelim = windowsPathDelim;
+    const char pathsDelim = windowssPathDelim;
 #else
-    const char pathDelim = '/';
-    const char pathsDelim = ':';
+    const char pathDelim = unixPathDelim;
+    const char pathsDelim = unixPathsDelim;
 #endif
 
 
@@ -31,27 +37,32 @@ namespace
 
 void unifiedPath(char * path, unsigned int pathLength)
 {
+    if (path == 0x0 || pathLength == 0)
+    {
+        return;
+    }
+
     const char * end = path + pathLength;
 
     for (char * iter = path; iter < end; ++iter)
     {
-        if (*iter == '\\')
+        if (*iter == windowsPathDelim)
         {
-            *iter = '/';
+            *iter = unixPathDelim;
         }
     }
 }
 
 void getDirectoryPath(const char * fullpath, unsigned int length, unsigned int * newLength)
 {
-    if (*fullpath == 0x0 || length == 0)
+    if (fullpath == 0x0 || length == 0 || newLength == 0x0)
     {
-        newLength = 0;
+        *newLength = 0;
         return;
     }
 
     const char * iter = fullpath + length - 1;
-    while (*iter != '/' && *iter != '\\' && iter > fullpath)
+    while (*iter != unixPathDelim && *iter != windowsPathDelim && iter > fullpath)
     {
         --iter;
     }
