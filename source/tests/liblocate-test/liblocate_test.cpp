@@ -32,14 +32,22 @@ TEST_F(liblocate_test, getExecutablePath_Return)
     free(executablePath);
 }
 
-TEST_F(liblocate_test, getBundlePathPath_NoReturn)
+TEST_F(liblocate_test, getExecutablePath_Return_CPP)
+{
+    const auto result = liblocate::getExecutablePath();
+
+    EXPECT_LT(0, result.size());
+    EXPECT_FALSE(result.c_str() == 0x0);
+}
+
+TEST_F(liblocate_test, getBundlePath_NoReturn)
 {
     getBundlePath(nullptr, nullptr);
 
     SUCCEED();
 }
 
-TEST_F(liblocate_test, getBundlePathPath_Return)
+TEST_F(liblocate_test, getBundlePath_Return)
 {
 #ifdef SYSTEM_DARWIN
     char * bundlePath = 0x0;
@@ -51,6 +59,18 @@ TEST_F(liblocate_test, getBundlePathPath_Return)
     EXPECT_FALSE(bundlePath == 0x0);
 
     free(bundlePath);
+#else
+    SUCCEED();
+#endif
+}
+
+TEST_F(liblocate_test, getBundlePath_Return_CPP)
+{
+#ifdef SYSTEM_DARWIN
+    const auto result = liblocate::getBundlePath();
+
+    EXPECT_LT(0, result.size());
+    EXPECT_FALSE(result.c_str() == 0x0);
 #else
     SUCCEED();
 #endif
@@ -76,6 +96,14 @@ TEST_F(liblocate_test, getModulePath_Return)
     free(modulePath);
 }
 
+TEST_F(liblocate_test, getModulePath_Return_CPP)
+{
+    const auto result = liblocate::getModulePath();
+
+    EXPECT_LT(0, result.size());
+    EXPECT_FALSE(result.c_str() == 0x0);
+}
+
 TEST_F(liblocate_test, getLibraryPath_NoReturn)
 {
     getLibraryPath(reinterpret_cast<void*>(getExecutablePath), nullptr, nullptr);
@@ -94,6 +122,14 @@ TEST_F(liblocate_test, getLibraryPath_Return)
     EXPECT_FALSE(libraryPath == 0x0);
 
     free(libraryPath);
+}
+
+TEST_F(liblocate_test, getLibraryPath_Return_CPP)
+{
+    const auto result = liblocate::getLibraryPath(reinterpret_cast<void*>(getExecutablePath));
+
+    EXPECT_LT(0, result.size());
+    EXPECT_FALSE(result.c_str() == 0x0);
 }
 
 TEST_F(liblocate_test, locatePath_NoReturn)
@@ -127,6 +163,17 @@ TEST_F(liblocate_test, locatePath_Return)
     EXPECT_FALSE(path == 0x0);
 
     free(path);
+}
+
+TEST_F(liblocate_test, locatePath_Return_CPP)
+{
+    const auto relPath = std::string("source/version.h.in");
+    const auto systemPath = std::string("share/liblocate");
+
+    const auto result = liblocate::locatePath(relPath, systemPath, reinterpret_cast<void*>(getExecutablePath));
+
+    EXPECT_LT(0, result.size());
+    EXPECT_FALSE(result.c_str() == 0x0);
 }
 
 TEST_F(liblocate_test, locatePath_ReturnNoSymbol)

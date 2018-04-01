@@ -3,12 +3,17 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+#include <string>
 #endif
 
 
 #include <liblocate/liblocate_api.h>
+
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 
 /**
@@ -117,4 +122,28 @@ LIBLOCATE_API void locatePath(char ** path, unsigned int * pathLength, const cha
 
 #ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
+
+
+namespace liblocate
+{
+
+
+LIBLOCATE_API std::string getExecutablePath();
+
+LIBLOCATE_API std::string getBundlePath();
+
+LIBLOCATE_API std::string getModulePath();
+
+LIBLOCATE_API std::string getLibraryPath(void * symbol);
+
+LIBLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol);
+
+
+} // namespace liblocate
+
+
 #endif
