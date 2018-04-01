@@ -18,6 +18,7 @@
 #elif defined SYSTEM_DARWIN
     #include <mach-o/dyld.h>
     #include <dlfcn.h>
+    #include <sys/syslimits.h>
 #elif defined SYSTEM_FREEBSD
     #include <sys/types.h>
     #include <sys/sysctl.h>
