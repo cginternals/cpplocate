@@ -36,8 +36,9 @@ set(headers
 )
 
 set(sources
+    ${source_path}/liblocate.c
     ${source_path}/liblocate.cpp
-    ${source_path}/utils.cpp
+    ${source_path}/utils.c
 )
 
 # Group source files

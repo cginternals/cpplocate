@@ -105,7 +105,7 @@ LIBLOCATE_API void getEnv(const char * name, unsigned int nameLength, char ** va
 *  @return
 *    'true' if it exists, else 'false'
 */
-LIBLOCATE_API bool fileExists(const char * path, unsigned int pathLength);
+LIBLOCATE_API int fileExists(const char * path, unsigned int pathLength);
 
 
 #ifdef __cplusplus

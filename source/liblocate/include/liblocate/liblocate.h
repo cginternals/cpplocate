@@ -117,7 +117,7 @@ LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pa
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
-    const char * systemDir, unsigned int systemDirLength, void * symbol = nullptr);
+    const char * systemDir, unsigned int systemDirLength, void * symbol);
 
 
 #ifdef __cplusplus

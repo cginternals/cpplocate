@@ -19,11 +19,11 @@ const char unixPathDelim = '/';
 const char unixPathsDelim = ':';
 
 #ifdef SYSTEM_WINDOWS
-    const char pathDelim = windowsPathDelim;
-    const char pathsDelim = windowssPathDelim;
+    const char pathDelim = '\\';
+    const char pathsDelim = ';';
 #else
-    const char pathDelim = unixPathDelim;
-    const char pathsDelim = unixPathsDelim;
+    const char pathDelim = '/';
+    const char pathsDelim = ':';
 #endif
 
 
@@ -92,7 +92,7 @@ void getBundlePart(const char * fullpath, unsigned int length, unsigned int * ne
     }
 
     // check for /MacOS/Contents
-    const auto potentialBundleStart = fullpath + length - bundlePathLength;
+    const char * potentialBundleStart = fullpath + length - bundlePathLength;
 
     if (strncmp(potentialBundleStart, bundlePath, bundlePathLength) != 0)
     {
@@ -154,7 +154,7 @@ void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int 
 
         if (searchIter < systemPath) // sub-systemPath-string found
         {
-            *subLength = static_cast<unsigned int>(iter - path) + systemPathLength - systemPathSuffixesLength[i] + 1;
+            *subLength = (unsigned int)(iter - path) + systemPathLength - systemPathSuffixesLength[i] + 1;
             return;
         }
     }
@@ -162,7 +162,7 @@ void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int 
     *subLength = 0;
 }
 
-void getEnv(const char * name, unsigned int /*nameLength*/, char ** value, unsigned int * valueLength)
+void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned int * valueLength)
 {
     if (name == 0x0 || value == 0x0)
     {
@@ -178,7 +178,7 @@ void getEnv(const char * name, unsigned int /*nameLength*/, char ** value, unsig
 
     if (systemValue == 0x0)
     {
-        *value = nullptr;
+        *value = 0x0;
         if (valueLength != 0x0)
         {
             *valueLength = 0;
@@ -189,9 +189,9 @@ void getEnv(const char * name, unsigned int /*nameLength*/, char ** value, unsig
 
     unsigned int systemValueLength = strlen(systemValue);
 
-    if (systemValue == nullptr || systemValueLength == 0)
+    if (systemValue == 0x0 || systemValueLength == 0)
     {
-        *value = nullptr;
+        *value = 0x0;
         if (valueLength != 0x0)
         {
             *valueLength = 0;
@@ -200,7 +200,7 @@ void getEnv(const char * name, unsigned int /*nameLength*/, char ** value, unsig
         return;
     }
 
-    *value = reinterpret_cast<char *>(malloc(sizeof(char) * systemValueLength));
+    *value = (char *)malloc(sizeof(char) * systemValueLength);
     memcpy(*value, systemValue, systemValueLength);
     if (valueLength != 0x0)
     {
@@ -208,7 +208,7 @@ void getEnv(const char * name, unsigned int /*nameLength*/, char ** value, unsig
     }
 }
 
-bool fileExists(const char * path, unsigned int /*pathLength*/)
+int fileExists(const char * path, unsigned int pathLength)
 {
 #ifdef SYSTEM_WINDOWS
 

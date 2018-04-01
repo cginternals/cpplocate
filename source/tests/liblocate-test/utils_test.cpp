@@ -32,7 +32,7 @@ TEST_F(utils_test, unifiedPath_NoPath)
 
     EXPECT_STREQ(expected, actual);
 
-    delete actual;
+    free(actual);
 }
 
 TEST_F(utils_test, unifiedPath_UnixPath)
@@ -48,7 +48,7 @@ TEST_F(utils_test, unifiedPath_UnixPath)
 
     EXPECT_STREQ(expected, actual);
 
-    delete actual;
+    free(actual);
 }
 
 TEST_F(utils_test, unifiedPath_WindowsPath)
@@ -64,7 +64,7 @@ TEST_F(utils_test, unifiedPath_WindowsPath)
 
     EXPECT_STREQ(expected, actual);
 
-    delete actual;
+    free(actual);
 }
 
 TEST_F(utils_test, getDirectoryPath_EmptyPath)
@@ -223,7 +223,7 @@ TEST_F(utils_test, getEnv_Value)
     EXPECT_LT(1, valueLength);
     EXPECT_EQ(':', value[0]);
 
-    delete value;
+    free(value);
 #endif
 }
 
