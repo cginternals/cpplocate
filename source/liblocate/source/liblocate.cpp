@@ -27,30 +27,17 @@
 #include <liblocate/utils.h>
 
 
-namespace
+void getExecutablePath(char ** path, unsigned int * pathLength)
 {
+    if (path == 0x0)
+    {
+        if (pathLength != 0x0)
+        {
+            *pathLength = 0;
+        }
 
-
-#ifdef SYSTEM_WINDOWS
-    const char pathDelim = '\\';
-#else
-    const char pathDelim = '/';
-#endif
-
-/**
-*  @brief
-*    Get path to the current executable
-*
-*  @param[out] path
-*    Path to executable (including filename)
-*  @param[out] pathLength
-*    Length of path
-*
-*  @remarks
-*    The path is returned in native format, e.g., backslashes on Windows.
-*/
-void obtainExecutablePath(char ** path, unsigned int * pathLength)
-{
+        return;
+    }
 
 #if defined SYSTEM_LINUX
 
@@ -61,13 +48,19 @@ void obtainExecutablePath(char ** path, unsigned int * pathLength)
     if (len == -1 || len == PATH_MAX || len == 0)
     {
         *path = nullptr;
-        *pathLength = 0;
+        if (pathLength != 0x0)
+        {
+            *pathLength = 0;
+        }
         return;
     }
 
     *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
     memcpy(*path, exePath, len);
-    *pathLength = len;
+    if (pathLength != 0x0)
+    {
+        *pathLength = len;
+    }
 
 #elif defined SYSTEM_WINDOWS
 
@@ -76,13 +69,20 @@ void obtainExecutablePath(char ** path, unsigned int * pathLength)
     if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath, MAX_PATH) == 0)
     {
         *path = nullptr;
-        *pathLength = 0;
+        if (pathLength != 0x0)
+        {
+            *pathLength = 0;
+        }
         return;
     }
 
-    *pathLength = strlen(exePath);
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
-    memcpy(*path, exePath, pathLength);
+    unsigned int len = strlen(exePath);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    memcpy(*path, exePath, len);
+    if (pathLength != 0x0)
+    {
+        *pathLength = len;
+    }
 
 #elif defined SYSTEM_SOLARIS
 
@@ -91,64 +91,87 @@ void obtainExecutablePath(char ** path, unsigned int * pathLength)
     if (realpath(getexecname(), exePath) == nullptr)
     {
         *path = nullptr;
-        *pathLength = 0;
+        if (pathLength != 0x0)
+        {
+            *pathLength = len;
+        }
         return;
     }
 
-    *pathLength = strlen(exePath);
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
-    memcpy(*path, exePath, pathLength);
+    unsigned int len = strlen(exePath);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    memcpy(*path, exePath, len);
+    if (pathLength != 0x0)
+    {
+        *pathLength = len;
+    }
 
 #elif defined SYSTEM_DARWIN
 
     char exePath[PATH_MAX];
 
-    auto len = std::uint32_t(PATH_MAX);
+    auto len = static_cast<unsigned int>(PATH_MAX);
 
     if (_NSGetExecutablePath(exePath, &len) == 0)
     {
         auto realPath = realpath(exePath, nullptr);
 
-        if (realPath)
-        {
-            *pathLength = strlen(realPath);
-            *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
-            memcpy(*path, realPath, pathLength);
-        }
-        else
+        if (realPath == 0x0)
         {
             *path = nullptr;
-            *pathLength = 0;
-        }
-    }
-    else
-    {
-        *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
-        std::vector<char> longerExePath(len);
-
-        if (_NSGetExecutablePath(*path, pathLength) != 0)
-        {
-            free(*path);
-            *path = nullptr;
-            *pathLength = 0;
+            if (pathLength != 0x0)
+            {
+                *pathLength = len;
+            }
 
             return;
         }
 
-        auto realPath = realpath(*path, nullptr);
-
-        free(*path);
-
-        if (realPath)
+        unsigned int len = strlen(realPath);
+        *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+        memcpy(*path, exePath, len);
+        if (pathLength != 0x0)
         {
-            *pathLength = strlen(realPath);
-            *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
-            memcpy(*path, realPath, pathLength);
+            *pathLength = len;
         }
-        else
+    }
+    else
+    {
+        char * intermediatePath = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+
+        if (_NSGetExecutablePath(*intermediatePath, len) != 0)
+        {
+            free(*intermediatePath);
+            *path = nullptr;
+            if (pathLength != 0x0)
+            {
+                *pathLength = 0;
+            }
+
+            return;
+        }
+
+        auto realPath = realpath(*intermediatePath, 0x0);
+
+        free(*intermediatePath);
+
+        if (realPath == 0x0)
         {
             *path = nullptr;
-            *pathLength = 0;
+            if (pathLength != 0x0)
+            {
+                *pathLength = 0;
+            }
+
+            return;
+        }
+
+        unsigned int len = strlen(realPath);
+        *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+        memcpy(*path, exePath, len);
+        if (pathLength != 0x0)
+        {
+            *pathLength = len;
         }
     }
 
@@ -163,39 +186,43 @@ void obtainExecutablePath(char ** path, unsigned int * pathLength)
     if (sysctl(mib, 4, exePath, &len, nullptr, 0) != 0)
     {
         *path = nullptr;
-        *pathLength = 0;
+        if (pathLength != 0x0)
+        {
+            *pathLength = 0;
+        }
         return;
     }
 
-    *pathLength = len;
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * pathLength));
-    memcpy(*path, realPath, pathLength);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    memcpy(*path, realPath, len);
+    if (pathLength != 0x0)
+    {
+        *pathLength = len;
+    }
 
 #else
 
     *path = nullptr;
-    *pathLength = 0;
+    if (pathLength != 0x0)
+    {
+        *pathLength = 0;
+    }
 
 #endif
 }
 
-/**
-*  @brief
-*    Get path to the current application bundle
-*
-*  @param[out] path
-*    Path to bundle (including filename)
-*  @param[out] pathLength
-*    Length of path
-*
-*  @remarks
-*    The path is returned in unified format (forward slashes).
-*    If the current executable is part of a macOS application bundle,
-*    this function returns the part to the bundle. Otherwise, an
-*    empty string is returned.
-*/
-void obtainBundlePath(char ** path, unsigned int * pathLength)
+void getBundlePath(char ** path, unsigned int * pathLength)
 {
+    if (path == 0x0)
+    {
+        if (pathLength != 0x0)
+        {
+            *pathLength = 0;
+        }
+
+        return;
+    }
+
     // Get directory where the executable is located
     char * executablePath = nullptr;
     unsigned int executablePathLength = 0;
@@ -211,32 +238,33 @@ void obtainBundlePath(char ** path, unsigned int * pathLength)
     {
         unifiedPath(executablePath, executablePathDirectoryLength - 15);
         *path = executablePath;
-        *pathLength = executablePathDirectoryLength - 15;
+        if (pathLength != 0x0)
+        {
+            *pathLength = executablePathDirectoryLength - 15;
+        }
         return;
     }
 
     // No bundle
     *path = nullptr;
-    *pathLength = 0;
-    return;
+    if (pathLength != 0x0)
+    {
+        *pathLength = 0;
+    }
 }
 
-
-} // namespace
-
-
-void getExecutablePath(char ** path, unsigned int * pathLength)
+void getModulePath(char ** path, unsigned int * pathLength)
 {
-    obtainExecutablePath(path, pathLength);
-}
+    if (path == 0x0)
+    {
+        if (pathLength != 0x0)
+        {
+            *pathLength = 0;
+        }
 
-void getBundlePath(char ** path, unsigned int * pathLength)
-{
-    obtainBundlePath(path, pathLength);
-}
+        return;
+    }
 
-void getModulePath(const char ** path, unsigned int * pathLength)
-{
     char * executablePath = nullptr;
     unsigned int executablePathLength = 0;
     getExecutablePath(&executablePath, &executablePathLength);
@@ -250,8 +278,21 @@ void getModulePath(const char ** path, unsigned int * pathLength)
 
 void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 {
+    if (path == 0x0)
+    {
+        if (pathLength != 0x0)
+        {
+            *pathLength = 0;
+        }
+
+        return;
+    }
+
     *path = nullptr;
-    *pathLength = 0;
+    if (pathLength != 0x0)
+    {
+        *pathLength = 0;
+    }
 
     if (!symbol)
     {
@@ -277,9 +318,13 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
         GetModuleFileNameA(module, systemPath, MAX_PATH);
     }
 
-    *pathLength = strnlen_s(systemPath, MAX_PATH);
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * *pathLength));
-    memcpy(*path, systemPath, *pathLength);
+    unsigned int len = strnlen_s(systemPath, MAX_PATH);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    memcpy(*path, systemPath, len);
+    if (pathLength != 0x0)
+    {
+        *pathLength = len;
+    }
 
 #else
 
@@ -291,9 +336,13 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
         return;
     }
 
-    *pathLength = strlen(dlInfo.dli_fname);
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * *pathLength));
-    memcpy(*path, dlInfo.dli_fname, *pathLength);
+    unsigned int len = strlen(dlInfo.dli_fname);
+    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    memcpy(*path, dlInfo.dli_fname, len);
+    if (pathLength != 0x0)
+    {
+        *pathLength = len;
+    }
 
 #endif
 
@@ -303,6 +352,16 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
     const char * systemDir, unsigned int systemDirLength, void * symbol)
 {
+    if (path == nullptr)
+    {
+        if (pathLength != nullptr)
+        {
+            *pathLength = 0;
+        }
+
+        return;
+    }
+
     char * executablePath = nullptr;
     unsigned int executablePathLength = 0;
     getExecutablePath(&executablePath, &executablePathLength);

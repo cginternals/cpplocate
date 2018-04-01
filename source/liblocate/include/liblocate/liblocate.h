@@ -2,6 +2,12 @@
 #pragma once
 
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+
 #include <liblocate/liblocate_api.h>
 
 
@@ -17,7 +23,7 @@
 *  @remarks
 *    The path is returned in native format, e.g., backslashes on Windows.
 *
-*    It is assumed the executable path is static throughout the process.
+*    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getExecutablePath(char ** path, unsigned int * pathLength);
 
@@ -36,7 +42,7 @@ LIBLOCATE_API void getExecutablePath(char ** path, unsigned int * pathLength);
 *    this function returns the part to the bundle. Otherwise, an
 *    empty string is returned.
 *
-*    It is assumed the bundle path is static throughout the process.
+*    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getBundlePath(char ** path, unsigned int * pathLength);
 
@@ -52,7 +58,7 @@ LIBLOCATE_API void getBundlePath(char ** path, unsigned int * pathLength);
 *  @remarks
 *    The path is returned in unified format (forward slashes).
 *
-*    It is assumed the executable name is static throughout the process.
+*    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
 
@@ -70,6 +76,8 @@ LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
 *  @remarks
 *    The path is returned in unified format (forward slashes).
 *    If symbol is nullptr, an empty string is returned.
+*
+*    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength);
 
@@ -100,6 +108,13 @@ LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pa
 *    string is returned.
 *
 *    The path is returned in unified format (forward slashes).
+*
+*    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
     const char * systemDir, unsigned int systemDirLength, void * symbol = nullptr);
+
+
+#ifdef __cplusplus
+}
+#endif

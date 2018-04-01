@@ -2,6 +2,12 @@
 #pragma once
 
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+
 #include <liblocate/liblocate_api.h>
 
 
@@ -87,3 +93,8 @@ LIBLOCATE_API void getEnv(const char * name, unsigned int nameLength, char ** va
 *    'true' if it exists, else 'false'
 */
 LIBLOCATE_API bool fileExists(const char * path, unsigned int pathLength);
+
+
+#ifdef __cplusplus
+}
+#endif

@@ -12,10 +12,6 @@
 #endif
 
 
-namespace
-{
-
-
 const char windowsPathDelim = '\\';
 const char windowssPathDelim = ';';
 
@@ -29,10 +25,6 @@ const char unixPathsDelim = ':';
     const char pathDelim = unixPathDelim;
     const char pathsDelim = unixPathsDelim;
 #endif
-
-
-} // namespace
-
 
 
 void unifiedPath(char * path, unsigned int pathLength)

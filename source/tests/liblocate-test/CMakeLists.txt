@@ -21,6 +21,7 @@ message(STATUS "Test ${target}")
 
 set(sources
     main.cpp
+    liblocate_test.cpp
     utils_test.cpp
 )
 
