@@ -142,3 +142,65 @@ TEST_F(utils_test, getSystemBasePath_ChrootPath)
 
     EXPECT_EQ(32, newLength);
 }
+
+TEST_F(utils_test, getEnv_NoName)
+{
+    char * value = nullptr;
+    unsigned int valueLength = 0;
+
+    getEnv(nullptr, 0, &value, &valueLength);
+
+    EXPECT_EQ(0, valueLength);
+    EXPECT_EQ(0x0, value);
+}
+
+TEST_F(utils_test, getEnv_NoEnv)
+{
+    const char * key = "_NO_ENV_";
+    const unsigned int keyLength = strlen(key);
+
+    char * value = nullptr;
+    unsigned int valueLength = 0;
+
+    getEnv(key, keyLength, &value, &valueLength);
+
+    EXPECT_EQ(0, valueLength);
+    EXPECT_EQ(0x0, value);
+}
+
+TEST_F(utils_test, getEnv_Value)
+{
+#ifdef SYSTEM_WINDOWS
+    // TODO: implement
+    SUCCEED();
+#else
+    const char * key = "DISPLAY";
+    const unsigned int keyLength = strlen(key);
+
+    char * value = nullptr;
+    unsigned int valueLength = 0;
+
+    getEnv(key, keyLength, &value, &valueLength);
+
+    // Display is in format ':[display number]'
+    EXPECT_LT(1, valueLength);
+    EXPECT_EQ(':', value[0]);
+
+    delete value;
+#endif
+}
+
+TEST_F(utils_test, fileExists_NoPath)
+{
+    const auto result = fileExists(nullptr, 0);
+
+    ASSERT_FALSE(result);
+}
+
+TEST_F(utils_test, fileExists_EmptyPath)
+{
+    const char * path = "";
+    const auto result = fileExists(path, strlen(path));
+
+    ASSERT_FALSE(result);
+}

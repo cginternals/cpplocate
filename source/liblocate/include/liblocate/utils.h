@@ -69,6 +69,8 @@ LIBLOCATE_API void getSystemBasePath(const char * path, unsigned int pathLength,
 *
 *  @return
 *    Value of the environment variable
+*
+*  The caller takes memory ownership over *value.
 */
 LIBLOCATE_API void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned int * valueLength);
 

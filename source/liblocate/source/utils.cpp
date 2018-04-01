@@ -141,19 +141,48 @@ void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int 
 
 void getEnv(const char * name, unsigned int /*nameLength*/, char ** value, unsigned int * valueLength)
 {
+    if (name == 0x0 || value == 0x0)
+    {
+        if (valueLength != 0x0)
+        {
+            *valueLength = 0;
+        }
+
+        return;
+    }
+
     const char * systemValue = getenv(name);
+
+    if (systemValue == 0x0)
+    {
+        *value = nullptr;
+        if (valueLength != 0x0)
+        {
+            *valueLength = 0;
+        }
+
+        return;
+    }
+
     unsigned int systemValueLength = strlen(systemValue);
 
     if (systemValue == nullptr || systemValueLength == 0)
     {
         *value = nullptr;
-        *valueLength = 0;
+        if (valueLength != 0x0)
+        {
+            *valueLength = 0;
+        }
+
         return;
     }
 
     *value = reinterpret_cast<char *>(malloc(sizeof(char) * systemValueLength));
     memcpy(*value, systemValue, systemValueLength);
-    *valueLength = systemValueLength;
+    if (valueLength != 0x0)
+    {
+        *valueLength = systemValueLength;
+    }
 }
 
 bool fileExists(const char * path, unsigned int /*pathLength*/)
