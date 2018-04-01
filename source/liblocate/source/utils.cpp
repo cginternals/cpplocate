@@ -55,7 +55,12 @@ void unifiedPath(char * path, unsigned int pathLength)
 
 void getDirectoryPath(const char * fullpath, unsigned int length, unsigned int * newLength)
 {
-    if (fullpath == 0x0 || length == 0 || newLength == 0x0)
+    if (newLength == 0x0)
+    {
+        return;
+    }
+
+    if (fullpath == 0x0 || length == 0)
     {
         *newLength = 0;
         return;
@@ -92,29 +97,41 @@ void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int 
     static const unsigned int systemPathLengths[8] = { 9, 15, 9, 11, 11, 15, 17, 17 };
     static const unsigned int systemPathSuffixesLength[8] = { 4, 4, 4, 6, 6, 4, 6, 6};
 
-    for (int i = 0; i < sizeof systemPaths; ++i)
+    if (subLength == 0x0)
+    {
+        return;
+    }
+
+    if (path == 0x0 || pathLength == 0)
+    {
+        *subLength = 0;
+        return;
+    }
+
+    for (int i = 0; i < 8; ++i)
     {
         const char * systemPath = systemPaths[i];
         unsigned int systemPathLength = systemPathLengths[i];
 
         const char * iter = path + pathLength - 1;
         const char * searchIter = systemPath + systemPathLength - 1;
-        while (searchIter >= systemPath)
+        while (searchIter >= systemPath && iter >= path)
         {
             if (*iter == *searchIter) //
             {
-                --iter;
                 --searchIter;
             }
             else
             {
                 searchIter = systemPath + systemPathLength - 1;
             }
+
+            --iter;
         }
 
         if (searchIter < systemPath) // sub-systemPath-string found
         {
-            *subLength = static_cast<unsigned int>(path - iter) + systemPathLength - systemPathSuffixesLength[i];
+            *subLength = static_cast<unsigned int>(iter - path) + systemPathLength - systemPathSuffixesLength[i] + 1;
             return;
         }
     }
