@@ -15,27 +15,42 @@ public:
 
 TEST_F(utils_test, unifiedPath_NoPath)
 {
-    char * str1 = "A-string";
+    const char * source = "A-string";
+    const char * expected = "A-string";
 
-    unifiedPath(str1, strlen(str1));
+    const unsigned int length = strlen(source);
+    char * actual = reinterpret_cast<char*>(malloc(sizeof(char) * length+1));
+    memcpy(actual, source, length+1);
 
-    EXPECT_STREQ(str1, "A-string");
+    unifiedPath(actual, length);
+
+    EXPECT_STREQ(expected, actual);
 }
 
 TEST_F(utils_test, unifiedPath_UnixPath)
 {
-    char * str1 = "/usr/include/c++/v1/tuple";
+    const char * source = "/usr/include/c++/v1/tuple";
+    const char * expected = "/usr/include/c++/v1/tuple";
 
-    unifiedPath(str1, strlen(str1));
+    const unsigned int length = strlen(source);
+    char * actual = reinterpret_cast<char*>(malloc(sizeof(char) * length+1));
+    memcpy(actual, source, length+1);
 
-    EXPECT_STREQ(str1, "/usr/include/c++/v1/tuple");
+    unifiedPath(actual, length);
+
+    EXPECT_STREQ(expected, actual);
 }
 
 TEST_F(utils_test, unifiedPath_WindowsPath)
 {
-    char * str1 = "C:\\dev\\include\\c++\\v1\\tuple";
+    const char * source = "C:\\dev\\include\\c++\\v1\\tuple";
+    const char * expected = "C:/dev/include/c++/v1/tuple";
 
-    unifiedPath(str1, strlen(str1));
+    const unsigned int length = strlen(source);
+    char * actual = reinterpret_cast<char*>(malloc(sizeof(char) * length+1));
+    memcpy(actual, source, length+1);
 
-    EXPECT_STREQ(str1, "C:/dev/include/c++/v1/tuple");
+    unifiedPath(actual, length);
+
+    EXPECT_STREQ(expected, actual);
 }
