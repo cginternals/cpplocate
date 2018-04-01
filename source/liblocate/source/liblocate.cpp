@@ -140,7 +140,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
     {
         char * intermediatePath = reinterpret_cast<char *>(malloc(sizeof(char) * len));
 
-        if (_NSGetExecutablePath(intermediatePath, len) != 0)
+        if (_NSGetExecutablePath(intermediatePath, &len) != 0)
         {
             free(intermediatePath);
             *path = nullptr;
