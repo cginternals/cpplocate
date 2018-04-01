@@ -31,6 +31,8 @@ TEST_F(utils_test, unifiedPath_NoPath)
     unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
+
+    delete actual;
 }
 
 TEST_F(utils_test, unifiedPath_UnixPath)
@@ -45,6 +47,8 @@ TEST_F(utils_test, unifiedPath_UnixPath)
     unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
+
+    delete actual;
 }
 
 TEST_F(utils_test, unifiedPath_WindowsPath)
@@ -59,6 +63,8 @@ TEST_F(utils_test, unifiedPath_WindowsPath)
     unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
+
+    delete actual;
 }
 
 TEST_F(utils_test, getDirectoryPath_EmptyPath)

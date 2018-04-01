@@ -423,6 +423,11 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             *pathLength = subdirLength;
             memcpy(*path, subdir, subdirLength);
 
+            delete libraryPath;
+            delete executablePath;
+            delete bundlePath;
+            delete subdir;
+
             return;
         }
 
@@ -440,6 +445,11 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             *pathLength = subdirLength;
             memcpy(*path, subdir, subdirLength);
 
+            delete libraryPath;
+            delete executablePath;
+            delete bundlePath;
+            delete subdir;
+
             return;
         }
 
@@ -455,6 +465,11 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             *path = reinterpret_cast<char *>(malloc(sizeof(char) * subdirLength));
             *pathLength = subdirLength;
             memcpy(*path, subdir, subdirLength);
+
+            delete libraryPath;
+            delete executablePath;
+            delete bundlePath;
+            delete subdir;
 
             return;
         }
@@ -486,6 +501,11 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             *pathLength = subdirLength;
             memcpy(*path, subdir, subdirLength);
 
+            delete libraryPath;
+            delete executablePath;
+            delete bundlePath;
+            delete subdir;
+
             return;
         }
 
@@ -504,10 +524,20 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
                 *pathLength = subdirLength;
                 memcpy(*path, subdir, subdirLength);
 
+                delete libraryPath;
+                delete executablePath;
+                delete bundlePath;
+                delete subdir;
+
                 return;
             }
         }
     }
+
+    delete libraryPath;
+    delete executablePath;
+    delete bundlePath;
+    delete subdir;
 
     // Could not find path
     *path = nullptr;
