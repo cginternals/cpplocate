@@ -140,9 +140,9 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
     {
         char * intermediatePath = reinterpret_cast<char *>(malloc(sizeof(char) * len));
 
-        if (_NSGetExecutablePath(*intermediatePath, len) != 0)
+        if (_NSGetExecutablePath(intermediatePath, len) != 0)
         {
-            free(*intermediatePath);
+            free(intermediatePath);
             *path = nullptr;
             if (pathLength != 0x0)
             {
@@ -152,9 +152,9 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
             return;
         }
 
-        auto realPath = realpath(*intermediatePath, 0x0);
+        auto realPath = realpath(intermediatePath, 0x0);
 
-        free(*intermediatePath);
+        free(intermediatePath);
 
         if (realPath == 0x0)
         {
@@ -174,6 +174,8 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
         {
             *pathLength = len;
         }
+
+        delete realPath;
     }
 
 #elif defined SYSTEM_FREEBSD
