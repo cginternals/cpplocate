@@ -14,7 +14,7 @@ public:
 
 TEST_F(utils_test, unifiedPath_EmptyPath)
 {
-    unifiedPath(nullptr, 0);
+    unifyPathDelimiters(nullptr, 0);
 
     SUCCEED();
 }
@@ -28,7 +28,7 @@ TEST_F(utils_test, unifiedPath_NoPath)
     char * actual = reinterpret_cast<char*>(malloc(sizeof(char) * length+1));
     memcpy(actual, source, length+1);
 
-    unifiedPath(actual, length);
+    unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
 }
@@ -42,7 +42,7 @@ TEST_F(utils_test, unifiedPath_UnixPath)
     char * actual = reinterpret_cast<char*>(malloc(sizeof(char) * length+1));
     memcpy(actual, source, length+1);
 
-    unifiedPath(actual, length);
+    unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
 }
@@ -56,7 +56,7 @@ TEST_F(utils_test, unifiedPath_WindowsPath)
     char * actual = reinterpret_cast<char*>(malloc(sizeof(char) * length+1));
     memcpy(actual, source, length+1);
 
-    unifiedPath(actual, length);
+    unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
 }
@@ -65,9 +65,9 @@ TEST_F(utils_test, getDirectoryPath_EmptyPath)
 {
     unsigned int newLength = 10;
 
-    getDirectoryPath(nullptr, 0, &newLength);
+    getDirectoryPart(nullptr, 0, &newLength);
 
-    EXPECT_EQ(0, newLength);
+    EXPECT_EQ(0, newLength); // ""
 }
 
 TEST_F(utils_test, getDirectoryPath_NoPath)
@@ -76,9 +76,9 @@ TEST_F(utils_test, getDirectoryPath_NoPath)
     const unsigned int length = strlen(source);
     unsigned int newLength = 0;
 
-    getDirectoryPath(source, length, &newLength);
+    getDirectoryPart(source, length, &newLength);
 
-    EXPECT_EQ(8, newLength);
+    EXPECT_EQ(8, newLength); // "A-string"
 }
 
 TEST_F(utils_test, getDirectoryPath_UnixPath)
@@ -87,9 +87,9 @@ TEST_F(utils_test, getDirectoryPath_UnixPath)
     const unsigned int length = strlen(source);
     unsigned int newLength = 0;
 
-    getDirectoryPath(source, length, &newLength);
+    getDirectoryPart(source, length, &newLength);
 
-    EXPECT_EQ(20, newLength);
+    EXPECT_EQ(19, newLength); // "/usr/include/c++/v1"
 }
 
 TEST_F(utils_test, getDirectoryPath_WindowsPath)
@@ -98,9 +98,40 @@ TEST_F(utils_test, getDirectoryPath_WindowsPath)
     const unsigned int length = strlen(source);
     unsigned int newLength = 0;
 
-    getDirectoryPath(source, length, &newLength);
+    getDirectoryPart(source, length, &newLength);
 
-    EXPECT_EQ(22, newLength);
+    EXPECT_EQ(21, newLength); // "C:\\dev\\include\\c++\\v1"
+}
+
+TEST_F(utils_test, getBundlePart_EmptyPath)
+{
+    unsigned int newLength = 10;
+
+    getBundlePart(nullptr, 0, &newLength);
+
+    EXPECT_EQ(0, newLength); // ""
+}
+
+TEST_F(utils_test, getBundlePart_NoPath)
+{
+    const char * source = "/usr/local/lib/test";
+    const unsigned int length = strlen(source);
+    unsigned int newLength = 0;
+
+    getBundlePart(source, length, &newLength);
+
+    EXPECT_EQ(0, newLength); // ""
+}
+
+TEST_F(utils_test, getBundlePart_BundlePath)
+{
+    const char * source = "/home/user/liblocate/test.app/MacOS/Contents";
+    const unsigned int length = strlen(source);
+    unsigned int newLength = 0;
+
+    getBundlePart(source, length, &newLength);
+
+    EXPECT_EQ(29, newLength); // "/home/user/liblocate/test.app"
 }
 
 TEST_F(utils_test, getSystemBasePath_EmptyPath)

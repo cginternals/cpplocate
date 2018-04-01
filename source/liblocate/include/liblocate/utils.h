@@ -20,7 +20,7 @@ extern "C"
 *  @param[in] pathLength
 *    The length of path
 */
-LIBLOCATE_API void unifiedPath(char * path, unsigned int pathLength);
+LIBLOCATE_API void unifyPathDelimiters(char * path, unsigned int pathLength);
 
 /**
 *  @brief
@@ -33,7 +33,20 @@ LIBLOCATE_API void unifiedPath(char * path, unsigned int pathLength);
 *  @param[out] newLength
 *    The end of the substring representing the directory path (e.g., '/path/to')
 */
-LIBLOCATE_API void getDirectoryPath(const char * fullpath, unsigned int length, unsigned int * newLength);
+LIBLOCATE_API void getDirectoryPart(const char * fullpath, unsigned int length, unsigned int * newLength);
+
+/**
+*  @brief
+*    Cut away filename and bundle portion of a path, get path to bundle root
+*
+*  @param[in] fullpath
+*    Path (e.g., '/path/to/file.txt')
+*  @param[in] length
+*    Length of fullpath (excluding null byte)
+*  @param[out] newLength
+*    The end of the substring representing the directory path (e.g., '/path/to')
+*/
+LIBLOCATE_API void getBundlePart(const char * fullpath, unsigned int length, unsigned int * newLength);
 
 /**
 *  @brief

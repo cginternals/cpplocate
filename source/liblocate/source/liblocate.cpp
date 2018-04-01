@@ -232,27 +232,32 @@ void getBundlePath(char ** path, unsigned int * pathLength)
     getExecutablePath(&executablePath, &executablePathLength);
 
     unsigned int executablePathDirectoryLength = 0;
-    getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+    getDirectoryPart(executablePath, executablePathLength, &executablePathDirectoryLength);
+
+    unifyPathDelimiters(executablePath, executablePathDirectoryLength);
 
     // check for /MacOS/Contents
-    const auto potentialBundleStart = executablePath + executablePathDirectoryLength - 15;
+    unsigned int bundlePathLength = 0;
+    getBundlePart(executablePath, executablePathDirectoryLength, &bundlePathLength);
 
-    if (strncmp(potentialBundleStart, "/MacOS/Contents", 15) == 0)
+    if (bundlePathLength == 0)
     {
-        unifiedPath(executablePath, executablePathDirectoryLength - 15);
-        *path = executablePath;
+        // No bundle
+        *path = nullptr;
         if (pathLength != 0x0)
         {
-            *pathLength = executablePathDirectoryLength - 15;
+            *pathLength = 0;
         }
+
+        free(executablePath);
+
         return;
     }
 
-    // No bundle
-    *path = nullptr;
+    *path = executablePath;
     if (pathLength != 0x0)
     {
-        *pathLength = 0;
+        *pathLength = bundlePathLength;
     }
 }
 
@@ -273,7 +278,7 @@ void getModulePath(char ** path, unsigned int * pathLength)
     getExecutablePath(&executablePath, &executablePathLength);
     unsigned int executablePathDirectoryLength = 0;
 
-    getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+    getDirectoryPart(executablePath, executablePathLength, &executablePathDirectoryLength);
 
     *path = executablePath;
     *pathLength = executablePathDirectoryLength;
@@ -349,7 +354,7 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 
 #endif
 
-    unifiedPath(*path, *pathLength);
+    unifyPathDelimiters(*path, *pathLength);
 }
 
 void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
@@ -379,8 +384,8 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
     getLibraryPath(symbol, &libraryPath, &libraryPathLength);
     unsigned int libraryPathDirectoryLength = 0;
 
-    getDirectoryPath(libraryPath, libraryPathLength, &libraryPathDirectoryLength);
-    getDirectoryPath(executablePath, executablePathLength, &executablePathDirectoryLength);
+    getDirectoryPart(libraryPath, libraryPathLength, &libraryPathDirectoryLength);
+    getDirectoryPart(executablePath, executablePathLength, &executablePathDirectoryLength);
 
     unsigned int maxLength = 0;
     maxLength = maxLength > executablePathDirectoryLength ? maxLength : executablePathDirectoryLength;
@@ -393,7 +398,7 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
 
     char * subdir = reinterpret_cast<char *>(malloc(sizeof(char) * maxLength));
     unsigned int subdirLength = 0;
-    for (int i = 0; i < sizeof dirs; ++i)
+    for (int i = 0; i < 3; ++i)
     {
         const char * dir = dirs[i];
         const unsigned int length = lengths[i];

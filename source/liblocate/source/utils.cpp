@@ -27,7 +27,7 @@ const char unixPathsDelim = ':';
 #endif
 
 
-void unifiedPath(char * path, unsigned int pathLength)
+void unifyPathDelimiters(char * path, unsigned int pathLength)
 {
     if (path == 0x0 || pathLength == 0)
     {
@@ -45,7 +45,7 @@ void unifiedPath(char * path, unsigned int pathLength)
     }
 }
 
-void getDirectoryPath(const char * fullpath, unsigned int length, unsigned int * newLength)
+void getDirectoryPart(const char * fullpath, unsigned int length, unsigned int * newLength)
 {
     if (newLength == 0x0)
     {
@@ -66,12 +66,43 @@ void getDirectoryPath(const char * fullpath, unsigned int length, unsigned int *
 
     if (iter > fullpath)
     {
-        *newLength = iter - fullpath + 1;
+        *newLength = iter - fullpath;
     }
     else
     {
         *newLength = length;
     }
+}
+
+void getBundlePart(const char * fullpath, unsigned int length, unsigned int * newLength)
+{
+    static const char * bundlePath = "/MacOS/Contents";
+    static unsigned int bundlePathLength = 15;
+
+    if (newLength == 0x0)
+    {
+        return;
+    }
+
+    if (fullpath == 0x0 || length == 0)
+    {
+        *newLength = 0;
+
+        return;
+    }
+
+    // check for /MacOS/Contents
+    const auto potentialBundleStart = fullpath + length - bundlePathLength;
+
+    if (strncmp(potentialBundleStart, bundlePath, bundlePathLength) != 0)
+    {
+        // No bundle
+        *newLength = 0;
+
+        return;
+    }
+
+    *newLength = length - bundlePathLength;
 }
 
 void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int * subLength)
