@@ -113,7 +113,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     char exePath[PATH_MAX];
 
-    unsinged int len = (unsigned int)PATH_MAX;
+    unsigned int len = (unsigned int)PATH_MAX;
 
     if (_NSGetExecutablePath(exePath, &len) == 0)
     {
