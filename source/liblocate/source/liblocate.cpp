@@ -1,6 +1,8 @@
 
 #include <liblocate/liblocate.h>
 
+#include <stdlib.h>
+
 
 namespace liblocate
 {
