@@ -80,7 +80,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
     }
 
     unsigned int len = strlen(exePath);
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    *path = (char *)malloc(sizeof(char) * len);
     memcpy(*path, exePath, len);
     if (pathLength != 0x0)
     {
@@ -102,7 +102,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
     }
 
     unsigned int len = strlen(exePath);
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    *path = (char *)malloc(sizeof(char) * len);
     memcpy(*path, exePath, len);
     if (pathLength != 0x0)
     {
@@ -113,7 +113,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     char exePath[PATH_MAX];
 
-    auto len = static_cast<unsigned int>(PATH_MAX);
+    auto len = (unsigned int)PATH_MAX;
 
     if (_NSGetExecutablePath(exePath, &len) == 0)
     {
@@ -131,16 +131,18 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
         }
 
         unsigned int len = strlen(realPath);
-        *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
-        memcpy(*path, exePath, len);
+        *path = (char *)malloc(sizeof(char) * len);
+        memcpy(*path, realPath, len);
         if (pathLength != 0x0)
         {
             *pathLength = len;
         }
+
+        free(realPath);
     }
     else
     {
-        char * intermediatePath = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+        char * intermediatePath = (char *)malloc(sizeof(char) * len);
 
         if (_NSGetExecutablePath(intermediatePath, &len) != 0)
         {
@@ -170,7 +172,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
         }
 
         unsigned int len = strlen(realPath);
-        *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+        *path = (char *)malloc(sizeof(char) * len);
         memcpy(*path, exePath, len);
         if (pathLength != 0x0)
         {
@@ -198,7 +200,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
         return;
     }
 
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    *path = (char *)malloc(sizeof(char) * len);
     memcpy(*path, realPath, len);
     if (pathLength != 0x0)
     {
@@ -322,14 +324,14 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 
     if (GetModuleHandleExA(
             GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            reinterpret_cast<LPCSTR>(symbol),
+            (LPCSTR)symbol,
             &module))
     {
         GetModuleFileNameA(module, systemPath, MAX_PATH);
     }
 
     unsigned int len = strnlen_s(systemPath, MAX_PATH);
-    *path = reinterpret_cast<char *>(malloc(sizeof(char) * len));
+    *path = (char *)malloc(sizeof(char) * len);
     memcpy(*path, systemPath, len);
     if (pathLength != 0x0)
     {

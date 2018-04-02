@@ -164,6 +164,8 @@ void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int 
 
 void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned int * valueLength)
 {
+    (void)nameLength;
+
     if (name == 0x0 || value == 0x0)
     {
         if (valueLength != 0x0)
@@ -210,6 +212,8 @@ void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned 
 
 int fileExists(const char * path, unsigned int pathLength)
 {
+    (void)pathLength;
+
 #ifdef SYSTEM_WINDOWS
 
     WIN32_FILE_ATTRIBUTE_DATA fileInfo;
