@@ -80,7 +80,7 @@ LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
 *
 *  @remarks
 *    The path is returned in unified format (forward slashes).
-*    If symbol is nullptr, an empty string is returned.
+*    If symbol is null pointer, an empty string is returned.
 *
 *    The caller takes memory ownership over *path.
 */

@@ -69,9 +69,9 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     char exePath[MAX_PATH];
 
-    if (GetModuleFileNameA(GetModuleHandleA(nullptr), exePath, MAX_PATH) == 0)
+    if (GetModuleFileNameA(GetModuleHandleA(0x0), exePath, MAX_PATH) == 0)
     {
-        *path = nullptr;
+        *path = 0x0;
         if (pathLength != 0x0)
         {
             *pathLength = 0;
@@ -91,9 +91,9 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     char exePath[PATH_MAX];
 
-    if (realpath(getexecname(), exePath) == nullptr)
+    if (realpath(getexecname(), exePath) == 0x0)
     {
-        *path = nullptr;
+        *path = 0x0;
         if (pathLength != 0x0)
         {
             *pathLength = len;
@@ -113,15 +113,15 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     char exePath[PATH_MAX];
 
-    auto len = (unsigned int)PATH_MAX;
+    unsinged int len = (unsigned int)PATH_MAX;
 
     if (_NSGetExecutablePath(exePath, &len) == 0)
     {
-        auto realPath = realpath(exePath, nullptr);
+        char * realPath = realpath(exePath, 0x0);
 
         if (realPath == 0x0)
         {
-            *path = nullptr;
+            *path = 0x0;
             if (pathLength != 0x0)
             {
                 *pathLength = len;
@@ -147,7 +147,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
         if (_NSGetExecutablePath(intermediatePath, &len) != 0)
         {
             free(intermediatePath);
-            *path = nullptr;
+            *path = 0x0;
             if (pathLength != 0x0)
             {
                 *pathLength = 0;
@@ -156,13 +156,13 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
             return;
         }
 
-        auto realPath = realpath(intermediatePath, 0x0);
+        char * realPath = realpath(intermediatePath, 0x0);
 
         free(intermediatePath);
 
         if (realPath == 0x0)
         {
-            *path = nullptr;
+            *path = 0x0;
             if (pathLength != 0x0)
             {
                 *pathLength = 0;
@@ -186,13 +186,13 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     char exePath[2048];
 
-    auto len = 2048;
+    unsigned int len = 2048;
 
     int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
 
-    if (sysctl(mib, 4, exePath, &len, nullptr, 0) != 0)
+    if (sysctl(mib, 4, exePath, &len, 0x0, 0) != 0)
     {
-        *path = nullptr;
+        *path = 0x0;
         if (pathLength != 0x0)
         {
             *pathLength = 0;
@@ -209,7 +209,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
 #else
 
-    *path = nullptr;
+    *path = 0x0;
     if (pathLength != 0x0)
     {
         *pathLength = 0;
