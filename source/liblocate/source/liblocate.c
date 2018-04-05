@@ -409,6 +409,7 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
 
     char * subdir = (char *)malloc(sizeof(char) * maxLength);
     unsigned int subdirLength = 0;
+    unsigned int resultdirLength = 0;
     for (int i = 0; i < 3; ++i)
     {
         const char * dir = dirs[i];
@@ -426,13 +427,15 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         memcpy(subdir+subdirLength, "/", 1);
         subdirLength += 1;
         memcpy(subdir+subdirLength, relPath, relPathLength);
+        resultdirLength = subdirLength;
         subdirLength += relPathLength;
         subdir[subdirLength] = 0;
         if (fileExists(subdir, subdirLength))
         {
-            *path = (char *)malloc(sizeof(char) * subdirLength);
-            *pathLength = subdirLength;
-            memcpy(*path, subdir, subdirLength);
+            *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
+            *pathLength = resultdirLength;
+            memcpy(*path, subdir, resultdirLength);
+            (*path)[resultdirLength] = 0;
 
             free(libraryPath);
             free(executablePath);
@@ -448,13 +451,15 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         memcpy(subdir+subdirLength, "/../", 4);
         subdirLength += 4;
         memcpy(subdir+subdirLength, relPath, relPathLength);
+        resultdirLength = subdirLength;
         subdirLength += relPathLength;
         subdir[subdirLength] = 0;
         if (fileExists(subdir, subdirLength))
         {
-            *path = (char *)malloc(sizeof(char) * subdirLength);
-            *pathLength = subdirLength;
-            memcpy(*path, subdir, subdirLength);
+            *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
+            *pathLength = resultdirLength;
+            memcpy(*path, subdir, resultdirLength);
+            (*path)[resultdirLength] = 0;
 
             free(libraryPath);
             free(executablePath);
@@ -469,13 +474,15 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         memcpy(subdir+subdirLength, "/../../", 7);
         subdirLength += 7;
         memcpy(subdir+subdirLength, relPath, relPathLength);
+        resultdirLength = subdirLength;
         subdirLength += relPathLength;
         subdir[subdirLength] = 0;
         if (fileExists(subdir, subdirLength))
         {
-            *path = (char *)malloc(sizeof(char) * subdirLength);
-            *pathLength = subdirLength;
-            memcpy(*path, subdir, subdirLength);
+            *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
+            *pathLength = resultdirLength;
+            memcpy(*path, subdir, resultdirLength);
+            (*path)[resultdirLength] = 0;
 
             free(libraryPath);
             free(executablePath);
@@ -504,13 +511,15 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         memcpy(subdir+subdirLength, "/", 1);
         subdirLength += 1;
         memcpy(subdir+subdirLength, relPath, relPathLength);
+        resultdirLength = subdirLength;
         subdirLength += relPathLength;
         subdir[subdirLength] = 0;
         if (fileExists(subdir, subdirLength))
         {
-            *path = (char *)malloc(sizeof(char) * subdirLength);
-            *pathLength = subdirLength;
-            memcpy(*path, subdir, subdirLength);
+            *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
+            *pathLength = resultdirLength;
+            memcpy(*path, subdir, resultdirLength);
+            (*path)[resultdirLength] = 0;
 
             free(libraryPath);
             free(executablePath);
@@ -527,13 +536,15 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             memcpy(subdir+subdirLength, "/Contents/Resources/", 20);
             subdirLength += 20;
             memcpy(subdir+subdirLength, relPath, relPathLength);
+            resultdirLength = subdirLength;
             subdirLength += relPathLength;
             subdir[subdirLength] = 0;
             if (fileExists(subdir, subdirLength))
             {
-                *path = (char *)malloc(sizeof(char) * subdirLength);
-                *pathLength = subdirLength;
-                memcpy(*path, subdir, subdirLength);
+                *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
+                *pathLength = resultdirLength;
+                memcpy(*path, subdir, resultdirLength);
+                (*path)[resultdirLength] = 0;
 
                 free(libraryPath);
                 free(executablePath);

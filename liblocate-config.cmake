@@ -8,7 +8,6 @@
 # List of modules
 set(MODULE_NAMES
     liblocate
-    cpplocate
 )
 
 

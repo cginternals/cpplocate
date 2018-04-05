@@ -32,14 +32,10 @@ set(source_path  "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 set(headers
     ${include_path}/cpplocate.h
-    ${include_path}/utils.h
-    ${include_path}/ModuleInfo.h
 )
 
 set(sources
     ${source_path}/cpplocate.cpp
-    ${source_path}/utils.cpp
-    ${source_path}/ModuleInfo.cpp
 )
 
 # Group source files
@@ -121,6 +117,7 @@ target_link_libraries(${target}
 
     PUBLIC
     ${DEFAULT_LIBRARIES}
+    ${META_PROJECT_NAME}::liblocate
 
     INTERFACE
 )
