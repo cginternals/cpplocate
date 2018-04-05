@@ -291,6 +291,8 @@ void getModulePath(char ** path, unsigned int * pathLength)
     {
         *pathLength = executablePathDirectoryLength;
     }
+
+    free(executablePath);
 }
 
 void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
