@@ -28,6 +28,8 @@ TEST_F(liblocate_test, getExecutablePath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(executablePath == 0x0);
+    EXPECT_EQ(0, executablePath[length]);
+    EXPECT_EQ(length, strlen(executablePath));
 
     free(executablePath);
 }
@@ -57,6 +59,8 @@ TEST_F(liblocate_test, getBundlePath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(bundlePath == 0x0);
+    EXPECT_EQ(0, bundlePath[length]);
+    EXPECT_EQ(length, strlen(bundlePath));
 
     free(bundlePath);
 #else
@@ -70,7 +74,7 @@ TEST_F(liblocate_test, getBundlePath_Return_CPP)
     const auto result = liblocate::getBundlePath();
 
     EXPECT_LT(0, result.size());
-    EXPECT_FALSE(result.c_str() == 0x0);
+    EXPECT_NE(0x0, result.c_str());
 #else
     SUCCEED();
 #endif
@@ -92,6 +96,8 @@ TEST_F(liblocate_test, getModulePath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(modulePath == 0x0);
+    EXPECT_EQ(0, modulePath[length]);
+    EXPECT_EQ(length, strlen(modulePath));
 
     free(modulePath);
 }
@@ -120,6 +126,8 @@ TEST_F(liblocate_test, getLibraryPath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(libraryPath == 0x0);
+    EXPECT_EQ(0, libraryPath[length]);
+    EXPECT_EQ(length, strlen(libraryPath));
 
     free(libraryPath);
 }
@@ -129,7 +137,7 @@ TEST_F(liblocate_test, getLibraryPath_Return_CPP)
     const auto result = liblocate::getLibraryPath(reinterpret_cast<void*>(getExecutablePath));
 
     EXPECT_LT(0, result.size());
-    EXPECT_FALSE(result.c_str() == 0x0);
+    EXPECT_NE(nullptr, result.c_str());
 }
 
 TEST_F(liblocate_test, locatePath_NoReturn)
@@ -161,6 +169,8 @@ TEST_F(liblocate_test, locatePath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(path == 0x0);
+    EXPECT_EQ(0, path[length]);
+    EXPECT_EQ(length, strlen(path));
 
     free(path);
 }
@@ -173,7 +183,7 @@ TEST_F(liblocate_test, locatePath_Return_CPP)
     const auto result = liblocate::locatePath(relPath, systemPath, reinterpret_cast<void*>(getExecutablePath));
 
     EXPECT_LT(0, result.size());
-    EXPECT_FALSE(result.c_str() == 0x0);
+    EXPECT_NE(nullptr, result.c_str());
 }
 
 TEST_F(liblocate_test, locatePath_ReturnNoSymbol)
@@ -188,6 +198,8 @@ TEST_F(liblocate_test, locatePath_ReturnNoSymbol)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(path == 0x0);
+    EXPECT_EQ(0, path[length]);
+    EXPECT_EQ(length, strlen(path));
 
     free(path);
 }
@@ -203,6 +215,8 @@ TEST_F(liblocate_test, locatePath_ReturnNoSystemDir)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(path == 0x0);
+    EXPECT_EQ(0, path[length]);
+    EXPECT_EQ(length, strlen(path));
 
     free(path);
 }

@@ -284,8 +284,13 @@ void getModulePath(char ** path, unsigned int * pathLength)
 
     getDirectoryPart(executablePath, executablePathLength, &executablePathDirectoryLength);
 
-    *path = executablePath;
-    *pathLength = executablePathDirectoryLength;
+    *path = (char *)malloc(sizeof(char) * (executablePathLength+1));
+    memcpy(*path, executablePath, executablePathDirectoryLength);
+    (*path)[executablePathDirectoryLength] = 0;
+    if (pathLength != 0x0)
+    {
+        *pathLength = executablePathDirectoryLength;
+    }
 }
 
 void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
