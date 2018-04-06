@@ -20,7 +20,7 @@ extern "C"
 *  @param[in] pathLength
 *    The length of path
 */
-LIBLOCATE_API void unifyPathDelimiters(char * path, unsigned int pathLength);
+void unifyPathDelimiters(char * path, unsigned int pathLength);
 
 /**
 *  @brief
@@ -33,7 +33,7 @@ LIBLOCATE_API void unifyPathDelimiters(char * path, unsigned int pathLength);
 *  @param[out] newLength
 *    The end of the substring representing the directory path (e.g., '/path/to')
 */
-LIBLOCATE_API void getDirectoryPart(const char * fullpath, unsigned int length, unsigned int * newLength);
+void getDirectoryPart(const char * fullpath, unsigned int length, unsigned int * newLength);
 
 /**
 *  @brief
@@ -46,7 +46,7 @@ LIBLOCATE_API void getDirectoryPart(const char * fullpath, unsigned int length, 
 *  @param[out] newLength
 *    The end of the substring representing the directory path (e.g., '/path/to')
 */
-LIBLOCATE_API void getBundlePart(const char * fullpath, unsigned int length, unsigned int * newLength);
+void getBundlePart(const char * fullpath, unsigned int length, unsigned int * newLength);
 
 /**
 *  @brief
@@ -71,7 +71,7 @@ LIBLOCATE_API void getBundlePart(const char * fullpath, unsigned int length, uns
 *      '/usr/local/lib64/mylib.so' -> '/usr/local'
 *      '/crosscompile/armv4/usr/lib/mylib.so.2' -> '/crosscompile/armv4/usr'
 */
-LIBLOCATE_API void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int * systemPathLength);
+void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int * systemPathLength);
 
 /**
 *  @brief
@@ -91,7 +91,7 @@ LIBLOCATE_API void getSystemBasePath(const char * path, unsigned int pathLength,
 *
 *  The caller takes memory ownership over *value.
 */
-LIBLOCATE_API void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned int * valueLength);
+void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned int * valueLength);
 
 /**
 *  @brief
@@ -105,7 +105,7 @@ LIBLOCATE_API void getEnv(const char * name, unsigned int nameLength, char ** va
 *  @return
 *    'true' if it exists, else 'false'
 */
-LIBLOCATE_API int fileExists(const char * path, unsigned int pathLength);
+int fileExists(const char * path, unsigned int pathLength);
 
 
 #ifdef __cplusplus

@@ -36,6 +36,8 @@ set(headers
 
 set(sources
     ${source_path}/cpplocate.cpp
+    ${source_path}/../../liblocate/source/liblocate.c
+    ${source_path}/../../liblocate/source/utils.c
 )
 
 # Group source files
@@ -97,6 +99,8 @@ target_include_directories(${target}
     ${PROJECT_BINARY_DIR}/source/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}/include
+    ${PROJECT_SOURCE_DIR}/source/liblocate/include
+    ${PROJECT_BINARY_DIR}/source/liblocate/include
 
     PUBLIC
     ${DEFAULT_INCLUDE_DIRECTORIES}
@@ -117,7 +121,6 @@ target_link_libraries(${target}
 
     PUBLIC
     ${DEFAULT_LIBRARIES}
-    ${META_PROJECT_NAME}::liblocate
 
     INTERFACE
 )

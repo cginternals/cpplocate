@@ -1,7 +1,7 @@
 
 #include <gmock/gmock.h>
 
-#include <liblocate/utils.h>
+#include "../../liblocate/source/utils.h"
 
 
 class utils_test : public testing::Test

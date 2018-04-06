@@ -27,7 +27,7 @@
     #include <dlfcn.h>
 #endif
 
-#include <liblocate/utils.h>
+#include "utils.h"
 
 
 void getExecutablePath(char ** path, unsigned int * pathLength)

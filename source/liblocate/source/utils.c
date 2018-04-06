@@ -1,5 +1,5 @@
 
-#include <liblocate/utils.h>
+#include "utils.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -12,19 +12,22 @@
 #endif
 
 
-const char windowsPathDelim = '\\';
-const char windowssPathDelim = ';';
+#define windowsPathDelim '\\'
+#define windowssPathDelim ';'
 
-const char unixPathDelim = '/';
-const char unixPathsDelim = ':';
+#define unixPathDelim '/'
+#define unixPathsDelim ':'
 
 #ifdef SYSTEM_WINDOWS
-    const char pathDelim = '\\';
-    const char pathsDelim = ';';
+    #define pathDelim '\\'
+    #define pathsDelim ';'
 #else
-    const char pathDelim = '/';
-    const char pathsDelim = ':';
+    #define pathDelim '/'
+    #define pathsDelim ':'
 #endif
+
+#define macOSBundlePath "/MacOS/Contents"
+#define macOSBundlePathLength 15
 
 
 void unifyPathDelimiters(char * path, unsigned int pathLength)
@@ -76,9 +79,6 @@ void getDirectoryPart(const char * fullpath, unsigned int length, unsigned int *
 
 void getBundlePart(const char * fullpath, unsigned int length, unsigned int * newLength)
 {
-    static const char * bundlePath = "/MacOS/Contents";
-    static unsigned int bundlePathLength = 15;
-
     if (newLength == 0x0)
     {
         return;
@@ -92,9 +92,9 @@ void getBundlePart(const char * fullpath, unsigned int length, unsigned int * ne
     }
 
     // check for /MacOS/Contents
-    const char * potentialBundleStart = fullpath + length - bundlePathLength;
+    const char * potentialBundleStart = fullpath + length - macOSBundlePathLength;
 
-    if (strncmp(potentialBundleStart, bundlePath, bundlePathLength) != 0)
+    if (strncmp(potentialBundleStart, macOSBundlePath, macOSBundlePathLength) != 0)
     {
         // No bundle
         *newLength = 0;
@@ -102,7 +102,7 @@ void getBundlePart(const char * fullpath, unsigned int length, unsigned int * ne
         return;
     }
 
-    *newLength = length - bundlePathLength;
+    *newLength = length - macOSBundlePathLength;
 }
 
 void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int * subLength)

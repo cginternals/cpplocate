@@ -1,8 +1,6 @@
 
 #include <gmock/gmock.h>
 
-#include <liblocate/liblocate.h>
-
 #include <cpplocate/cpplocate.h>
 
 
@@ -44,7 +42,7 @@ TEST_F(cpplocate_test, getModulePath_Return)
 
 TEST_F(cpplocate_test, getLibraryPath_Return)
 {
-    const auto result = cpplocate::getLibraryPath(reinterpret_cast<void*>(::getExecutablePath));
+    const auto result = cpplocate::getLibraryPath(reinterpret_cast<void*>(cpplocate::getExecutablePath));
 
     EXPECT_LT(0, result.size());
     EXPECT_NE(nullptr, result.c_str());
@@ -55,7 +53,7 @@ TEST_F(cpplocate_test, locatePath_Return)
     const auto relPath = std::string("source/version.h.in");
     const auto systemPath = std::string("share/liblocate");
 
-    const auto result = cpplocate::locatePath(relPath, systemPath, reinterpret_cast<void*>(::getExecutablePath));
+    const auto result = cpplocate::locatePath(relPath, systemPath, reinterpret_cast<void*>(cpplocate::getExecutablePath));
 
     EXPECT_LT(0, result.size());
     EXPECT_NE(nullptr, result.c_str());
