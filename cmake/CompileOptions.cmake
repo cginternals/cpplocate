@@ -101,6 +101,14 @@ endif ()
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     set(DEFAULT_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS}
     PRIVATE
+	# Shared Object size
+	-s
+	-fmerge-all-constants
+	-fno-unroll-loops
+	-fno-unwind-tables
+	-fno-asynchronous-unwind-tables
+	
+	# General
         -Wall
         -Wextra
         -Wunused
@@ -113,7 +121,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCH
         -Wswitch-default
         -Wuninitialized
         -Wmissing-field-initializers
-        
+	
         $<$<CXX_COMPILER_ID:GNU>:
             -Wmaybe-uninitialized
             
@@ -149,7 +157,10 @@ set(DEFAULT_LINKER_OPTIONS)
 
 # Use pthreads on mingw and linux
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-    set(DEFAULT_LINKER_OPTIONS
+    set(DEFAULT_LINKER_OPTIONS ${DEFAULT_LINKER_OPTIONS}
+    PRIVATE
+	# Shared Object size
+	-Wl,-z,norelro,--build-id=none
     PUBLIC
         -pthread
         -ldl
