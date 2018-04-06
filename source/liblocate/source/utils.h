@@ -8,8 +8,9 @@ extern "C"
 #endif
 
 
-#include <liblocate/liblocate_api.h>
-
+unsigned char checkStringOutParameter(const char ** path, unsigned int * pathLength);
+void invalidateStringOutParameter(char ** path, unsigned int * pathLength);
+void copyToStringOutParameter(const char * source, unsigned int length, char ** target, unsigned int * targetLength);
 
 /**
 *  @brief
@@ -105,7 +106,7 @@ void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned 
 *  @return
 *    'true' if it exists, else 'false'
 */
-int fileExists(const char * path, unsigned int pathLength);
+unsigned char fileExists(const char * path, unsigned int pathLength);
 
 
 #ifdef __cplusplus

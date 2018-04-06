@@ -32,13 +32,8 @@
 
 void getExecutablePath(char ** path, unsigned int * pathLength)
 {
-    if (path == 0x0)
+    if (!checkStringOutParameter(path, pathLength))
     {
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
-
         return;
     }
 
@@ -48,22 +43,13 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     int len = readlink("/proc/self/exe", exePath, PATH_MAX);
 
-    if (len == -1 || len == PATH_MAX || len == 0)
+    if (len <= 0 || len == PATH_MAX)
     {
-        *path = 0x0;
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
+        invalidateStringOutParameter(path, pathLength);
         return;
     }
 
-    *path = (char *)malloc(sizeof(char) * len);
-    memcpy(*path, exePath, len);
-    if (pathLength != 0x0)
-    {
-        *pathLength = len;
-    }
+    copyToStringOutParameter(exePath, len, path, pathLength);
 
 #elif defined SYSTEM_WINDOWS
 
@@ -93,11 +79,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     if (realpath(getexecname(), exePath) == 0x0)
     {
-        *path = 0x0;
-        if (pathLength != 0x0)
-        {
-            *pathLength = len;
-        }
+        invalidate(path, pathLength);
         return;
     }
 
@@ -121,12 +103,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
         if (realPath == 0x0)
         {
-            *path = 0x0;
-            if (pathLength != 0x0)
-            {
-                *pathLength = len;
-            }
-
+            invalidate(path, pathLength);
             return;
         }
 
@@ -147,12 +124,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
         if (_NSGetExecutablePath(intermediatePath, &len) != 0)
         {
             free(intermediatePath);
-            *path = 0x0;
-            if (pathLength != 0x0)
-            {
-                *pathLength = 0;
-            }
-
+            invalidate(path, pathLength);
             return;
         }
 
@@ -162,12 +134,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
         if (realPath == 0x0)
         {
-            *path = 0x0;
-            if (pathLength != 0x0)
-            {
-                *pathLength = 0;
-            }
-
+            invalidate(path, pathLength);
             return;
         }
 
@@ -192,11 +159,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     if (sysctl(mib, 4, exePath, &len, 0x0, 0) != 0)
     {
-        *path = 0x0;
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
+        invalidate(path, pathLength);
         return;
     }
 
@@ -209,24 +172,15 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
 #else
 
-    *path = 0x0;
-    if (pathLength != 0x0)
-    {
-        *pathLength = 0;
-    }
+    invalidate(path, pathLength);
 
 #endif
 }
 
 void getBundlePath(char ** path, unsigned int * pathLength)
 {
-    if (path == 0x0)
+    if (!checkStringOutParameter(path, pathLength))
     {
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
-
         return;
     }
 
@@ -247,14 +201,8 @@ void getBundlePath(char ** path, unsigned int * pathLength)
     if (bundlePathLength == 0)
     {
         // No bundle
-        *path = 0x0;
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
-
         free(executablePath);
-
+        invalidateStringOutParameter(path, pathLength);
         return;
     }
 
@@ -267,13 +215,8 @@ void getBundlePath(char ** path, unsigned int * pathLength)
 
 void getModulePath(char ** path, unsigned int * pathLength)
 {
-    if (path == 0x0)
+    if (!checkStringOutParameter(path, pathLength))
     {
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
-
         return;
     }
 
@@ -284,37 +227,21 @@ void getModulePath(char ** path, unsigned int * pathLength)
 
     getDirectoryPart(executablePath, executablePathLength, &executablePathDirectoryLength);
 
-    *path = (char *)malloc(sizeof(char) * (executablePathLength+1));
-    memcpy(*path, executablePath, executablePathDirectoryLength);
-    (*path)[executablePathDirectoryLength] = 0;
-    if (pathLength != 0x0)
-    {
-        *pathLength = executablePathDirectoryLength;
-    }
+    copyToStringOutParameter(executablePath, executablePathDirectoryLength, path, pathLength);
 
     free(executablePath);
 }
 
 void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 {
-    if (path == 0x0)
+    if (!checkStringOutParameter(path, pathLength))
     {
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
-
         return;
-    }
-
-    *path = 0x0;
-    if (pathLength != 0x0)
-    {
-        *pathLength = 0;
     }
 
     if (!symbol)
     {
+        invalidateStringOutParameter(path, pathLength);
         return;
     }
 
@@ -352,16 +279,12 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 
     if (!dlInfo.dli_fname)
     {
+        invalidateStringOutParameter(path, pathLength);
         return;
     }
 
     unsigned int len = strlen(dlInfo.dli_fname);
-    *path = (char *)malloc(sizeof(char) * len);
-    memcpy(*path, dlInfo.dli_fname, len);
-    if (pathLength != 0x0)
-    {
-        *pathLength = len;
-    }
+    copyToStringOutParameter(dlInfo.dli_fname, len, path, pathLength);
 
 #endif
 
@@ -371,13 +294,8 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
     const char * systemDir, unsigned int systemDirLength, void * symbol)
 {
-    if (path == 0x0)
+    if (!checkStringOutParameter(path, pathLength))
     {
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
-
         return;
     }
 
@@ -398,19 +316,18 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
     getDirectoryPart(libraryPath, libraryPathLength, &libraryPathDirectoryLength);
     getDirectoryPart(executablePath, executablePathLength, &executablePathDirectoryLength);
 
-    unsigned int maxLength = 0;
-    maxLength = maxLength > executablePathDirectoryLength ? maxLength : executablePathDirectoryLength;
+    unsigned int maxLength = executablePathDirectoryLength;
     maxLength = maxLength > libraryPathDirectoryLength ? maxLength : libraryPathDirectoryLength;
     maxLength = maxLength > bundlePathLength + 19 ? maxLength : bundlePathLength; // for "/Contents/Resources"
     maxLength += relPathLength + 2; // for the extra path delimiter and null byte suffix
 
-    const char * dirs[3] = { libraryPath, executablePath, bundlePath };
-    const unsigned int lengths[3] = { libraryPathDirectoryLength, executablePathDirectoryLength, bundlePathLength };
+    const char * dirs[] = { libraryPath, executablePath, bundlePath };
+    const unsigned int lengths[] = { libraryPathDirectoryLength, executablePathDirectoryLength, bundlePathLength };
 
     char * subdir = (char *)malloc(sizeof(char) * maxLength);
     unsigned int subdirLength = 0;
     unsigned int resultdirLength = 0;
-    for (int i = 0; i < 3; ++i)
+    for (unsigned char i = 0; i < 3; ++i)
     {
         const char * dir = dirs[i];
         const unsigned int length = lengths[i];
@@ -420,76 +337,27 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             continue;
         }
 
-        // Check <basedir>/<relpath>
-
         memcpy(subdir, dir, length);
-        subdirLength = length;
-        memcpy(subdir+subdirLength, "/", 1);
-        subdirLength += 1;
-        memcpy(subdir+subdirLength, relPath, relPathLength);
-        resultdirLength = subdirLength;
-        subdirLength += relPathLength;
-        subdir[subdirLength] = 0;
-        if (fileExists(subdir, subdirLength))
+
+        // Check <basedir>/<relpath>, <basedir>/../<relpath>, and <basedir>/../../<relpath>
+        for (unsigned char j = 0; j < 3; ++j)
         {
-            *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
-            *pathLength = resultdirLength;
-            memcpy(*path, subdir, resultdirLength);
-            (*path)[resultdirLength] = 0;
+            unsigned char relDirLength = j * 3 + 1;
 
-            free(libraryPath);
-            free(executablePath);
-            free(bundlePath);
-            free(subdir);
+            subdirLength = length;
+            memcpy(subdir+subdirLength, "/../../", relDirLength);
+            subdirLength += relDirLength;
+            memcpy(subdir+subdirLength, relPath, relPathLength);
+            resultdirLength = subdirLength;
+            subdirLength += relPathLength;
+            subdir[subdirLength] = 0;
 
-            return;
-        }
+            if (fileExists(subdir, subdirLength))
+            {
+                copyToStringOutParameter(subdir, resultdirLength, path, pathLength);
 
-        // Check <basedir>/../<relpath>
-
-        subdirLength = length;
-        memcpy(subdir+subdirLength, "/../", 4);
-        subdirLength += 4;
-        memcpy(subdir+subdirLength, relPath, relPathLength);
-        resultdirLength = subdirLength;
-        subdirLength += relPathLength;
-        subdir[subdirLength] = 0;
-        if (fileExists(subdir, subdirLength))
-        {
-            *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
-            *pathLength = resultdirLength;
-            memcpy(*path, subdir, resultdirLength);
-            (*path)[resultdirLength] = 0;
-
-            free(libraryPath);
-            free(executablePath);
-            free(bundlePath);
-            free(subdir);
-
-            return;
-        }
-
-        // Check <basedir>/../../<relpath>
-        subdirLength = length;
-        memcpy(subdir+subdirLength, "/../../", 7);
-        subdirLength += 7;
-        memcpy(subdir+subdirLength, relPath, relPathLength);
-        resultdirLength = subdirLength;
-        subdirLength += relPathLength;
-        subdir[subdirLength] = 0;
-        if (fileExists(subdir, subdirLength))
-        {
-            *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
-            *pathLength = resultdirLength;
-            memcpy(*path, subdir, resultdirLength);
-            (*path)[resultdirLength] = 0;
-
-            free(libraryPath);
-            free(executablePath);
-            free(bundlePath);
-            free(subdir);
-
-            return;
+                goto out;
+            }
         }
 
         if (systemDirLength <= 0)
@@ -500,33 +368,25 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         unsigned int systemBasePathLength;
         getSystemBasePath(dir, length, &systemBasePathLength);
 
-        if (systemBasePathLength <= 0)
-            continue;
-
-        subdirLength = systemBasePathLength;
-        memcpy(subdir+subdirLength, "/", 1);
-        subdirLength += 1;
-        memcpy(subdir+subdirLength, systemDir, systemDirLength);
-        subdirLength += systemDirLength;
-        memcpy(subdir+subdirLength, "/", 1);
-        subdirLength += 1;
-        memcpy(subdir+subdirLength, relPath, relPathLength);
-        resultdirLength = subdirLength;
-        subdirLength += relPathLength;
-        subdir[subdirLength] = 0;
-        if (fileExists(subdir, subdirLength))
+        if (systemBasePathLength > 0)
         {
-            *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
-            *pathLength = resultdirLength;
-            memcpy(*path, subdir, resultdirLength);
-            (*path)[resultdirLength] = 0;
+            subdirLength = systemBasePathLength;
+            memcpy(subdir+subdirLength, "/", 1);
+            subdirLength += 1;
+            memcpy(subdir+subdirLength, systemDir, systemDirLength);
+            subdirLength += systemDirLength;
+            memcpy(subdir+subdirLength, "/", 1);
+            subdirLength += 1;
+            memcpy(subdir+subdirLength, relPath, relPathLength);
+            resultdirLength = subdirLength;
+            subdirLength += relPathLength;
+            subdir[subdirLength] = 0;
+            if (fileExists(subdir, subdirLength))
+            {
+                copyToStringOutParameter(subdir, resultdirLength, path, pathLength);
 
-            free(libraryPath);
-            free(executablePath);
-            free(bundlePath);
-            free(subdir);
-
-            return;
+                goto out;
+            }
         }
 
         // Check app bundle resources
@@ -541,27 +401,19 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             subdir[subdirLength] = 0;
             if (fileExists(subdir, subdirLength))
             {
-                *path = (char *)malloc(sizeof(char) * (resultdirLength + 1));
-                *pathLength = resultdirLength;
-                memcpy(*path, subdir, resultdirLength);
-                (*path)[resultdirLength] = 0;
+                copyToStringOutParameter(subdir, resultdirLength, path, pathLength);
 
-                free(libraryPath);
-                free(executablePath);
-                free(bundlePath);
-                free(subdir);
-
-                return;
+                goto out;
             }
         }
     }
 
+    // Could not find path
+    invalidateStringOutParameter(path, pathLength);
+
+out:
     free(libraryPath);
     free(executablePath);
     free(bundlePath);
     free(subdir);
-
-    // Could not find path
-    *path = 0x0;
-    *pathLength = 0;
 }

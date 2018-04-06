@@ -30,6 +30,36 @@
 #define macOSBundlePathLength 15
 
 
+unsigned char checkStringOutParameter(const char ** path, unsigned int * pathLength)
+{
+    if (path == 0x0 && pathLength != 0x0)
+    {
+        *pathLength = 0;
+    }
+
+    return path != 0x0;
+}
+
+void invalidateStringOutParameter(char ** path, unsigned int * pathLength)
+{
+    *path = 0x0;
+    if (pathLength != 0x0)
+    {
+        *pathLength = 0;
+    }
+}
+
+void copyToStringOutParameter(const char * source, unsigned int length, char ** target, unsigned int * targetLength)
+{
+    *target = (char *)malloc(sizeof(char) * (length + 1));
+    memcpy(*target, source, length);
+    (*target)[length] = 0;
+    if (targetLength != 0x0)
+    {
+        *targetLength = length;
+    }
+}
+
 void unifyPathDelimiters(char * path, unsigned int pathLength)
 {
     if (path == 0x0 || pathLength == 0)
@@ -62,19 +92,12 @@ void getDirectoryPart(const char * fullpath, unsigned int length, unsigned int *
     }
 
     const char * iter = fullpath + length - 1;
-    while (*iter != unixPathDelim && *iter != windowsPathDelim && iter > fullpath)
+    while (iter > fullpath && *iter != unixPathDelim && *iter != windowsPathDelim)
     {
         --iter;
     }
 
-    if (iter > fullpath)
-    {
-        *newLength = iter - fullpath;
-    }
-    else
-    {
-        *newLength = length;
-    }
+    *newLength = iter > fullpath ? iter - fullpath : length;
 }
 
 void getBundlePart(const char * fullpath, unsigned int length, unsigned int * newLength)
@@ -107,54 +130,41 @@ void getBundlePart(const char * fullpath, unsigned int length, unsigned int * ne
 
 void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int * subLength)
 {
-    static const char * systemPaths[8] = {
+    static const char * systemPaths[] = {
         "/usr/bin/",
-        "/usr/local/bin/",
         "/usr/lib/",
         "/usr/lib32/",
         "/usr/lib64/",
+        "/usr/local/bin/",
         "/usr/local/lib/",
         "/usr/local/lib32/",
         "/usr/local/lib64/",
     };
-    static const unsigned int systemPathLengths[8] = { 9, 15, 9, 11, 11, 15, 17, 17 };
-    static const unsigned int systemPathSuffixesLength[8] = { 4, 4, 4, 6, 6, 4, 6, 6};
+    static unsigned char systemPathLengths[] = { 9, 11, 15, 17 };
+    static unsigned char systemPathPrefixLength[] = { 5, 11 };
 
-    if (subLength == 0x0)
+    if (!checkStringOutParameter(path, subLength))
     {
-        return;
-    }
-
-    if (path == 0x0 || pathLength == 0)
-    {
-        *subLength = 0;
         return;
     }
 
     for (int i = 0; i < 8; ++i)
     {
         const char * systemPath = systemPaths[i];
-        unsigned int systemPathLength = systemPathLengths[i];
+        unsigned char systemPathLength = systemPathLengths[i >> 1];
 
         const char * iter = path + pathLength - 1;
-        const char * searchIter = systemPath + systemPathLength - 1;
+        const char * resetSearchIter = systemPath + systemPathLength - 1;
+        const char * searchIter = resetSearchIter;
         while (searchIter >= systemPath && iter >= path)
         {
-            if (*iter == *searchIter) //
-            {
-                --searchIter;
-            }
-            else
-            {
-                searchIter = systemPath + systemPathLength - 1;
-            }
-
+            searchIter = *iter == *searchIter ? searchIter - 1 : resetSearchIter;
             --iter;
         }
 
         if (searchIter < systemPath) // sub-systemPath-string found
         {
-            *subLength = (unsigned int)(iter - path) + systemPathLength - systemPathSuffixesLength[i] + 1;
+            *subLength = (unsigned int)(iter - path) + systemPathPrefixLength[i >> 2] + 1;
             return;
         }
     }
@@ -180,37 +190,22 @@ void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned 
 
     if (systemValue == 0x0)
     {
-        *value = 0x0;
-        if (valueLength != 0x0)
-        {
-            *valueLength = 0;
-        }
-
+        invalidateStringOutParameter(value, valueLength);
         return;
     }
 
     unsigned int systemValueLength = strlen(systemValue);
 
-    if (systemValue == 0x0 || systemValueLength == 0)
+    if (systemValueLength == 0)
     {
-        *value = 0x0;
-        if (valueLength != 0x0)
-        {
-            *valueLength = 0;
-        }
-
+        invalidateStringOutParameter(value, valueLength);
         return;
     }
 
-    *value = (char *)malloc(sizeof(char) * systemValueLength);
-    memcpy(*value, systemValue, systemValueLength);
-    if (valueLength != 0x0)
-    {
-        *valueLength = systemValueLength;
-    }
+    copyToStringOutParameter(systemValue, systemValueLength, value, valueLength);
 }
 
-int fileExists(const char * path, unsigned int pathLength)
+unsigned char fileExists(const char * path, unsigned int pathLength)
 {
     (void)pathLength;
 
