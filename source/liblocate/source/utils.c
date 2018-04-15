@@ -30,7 +30,17 @@
 #define macOSBundlePathLength 15
 
 
-unsigned char checkStringOutParameter(const char ** path, unsigned int * pathLength)
+unsigned char checkStringParameter(const char * path, unsigned int * pathLength)
+{
+    if (path == 0x0 && pathLength != 0x0)
+    {
+        *pathLength = 0;
+    }
+
+    return path != 0x0;
+}
+
+unsigned char checkStringOutParameter(char ** path, unsigned int * pathLength)
 {
     if (path == 0x0 && pathLength != 0x0)
     {
@@ -143,7 +153,7 @@ void getSystemBasePath(const char * path, unsigned int pathLength, unsigned int 
     static unsigned char systemPathLengths[] = { 9, 11, 15, 17 };
     static unsigned char systemPathPrefixLength[] = { 5, 11 };
 
-    if (!checkStringOutParameter(path, subLength))
+    if (!checkStringParameter(path, subLength))
     {
         return;
     }
