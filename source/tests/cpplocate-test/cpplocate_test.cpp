@@ -17,7 +17,7 @@ TEST_F(cpplocate_test, getExecutablePath_Return)
     const auto result = cpplocate::getExecutablePath();
 
     EXPECT_LT(0, result.size());
-    EXPECT_FALSE(result.c_str() == 0x0);
+    EXPECT_FALSE(result.c_str() == nullptr);
 }
 
 TEST_F(cpplocate_test, getBundlePath_Return)
@@ -26,7 +26,7 @@ TEST_F(cpplocate_test, getBundlePath_Return)
     const auto result = cpplocate::getBundlePath();
 
     EXPECT_LT(0, result.size());
-    EXPECT_NE(0x0, result.c_str());
+    EXPECT_NE(nullptr, result.c_str());
 #else
     SUCCEED();
 #endif
@@ -37,7 +37,7 @@ TEST_F(cpplocate_test, getModulePath_Return)
     const auto result = cpplocate::getModulePath();
 
     EXPECT_LT(0, result.size());
-    EXPECT_FALSE(result.c_str() == 0x0);
+    EXPECT_FALSE(result.c_str() == nullptr);
 }
 
 TEST_F(cpplocate_test, getLibraryPath_Return)
