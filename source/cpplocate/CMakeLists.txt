@@ -32,14 +32,12 @@ set(source_path  "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 set(headers
     ${include_path}/cpplocate.h
-    ${include_path}/utils.h
-    ${include_path}/ModuleInfo.h
 )
 
 set(sources
     ${source_path}/cpplocate.cpp
-    ${source_path}/utils.cpp
-    ${source_path}/ModuleInfo.cpp
+    ${source_path}/../../liblocate/source/liblocate.c
+    ${source_path}/../../liblocate/source/utils.c
 )
 
 # Group source files
@@ -101,6 +99,8 @@ target_include_directories(${target}
     ${PROJECT_BINARY_DIR}/source/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}/include
+    ${PROJECT_SOURCE_DIR}/source/liblocate/include
+    ${PROJECT_BINARY_DIR}/source/liblocate/include
 
     PUBLIC
     ${DEFAULT_INCLUDE_DIRECTORIES}

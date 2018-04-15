@@ -14,6 +14,8 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 include(cmake/Custom.cmake)
 
 # Set policies
+set_policy(CMP0003 NEW) # ENABLE CMP0003: Libraries linked via full path no longer produce linker search paths.
+set_policy(CMP0004 NEW) # ENABLE CMP0004: Libraries linked may not have leading or trailing whitespace.
 set_policy(CMP0028 NEW) # ENABLE CMP0028: Double colon in target name means ALIAS or IMPORTED target.
 set_policy(CMP0054 NEW) # ENABLE CMP0054: Only interpret if() arguments as variables or keywords when unquoted.
 set_policy(CMP0042 NEW) # ENABLE CMP0042: MACOSX_RPATH is enabled by default.
