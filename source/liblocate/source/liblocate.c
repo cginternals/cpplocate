@@ -65,13 +65,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
         return;
     }
 
-    unsigned int len = strlen(exePath);
-    *path = (char *)malloc(sizeof(char) * len);
-    memcpy(*path, exePath, len);
-    if (pathLength != 0x0)
-    {
-        *pathLength = len;
-    }
+    copyToStringOutParameter(exePath, len, path, pathLength);
 
 #elif defined SYSTEM_SOLARIS
 
@@ -79,17 +73,12 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     if (realpath(getexecname(), exePath) == 0x0)
     {
-        invalidate(path, pathLength);
+        invalidateStringOutParameter(path, pathLength);
         return;
     }
 
     unsigned int len = strlen(exePath);
-    *path = (char *)malloc(sizeof(char) * len);
-    memcpy(*path, exePath, len);
-    if (pathLength != 0x0)
-    {
-        *pathLength = len;
-    }
+    copyToStringOutParameter(exePath, len, path, pathLength);
 
 #elif defined SYSTEM_DARWIN
 
@@ -103,17 +92,12 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
         if (realPath == 0x0)
         {
-            invalidate(path, pathLength);
+            invalidateStringOutParameter(path, pathLength);
             return;
         }
 
         unsigned int len = strlen(realPath);
-        *path = (char *)malloc(sizeof(char) * len);
-        memcpy(*path, realPath, len);
-        if (pathLength != 0x0)
-        {
-            *pathLength = len;
-        }
+        copyToStringOutParameter(realPath, len, path, pathLength);
 
         free(realPath);
     }
@@ -124,7 +108,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
         if (_NSGetExecutablePath(intermediatePath, &len) != 0)
         {
             free(intermediatePath);
-            invalidate(path, pathLength);
+            invalidateStringOutParameter(path, pathLength);
             return;
         }
 
@@ -134,17 +118,12 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
         if (realPath == 0x0)
         {
-            invalidate(path, pathLength);
+            invalidateStringOutParameter(path, pathLength);
             return;
         }
 
         unsigned int len = strlen(realPath);
-        *path = (char *)malloc(sizeof(char) * len);
-        memcpy(*path, exePath, len);
-        if (pathLength != 0x0)
-        {
-            *pathLength = len;
-        }
+        copyToStringOutParameter(realPath, len, path, pathLength);
 
         free(realPath);
     }
@@ -159,20 +138,15 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     if (sysctl(mib, 4, exePath, &len, 0x0, 0) != 0)
     {
-        invalidate(path, pathLength);
+        invalidateStringOutParameter(path, pathLength);
         return;
     }
 
-    *path = (char *)malloc(sizeof(char) * len);
-    memcpy(*path, realPath, len);
-    if (pathLength != 0x0)
-    {
-        *pathLength = len;
-    }
+    copyToStringOutParameter(exePath, len, path, pathLength);
 
 #else
 
-    invalidate(path, pathLength);
+    invalidateStringOutParameter(path, pathLength);
 
 #endif
 }

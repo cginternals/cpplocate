@@ -99,14 +99,6 @@ endif ()
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     set(DEFAULT_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS}
     PRIVATE
-    # Shared Object size
-        -s
-        -fmerge-all-constants
-        -fno-unroll-loops
-        -fno-unwind-tables
-        -fno-asynchronous-unwind-tables
-
-    # General
         -Wall
         -Wextra
         -Wunused
@@ -134,6 +126,14 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCH
 
             # -Wreturn-stack-address # gives false positives
         >
+        
+        $<$<CONFIG:MinSizeRel>:
+            -fmerge-all-constants
+            -fno-unroll-loops
+            -fno-unwind-tables
+            -fno-asynchronous-unwind-tables
+        >
+
     PUBLIC
         $<$<PLATFORM_ID:Darwin>:
             -pthread
@@ -156,8 +156,8 @@ set(DEFAULT_LINKER_OPTIONS)
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     set(DEFAULT_LINKER_OPTIONS ${DEFAULT_LINKER_OPTIONS}
     PRIVATE
-    # Shared Object size
-    -Wl,-z,norelro,--build-id=none
+        $<$<CONFIG:MinSizeRel>:-Wl,-z,norelro,--build-id=none>
+        
     PUBLIC
         -pthread
         -ldl
