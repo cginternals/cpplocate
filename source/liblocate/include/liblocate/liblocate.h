@@ -3,12 +3,17 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+#include <string>
 #endif
 
 
 #include <liblocate/liblocate_api.h>
+
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 
 /**
@@ -75,7 +80,7 @@ LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
 *
 *  @remarks
 *    The path is returned in unified format (forward slashes).
-*    If symbol is nullptr, an empty string is returned.
+*    If symbol is null pointer, an empty string is returned.
 *
 *    The caller takes memory ownership over *path.
 */
@@ -112,7 +117,7 @@ LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pa
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
-    const char * systemDir, unsigned int systemDirLength, void * symbol = nullptr);
+    const char * systemDir, unsigned int systemDirLength, void * symbol);
 
 
 #ifdef __cplusplus

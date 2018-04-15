@@ -1,7 +1,7 @@
 
 #include <gmock/gmock.h>
 
-#include <liblocate/utils.h>
+#include "../../liblocate/source/utils.h"
 
 
 class utils_test : public testing::Test
@@ -31,8 +31,10 @@ TEST_F(utils_test, unifiedPath_NoPath)
     unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
+    EXPECT_EQ(0, actual[length]);
+    EXPECT_EQ(length, strlen(actual));
 
-    delete actual;
+    free(actual);
 }
 
 TEST_F(utils_test, unifiedPath_UnixPath)
@@ -47,8 +49,10 @@ TEST_F(utils_test, unifiedPath_UnixPath)
     unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
+    EXPECT_EQ(0, actual[length]);
+    EXPECT_EQ(length, strlen(actual));
 
-    delete actual;
+    free(actual);
 }
 
 TEST_F(utils_test, unifiedPath_WindowsPath)
@@ -63,8 +67,10 @@ TEST_F(utils_test, unifiedPath_WindowsPath)
     unifyPathDelimiters(actual, length);
 
     EXPECT_STREQ(expected, actual);
+    EXPECT_EQ(0, actual[length]);
+    EXPECT_EQ(length, strlen(actual));
 
-    delete actual;
+    free(actual);
 }
 
 TEST_F(utils_test, getDirectoryPath_EmptyPath)
@@ -222,8 +228,10 @@ TEST_F(utils_test, getEnv_Value)
     // Display is in format ':[display number]'
     EXPECT_LT(1, valueLength);
     EXPECT_EQ(':', value[0]);
+    EXPECT_EQ(0, value[valueLength]);
+    EXPECT_EQ(valueLength, strlen(value));
 
-    delete value;
+    free(value);
 #endif
 }
 

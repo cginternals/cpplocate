@@ -1,7 +1,7 @@
 
-# 
+#
 # Platform and architecture setup
-# 
+#
 
 # Get upper case system name
 string(TOUPPER ${CMAKE_SYSTEM_NAME} SYSTEM_NAME_UPPER)
@@ -13,11 +13,9 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif()
 
 
-
-
-# 
+#
 # Project options
-# 
+#
 
 set(DEFAULT_PROJECT_OPTIONS
     DEBUG_POSTFIX             "d"
@@ -29,23 +27,23 @@ set(DEFAULT_PROJECT_OPTIONS
 )
 
 
-# 
+#
 # Include directories
-# 
+#
 
 set(DEFAULT_INCLUDE_DIRECTORIES)
 
 
-# 
+#
 # Libraries
-# 
+#
 
 set(DEFAULT_LIBRARIES)
 
 
-# 
+#
 # Compile definitions
-# 
+#
 
 set(DEFAULT_COMPILE_DEFINITIONS
     SYSTEM_${SYSTEM_NAME_UPPER}
@@ -60,9 +58,9 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
 endif ()
 
 
-# 
+#
 # Compile options
-# 
+#
 
 set(DEFAULT_COMPILE_OPTIONS)
 
@@ -84,13 +82,13 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
         #/RTCc         # -> value is assigned to a smaller data type and results in a data loss
         #>
 
-        $<$<CONFIG:Release>: 
+        $<$<CONFIG:Release>:
         /Gw           # -> whole program global optimization
-        /GS-          # -> buffer security check: no 
+        /GS-          # -> buffer security check: no
         /GL           # -> whole program optimization: enable link-time code generation (disables Zi)
         /GF           # -> enable string pooling
         >
-        
+
         # No manual c++11 enable for MSVC as all supported MSVC versions for cmake-init have C++11 implicitly enabled (MSVC >=2013)
 
     PUBLIC
@@ -105,7 +103,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCH
         -Wextra
         -Wunused
 
-        -Wreorder
         -Wignored-qualifiers
         -Wmissing-braces
         -Wreturn-type
@@ -113,27 +110,35 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCH
         -Wswitch-default
         -Wuninitialized
         -Wmissing-field-initializers
-        
+
         $<$<CXX_COMPILER_ID:GNU>:
             -Wmaybe-uninitialized
-            
+
             $<$<VERSION_GREATER:$<CXX_COMPILER_VERSION>,4.8>:
                 -Wpedantic
-                
+
                 -Wreturn-local-addr
             >
         >
-        
+
         $<$<CXX_COMPILER_ID:Clang>:
             -Wpedantic
-            
+
             # -Wreturn-stack-address # gives false positives
         >
+        
+        $<$<CONFIG:MinSizeRel>:
+            -fmerge-all-constants
+            -fno-unroll-loops
+            -fno-unwind-tables
+            -fno-asynchronous-unwind-tables
+        >
+
     PUBLIC
         $<$<PLATFORM_ID:Darwin>:
             -pthread
         >
-        
+
         $<$<VERSION_LESS:${CMAKE_VERSION},3.1>:
             -std=c++11
         >
@@ -141,15 +146,18 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCH
 endif ()
 
 
-# 
+#
 # Linker options
-# 
+#
 
 set(DEFAULT_LINKER_OPTIONS)
 
 # Use pthreads on mingw and linux
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-    set(DEFAULT_LINKER_OPTIONS
+    set(DEFAULT_LINKER_OPTIONS ${DEFAULT_LINKER_OPTIONS}
+    PRIVATE
+        $<$<CONFIG:MinSizeRel>:-Wl,-z,norelro,--build-id=none>
+        
     PUBLIC
         -pthread
         -ldl

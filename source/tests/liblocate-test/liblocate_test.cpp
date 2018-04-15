@@ -28,18 +28,20 @@ TEST_F(liblocate_test, getExecutablePath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(executablePath == 0x0);
+    EXPECT_EQ(0, executablePath[length]);
+    EXPECT_EQ(length, strlen(executablePath));
 
     free(executablePath);
 }
 
-TEST_F(liblocate_test, getBundlePathPath_NoReturn)
+TEST_F(liblocate_test, getBundlePath_NoReturn)
 {
     getBundlePath(nullptr, nullptr);
 
     SUCCEED();
 }
 
-TEST_F(liblocate_test, getBundlePathPath_Return)
+TEST_F(liblocate_test, getBundlePath_Return)
 {
 #ifdef SYSTEM_DARWIN
     char * bundlePath = 0x0;
@@ -49,6 +51,8 @@ TEST_F(liblocate_test, getBundlePathPath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(bundlePath == 0x0);
+    EXPECT_EQ(0, bundlePath[length]);
+    EXPECT_EQ(length, strlen(bundlePath));
 
     free(bundlePath);
 #else
@@ -72,6 +76,8 @@ TEST_F(liblocate_test, getModulePath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(modulePath == 0x0);
+    EXPECT_EQ(0, modulePath[length]);
+    EXPECT_EQ(length, strlen(modulePath));
 
     free(modulePath);
 }
@@ -92,6 +98,8 @@ TEST_F(liblocate_test, getLibraryPath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(libraryPath == 0x0);
+    EXPECT_EQ(0, libraryPath[length]);
+    EXPECT_EQ(length, strlen(libraryPath));
 
     free(libraryPath);
 }
@@ -125,6 +133,8 @@ TEST_F(liblocate_test, locatePath_Return)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(path == 0x0);
+    EXPECT_EQ(0, path[length]);
+    EXPECT_EQ(length, strlen(path));
 
     free(path);
 }
@@ -141,6 +151,8 @@ TEST_F(liblocate_test, locatePath_ReturnNoSymbol)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(path == 0x0);
+    EXPECT_EQ(0, path[length]);
+    EXPECT_EQ(length, strlen(path));
 
     free(path);
 }
@@ -156,6 +168,8 @@ TEST_F(liblocate_test, locatePath_ReturnNoSystemDir)
 
     EXPECT_LT(0, length);
     EXPECT_FALSE(path == 0x0);
+    EXPECT_EQ(0, path[length]);
+    EXPECT_EQ(length, strlen(path));
 
     free(path);
 }
