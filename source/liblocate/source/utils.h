@@ -8,7 +8,8 @@ extern "C"
 #endif
 
 
-unsigned char checkStringOutParameter(const char ** path, unsigned int * pathLength);
+unsigned char checkStringParameter(const char * path, unsigned int * pathLength);
+unsigned char checkStringOutParameter(char ** path, unsigned int * pathLength);
 void invalidateStringOutParameter(char ** path, unsigned int * pathLength);
 void copyToStringOutParameter(const char * source, unsigned int length, char ** target, unsigned int * targetLength);
 
