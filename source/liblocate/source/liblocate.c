@@ -262,7 +262,7 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 
 #endif
 
-    unifyPathDelimiters(*path, *pathLength);
+    // unifyPathDelimiters(*path, *pathLength);
 }
 
 void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
@@ -292,8 +292,8 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
 
     unsigned int maxLength = executablePathDirectoryLength;
     maxLength = maxLength > libraryPathDirectoryLength ? maxLength : libraryPathDirectoryLength;
-    maxLength = maxLength > bundlePathLength + 19 ? maxLength : bundlePathLength; // for "/Contents/Resources"
-    maxLength += relPathLength + 2; // for the extra path delimiter and null byte suffix
+    maxLength = maxLength > bundlePathLength + 19 ? maxLength : bundlePathLength + 19; // for "/Contents/Resources"
+    maxLength += relPathLength + 7 + 2; // for the extra upward path checks, the extra path delimiter and null byte suffix
 
     const char * dirs[] = { libraryPath, executablePath, bundlePath };
     const unsigned int lengths[] = { libraryPathDirectoryLength, executablePathDirectoryLength, bundlePathLength };
