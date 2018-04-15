@@ -1,6 +1,14 @@
-libcpplocate (1.0.0-0) wily xenial; urgency=low
+libcpplocate (2.0.0-0) wily xenial; urgency=low
+
+  * Major version release.
+
+ -- Willy Scheibel <willy.scheibel@cginternals.com>  Sun, 15 Apr 2016 14:37:00 +0200
+
+
+ libcpplocate (1.0.0-0) wily xenial; urgency=low
 
   * Initial release.
 
  -- Willy Scheibel <willy.scheibel@cginternals.com>  Tue, 26 Jan 2016 21:58:03 +0100
+ 
  
