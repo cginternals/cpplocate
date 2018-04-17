@@ -153,7 +153,7 @@ endif ()
 set(DEFAULT_LINKER_OPTIONS)
 
 # Use pthreads on mingw and linux
-if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     set(DEFAULT_LINKER_OPTIONS ${DEFAULT_LINKER_OPTIONS}
     PRIVATE
         $<$<CONFIG:MinSizeRel>:-Wl,-z,norelro,--build-id=none>

@@ -55,7 +55,8 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
     char exePath[MAX_PATH];
 
-    if (GetModuleFileNameA(GetModuleHandleA(0x0), exePath, MAX_PATH) == 0)
+    unsigned int len = GetModuleFileNameA(GetModuleHandleA(0x0), exePath, MAX_PATH);
+    if (len == 0)
     {
         *path = 0x0;
         if (pathLength != 0x0)
@@ -238,7 +239,7 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
         GetModuleFileNameA(module, systemPath, MAX_PATH);
     }
 
-    unsigned int len = strnlen_s(systemPath, MAX_PATH);
+    unsigned int len = strnlen(systemPath, MAX_PATH);
     *path = (char *)malloc(sizeof(char) * len);
     memcpy(*path, systemPath, len);
     if (pathLength != 0x0)

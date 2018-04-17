@@ -17,7 +17,7 @@ add_subdirectory(cpplocate)
 add_subdirectory(liblocate)
 
 # Tests
-if(OPTION_BUILD_TESTS)
+if(OPTION_BUILD_TESTS AND NOT MINGW)
     set(IDE_FOLDER "Tests")
     add_subdirectory(tests)
 endif()
