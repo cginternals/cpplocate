@@ -136,6 +136,8 @@ target_compile_definitions(${target}
     PUBLIC
     $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_id}_STATIC_DEFINE>
     ${DEFAULT_COMPILE_DEFINITIONS}
+    LIBLOCATE_EXPORTS
+    liblocate_EXPORTS
 
     INTERFACE
 )
