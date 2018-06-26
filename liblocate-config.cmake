@@ -34,9 +34,6 @@ endmacro()
 # Make script location known
 set(CPPLOCATE_COPYIFEXISTS "${CMAKE_CURRENT_LIST_DIR}/cmake/CopyIfExists.cmake")
 
-# Include module information file functions
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/ModuleInformation.cmake)
-
 # Try install location
 set(MODULE_FOUND FALSE)
 find_modules("cmake")

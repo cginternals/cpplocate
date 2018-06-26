@@ -148,6 +148,8 @@ ToDo
 
 ### Foo Bar
 
+ToDo: documentation is outdated, document new functionality.
+
 
 ## Get absolute path to the current executable
 
