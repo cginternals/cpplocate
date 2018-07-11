@@ -2,7 +2,7 @@
 
 # C++ Locator Library
 
-*cpplocate* is an [MIT licensed](http://opensource.org/licenses/MIT), cross-platform C++ library that provides tools for applications to locate themselves, their data assets, as well as dependend modules.
+*cpplocate* is an [MIT licensed](http://opensource.org/licenses/MIT), cross-platform C++ library that provides tools for applications to locate themselves, their data assets, as well as dependent modules.
 
 In the context of cross-platform applications, locating data assets belonging to an application or library is not an easy task. 
 Depending on the situation, data assets can occupy different locations on a system: in a development tree, data might be located relative to the executable in a build directory, when installed into the system, they might be located in a global directory such as ```/usr/share``` or ```C:\Users\...\AppData```, while for self-contained installs they might be located relative to the executable. 
@@ -17,64 +17,26 @@ We provide trainings and can help you integrate and customize cpplocate in your 
 
 Visit [Professional Support and Services](https://www.cginternals.com) for more details.
 
-## Resources
 
-* [Project Health](#project-health)
+# Resources
+
+* [C Port of cpplocate: liblocate](#c-port-of-cpplocate-liblocate)
 
 ###### Installation and Development
-* [Install Instructions](#install-instructions)
+
 * [Build form Source](#build-instructions)
 * [Tips for Linking](#tips-for-linking)
-* [Basic Example](#basic-example)
 
 ###### Feature Documentation and Code Snippets
-* [Foo Bar](#foo-bar)
+
+* [Query Executable Path](#query-executable-path)
+* [Query Library Path](#query-library-path)
+* [Query Bundle Path](#query-bundle-path)
+* [Query Module Path](#query-module-path)
+* [Query Runtime Asset Path](#query-runtime-asset-path)
 
 
-## Project Health
-
-| Service | System | Compiler | Status |
-| ------- | ------ | -------- | -----: |
-|  [Travis-CI](https://travis-ci.org/cginternals/cpplocate) | Ubuntu 14.04 | GCC 4.8, Clang 3.5 | [![Build Status](https://travis-ci.org/cginternals/cpplocate.svg?branch=master)](https://travis-ci.org/cginternals/cpplocate) |
-|  [Travis-CI](https://travis-ci.org/cginternals/cpplocate) | macOS | AppleClang 7.3 | [![Build Status](https://travis-ci.org/cginternals/cpplocate.svg?branch=master)](https://travis-ci.org/cginternals/cpplocate) |
-| [AppVeyor]() | Windows | MSVC 2013<br>MSVC 2015<br>MSVC 2017 | [![Build status](https://ci.appveyor.com/api/projects/status/etfu3vini9hpo34u/branch/master?svg=true)](https://ci.appveyor.com/project/scheibel/cpplocate/branch/master)|
-| [Coverity](https://scan.coverity.com/projects/6828?tab=overview) | Ubuntu 14.04 | GCC 5.3 | upcoming |
-| Jenkins <br><br><br><br> | Ubuntu 14.04 <br><br><br><br> | GCC 4.8 <br> GCC 4.9 <br> GCC 5.4 <br> Clang 3.9 <br> | [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.8)](https://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.8) <br> [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc4.9)](https://jenkins.hpi3d.de/job/cpplocate-linux-gcc4.9) <br> [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-gcc5)](https://jenkins.hpi3d.de/job/cpplocate-linux-gcc5.4) <br> [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-linux-clang3.9)](https://jenkins.hpi3d.de/job/cpplocate-linux-clang3.9) <br> |
-| Jenkins <br><br> | Windows 10 <br><br> | MSVC 2013 Update 5 <br>  MSVC 2015 Update 1 <br> | [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-windows-msvc2013)](https://jenkins.hpi3d.de/job/cpplocate-windows-msvc2013) <br> [![Build Status](https://jenkins.hpi3d.de/buildStatus/icon?job=cpplocate-windows-msvc2015)](https://jenkins.hpi3d.de/job/cpplocate-windows-msvc2015) <br> |
-
-
-Please note that our macOS build node is currently broken (physically). However, *cpplocate* is maintained for macOS as well and there are many people using it on macOS on a regular basis.
-
-
-## Install Instructions
-
-*cpplocate* is available for different platforms using different distribution channels. 
-
-ToDo
-
-###### Windows
-
-ToDo
-
-###### Ubuntu
-
-ToDo
-
-###### Arch Linux
-
-ToDo
-
-###### macOS
-
-ToDo
-
-
-###### Debian-based Systems
-
-There is currently no precompiled package maintained. Please download the source code and commence [building from source](#build-instructions).
-
-
-## Build Instructions
+# Build Instructions
 
 ##### Prerequisites and Dependencies
 
@@ -90,264 +52,154 @@ Building *cpplocate* utilizes:
 For compilation, a C++11 compliant compiler, e.g., GCC 4.8, Clang 3.3, MSVC 2013 **Update 3**, is required.
 
 First, download the source code [as archive](https://github.com/cginternals/cpplocate/releases) or via git:
-```shell
+
+```bash
 > git clone https://github.com/cginternals/cpplocate.git
 > cd cpplocate
 ```
 Then, depending on the version of *cpplocate* you want to build, choose the appropriate tag or branch, e.g., for the 1.0.0 release:
-```shell
+
+```bash
 > git fetch --tags
 > git checkout v1.0.0
 ```
+
 The actual compilation can be done using CMake and your favorite compiler and IDE.
 
 For building *cpplocate* CMake via command line can be used (should work on all systems):
 
 First create a build directory (we do not recommend in-source builds):
-```shell
+
+```bash
 > mkdir build
 > cd build
 ```
 
 Configure *cpplocate* with your prefered or default generator, e.g., for Visual Studio 2015 in x64 use
 (note: some IDEs have integrated support for CMake projects, e.g., Qt Creator, and allow you to skip the manual project configuration):
-```shell
-> cmake .. -G "Visual Studio 14 2015 Win64"
+
+```bash
+> cmake .. -G "Visual Studio 15 2017 Win64"
 ```
 
 In order to compile the project, either use you favorite Editor/IDE with the created project or use CMake as follows:
-```shell
+
+```bash
 > cmake --build .
 ```
 
 
-
-## Tips for Linking
+# Tips for Linking
 
 We suggest using the build system of *cpplocate* for a smooth integration: [CMake](https://cmake.org/)
-For it, *cpplocate* provides a find configuration script that should be installed into your system or at least be accessible by CMake. 
+For it, *cpplocate* provides a find configuration script that should be installed into your system or at least accessible by CMake. 
 In the projects CMakeLists.txt, add one of the following lines:
-```
-find_package(cpplocate QUIET)    # if you want to check for existance
+
+```cmake
+find_package(cpplocate QUIET) # if you want to check for existence
 find_package(cpplocate REQUIRED) # if it is really required in your project
 ```
-
-There is no need for explicit linking (e.g., ```target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)```) anymore. 
-The find configuration script takes care of that.
-
-
-
-
-## Basic Example
-
-ToDo
-
-
-
-## Features
-
-### Foo Bar
-
-ToDo: documentation is outdated, document new functionality.
-
-
-## Get absolute path to the current executable
-
-```cpplocate``` offers a cross-platform implementation to obtain the location of the current executable
-in most cases. This can be used by the application itself to locate its data.
-
-## Module information files
-
-Module information files contain meta-information about a module, such as project name,
-version, and vendor. They also provide the information of where to find data assets for
-that module based on the location of the module information file itself, or, in some cases,
-using an absolute path.
-
-A module information file has the filename ```<projectname>.modinfo``` and contains an arbitrary
-number of key/value-pairs, e.g.:
+Finally, just link cpplocate to your own library or executable:
 
 ```cmake
-  name: examplelib
-  version: 1.0.0
-  description: Example library
-  author: Example organization
-  dataPath: ${ModulePath}/data
+target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)
 ```
 
-The keys are purely conventional and can be used in any way as defined by the using application.
-To express file paths relative to the module information file, the placeholder variable ```${ModulePath}```
-can be used. When loading the module information, this variable will be replaced with the path
-to the directory containing the module information file.
 
-## CMake integration
+# Examples and Documentation
 
-A CMake module is provided for creating module information files automatically, taking into account
-different situations such as build-time (finding modules and data in a development tree) and
-install-time (finding modules and data from an installed location).
+cpplocate supports to query different paths, depending on the type of component that is queried (application, library, or application bundle). For the most basic use case, cpplocate is used to detect run-time data that is associated with a module and we provide a convenience location function.
 
-Use ```find_package(cpplocate)``` to find the cpplocate library, pointing ```CMAKE_PREFIX_PATH``` to the
-directory that contains ```cpplocate```. This will locate the library and also include the necessary
-cmake functions into your project.
+## Query Executable Path
 
-The following cmake functions are provided by ```cpplocate```:
+```cpp
+#include <cpplocate/cpplocate.h>
 
-### ```generate_module_info```: Define a module information file.
+const std::string executablePath = cpplocate::getExecutablePath();
+// executablePath now contains the path to the executable (including its filename)
+```
+
+## Query Module Path
+
+```cpp
+#include <cpplocate/cpplocate.h>
+
+const std::string modulePath = cpplocate::getModulePath();
+// modulePath now contains the path to the directory containing the executable
+```
+
+## Query Bundle Path
+
+Querying application bundles is only defined for macOS application bundles.
+For other platforms or non-bundle applications, empty strings are returned.
+
+```cpp
+#include <cpplocate/cpplocate.h>
+
+const std::string bundlePath = cpplocate::getBundlePath();
+// bundlePath now contains the path to the root of the application bundle
+// (instead of the path to the executable within the bundle)
+```
+
+## Query Library Path
+
+To query a library location, you have to specify a pointer to a symbol (e.g., a function pointer or a public static member) that is exposed by the library.
+
+```cpp
+#include <cpplocate/cpplocate.h>
+
+#include <QtGlobal>
+
+const std::string libraryPath = cpplocate::getLibraryPath(reinterpret_cast<void *>(&qVersion));
+// libraryPath now contains the path to the QtCore library (including its filename)
+```
+
+## Query Runtime Asset Path
+
+This function searches for a subdirectory pattern across available system paths, local run paths of the executable or alongside a library that is identified via an exported symbol. This function searches for a relative directory as passed as the first parameter along the executable or a library (local install) and in a number of system install locations (system install). In case of a system install, the relative path of the second parameter is assumed to prepend the first parameter. A library for which a run-time directory should get located can be identified through an exposed symbol.
+
+Note that for Windows most projects deploy using local installs. Currently, we assume local installs for Windows.
+
+```cpp
+#include <cpplocate/cpplocate.h>
+
+#include <glbinding/gl/gl.h>
+
+const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glbinding", reinterpret_cast<void *>(&gl::glCreateShader));
+// assetPath now contains the path to the directory containing "data/cubescape"
+```
+
+
+# C Port of cpplocate: liblocate
+
+Internally, cpplocate is implemented using plain C, providing a C++ interface for ease of use. For communities and software that don't want to use C++, the `liblocate` within this project can be used instead.
+
+The adapted CMake integration is:
 
 ```cmake
-generate_module_info(<project_id>
-    VALUES
-    [<key> <value>]*
+find_package(liblocate QUIET) # if you want to check for existence
+find_package(liblocate REQUIRED) # if it is really required in your project
 
-    BUILD_VALUES
-    [<key> <value>]*
+# declare target
 
-    INSTALL_VALUES
-    [<key> <value>]*
-)
+target_link_libraries(${target} ... PUBLIC cpplocate::liblocate)
 ```
 
-Define a module information file for a module named by ```project_id```. The module name can be chosen
-arbitrarily and can, but does not need to, match the name of the project or a library. The
-filename will be derived as ```<project_id>.modinfo```.
+The interfaces are as follows:
 
-The generated module information file will contain all key/value-pairs specified after ```VALUES```.
-When created into the build-directory of the current development tree, the values specified
-after ```BUILD_VALUES``` will also be added. But when installed using the cmake ```INSTALL```-target, the
-values after ```INSTALL_VALUES``` will be used instead. This allows for providing different values
-in the development tree and in installed location, e.g., the data path might point to the
-absolute path in the development tree, but be defined relative to the module file on install.
+```cpp
+// Get path to the current executable
+void getExecutablePath(char ** path, unsigned int * pathLength);
 
-Example usage:
+// Get path to the current application bundle
+void getBundlePath(char ** path, unsigned int * pathLength);
 
-```cmake
-generate_module_info(examplelib
-    VALUES
-    name        "examplelib"
-    version     "1.0.0"
-    description "Example library"
-    author      "Example organization"
+// Get path to the current module
+void getModulePath(char ** path, unsigned int * pathLength);
 
-    BUILD_VALUES
-    dataPath    "${PROJECT_SOURCE_DIR}/data"
+// Get path to dynamic library
+void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength);
 
-    INSTALL_VALUES
-    dataPath    "\${ModulePath}/data"
-)
+// Locate path to a file or directory
+void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength, const char * systemDir, unsigned int systemDirLength, void * symbol);
 ```
-
-### ```export_module_info```: Create module information file in build directory.
-
-```cmake
-export_module_info(<project_id>
-    TARGET <target>
-    [ FOLDER <folder>
-      [RENAME <filename>]
-    ]
-)
-```
-
-Creates the actual module information file for a module named by ```project_id``` in the output directory of target ```<target>```. It uses the values from ```VALUES``` and ```BUILD_VALUES```. This is executed at build-time, providing a target named ```<target>-modinfo```. If ```FOLDER``` is specified, the target is put into the UI folder named by ```folder```. If ```RENAME``` is specified, the target output name is set as ```<filename>```, ```filename``` can contain generator expressions.
-
-Example usage:
-
-```cmake
-export_module_info(examplelib TARGET examplelib FOLDER "cmake")
-```
-
-### ```export_module_info_with_deps```: Create module information file and copy module information files of dependencies into the build directory
-
-```cmake
-export_module_info_with_deps(<target>
-    [ FOLDER <folder>
-      [RENAME <filename>]
-    ]
-    REQUIRES <module_name> <import_target> [ <module_name> <import_target> ]*
-)
-```
-
-Creates the actual module information file for a module named by ```<target>``` in the output directory of that target. It uses the values from ```VALUES``` and ```BUILD_VALUES```. This is executed at build-time, providing a target named ```<target>-modinfo```. If ```FOLDER``` is specified, the target is put into the UI folder named by ```folder```. If ```RENAME``` is specified, the target output name is set as ```<filename>```, ```filename``` can contain generator expressions. REQUIRES specifies a list of dependencies, whose module information files will be located and copied into the output directory.
-
-To locate the module information file, a file named ```<module_name>.modinfo``` is located in the directory of the given target ```<import_target>```. Therefore, the module file must reside in the same directory as the library for this mechanism to work.
-
-Example usage:
-
-```cmake
-export_module_info_with_deps(examplelib TARGET examplelib FOLDER "cmake")
-```
-
-### ```install_module_info```: Install modinfo file to target path.
-
-```cmake
-install_module_info(<project_id>
-    DESTINATION <dest>
-    [COMPONENT <component>]
-    [RENAME <filename>]
-)
-```
-
-Creates an installation rule to install a module information file named by ```project_id```. It uses the values from ```VALUES``` and ```INSTALL_VALUES```. The destination location is specified by ```dest```. If ```RENAME``` is specified, the file will be renamed to ```<filename>``` on installation, ```filename``` can contain generator expressions. If ```COMPONENT``` is specified, the module information file is added to the specified installation component.
-
-Example usage:
-
-```cmake
-install_module_info(examplelib DESTINATION "." COMPONENT dev)
-```
-
-### ```copy_module_info```: Copy module information file to a specific location at build-time.
-
-```cmake
-copy_module_info(<project_id> <filename>)
-```
-
-This function writes the module information file named by ```project_id``` to an output file specified by ```filename``` at build-time, ```filename``` can contain generator expressions. It uses the values from ```VALUES``` and ```BUILD_VALUES```.
-
-## Resolve dependend modules
-
-Similar to a dynamic linker, ```cpplocate``` can resolve dependencies to other modules by locating
-module information files. The search for modules is conducted in the following order:
-
-1. in the directory of the current executable (not the working directory!)
-
-2. in the directories provided by the environment variable ```CPPLOCATE_PATH```
-   - ```<path>/<module>-info.modinfo```
-   - ```<path>/<module>/<module>-info.modinfo```
-
-3. in standard locations:
-   - ```C:\Program Files\<module>\<module>-info.modinfo```
-   - ```/usr/share/<module>/<module>-info.modinfo```
-   - ```/usr/local/share/<module>/<module>-info.modinfo```
-
-This functionality can be used by a library to locate its own data at runtime.
-If it is used as a dependency for another project, such as an application or a
-plugin using the library, it cannot rely on the data being relative to the
-current executable or even the working directory. Therefore, the library can
-use ```cpplocate``` to locate itself:
-
-```C++
-namespace examplelib
-{
-
-std::string determineDataPath()
-{
-    const cpplocate::ModuleInfo moduleInfo = cpplocate::findModule("examplelib");
-    const std::string moduleInfoPath = moduleInfo.value("dataPath");
-
-    return moduleInfoPath.empty() ? "data" : moduleInfoPath;
-}
-
-const std::string & dataPath()
-{
-    static const auto path = determineDataPath();
-
-    return path;
-}
-
-}
-```
-
-And whenever data needs to be accessed, code like the following should be used:
-
-```C++
-std::string filename = dataPath() + "/textures/logo.png";
-```
-
