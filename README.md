@@ -188,6 +188,9 @@ target_link_libraries(${target} ... PUBLIC cpplocate::liblocate)
 The interfaces are as follows:
 
 ```cpp
+
+#include <liblocate/liblocate.h>
+
 // Get path to the current executable
 void getExecutablePath(char ** path, unsigned int * pathLength);
 
