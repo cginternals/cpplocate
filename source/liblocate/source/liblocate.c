@@ -220,11 +220,7 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
         return;
     }
 
-#if defined CPPLOCATE_STATIC_DEFINE
-
-    return;
-
-#elif defined SYSTEM_WINDOWS
+#if defined SYSTEM_WINDOWS
 
     char systemPath[MAX_PATH];
     systemPath[0] = '\0';
