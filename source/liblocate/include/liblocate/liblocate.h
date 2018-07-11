@@ -2,11 +2,6 @@
 #pragma once
 
 
-#ifdef __cplusplus
-#include <string>
-#endif
-
-
 #include <liblocate/liblocate_api.h>
 
 
