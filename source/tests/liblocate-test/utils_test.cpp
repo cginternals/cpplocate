@@ -214,8 +214,21 @@ TEST_F(utils_test, getEnv_NoEnv)
 TEST_F(utils_test, getEnv_Value)
 {
 #ifdef SYSTEM_WINDOWS
-    // TODO: implement
-    SUCCEED();
+    const char * key = "OS";
+    const unsigned int keyLength = strlen(key);
+
+    char * value = nullptr;
+    unsigned int valueLength = 0;
+
+    const char * expected = "Windows_NT";
+    const unsigned int expectedLength = strlen(expected);
+
+    getEnv(key, keyLength, &value, &valueLength);
+
+    EXPECT_EQ(expectedLength, valueLength);
+    EXPECT_EQ(0, strcmp(value, expected));
+
+    free(value);
 #else
     const char * key = "DISPLAY";
     const unsigned int keyLength = strlen(key);
