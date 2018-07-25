@@ -23,6 +23,9 @@ set(sources
     main.cpp
     liblocate_test.cpp
     utils_test.cpp
+
+    ${PROJECT_SOURCE_DIR}/../liblocate/source/utils.c
+    ${PROJECT_SOURCE_DIR}/../liblocate/source/utils.h
 )
 
 
