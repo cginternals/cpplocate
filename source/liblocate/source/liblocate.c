@@ -236,12 +236,8 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
     }
 
     unsigned int len = strnlen(systemPath, MAX_PATH);
-    *path = (char *)malloc(sizeof(char) * len);
-    memcpy(*path, systemPath, len);
-    if (pathLength != 0x0)
-    {
-        *pathLength = len;
-    }
+
+    copyToStringOutParameter(systemPath, len, path, pathLength);
 
 #else
 
