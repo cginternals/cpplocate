@@ -13,7 +13,7 @@
 
 
 #define windowsPathDelim '\\'
-#define windowssPathDelim ';'
+#define windowsPathsDelim ';'
 
 #define unixPathDelim '/'
 #define unixPathsDelim ':'
