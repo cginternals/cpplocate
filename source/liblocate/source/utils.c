@@ -107,7 +107,7 @@ void getDirectoryPart(const char * fullpath, unsigned int length, unsigned int *
         --iter;
     }
 
-    *newLength = iter > fullpath ? iter - fullpath : length;
+    *newLength = (unsigned int)(iter > fullpath ? iter - fullpath : length);
 }
 
 void getBundlePart(const char * fullpath, unsigned int length, unsigned int * newLength)
@@ -204,7 +204,7 @@ void getEnv(const char * name, unsigned int nameLength, char ** value, unsigned 
         return;
     }
 
-    unsigned int systemValueLength = strlen(systemValue);
+    unsigned int systemValueLength = (unsigned int)strlen(systemValue);
 
     if (systemValueLength == 0)
     {

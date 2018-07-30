@@ -38,8 +38,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
 
     set(DEFAULT_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS}
     PRIVATE
-        /wd4244       # -> disable warning: 'conversion' conversion from 'type1' to 'type2', possible loss of data (narrowing conversions)
-        /wd4267       # -> disable warning: 'identifier': 'var' : conversion from 'size_t' to 'type', possible loss of data (basically same as 4244 above, but specialized for size_t)
+        /wd4267       # -> disable warning: 'var' : conversion from 'size_t' to 'type', possible loss of data (int and long are 32bit, even on x64 arch)
         /wd4018       # -> disable warning: 'expression' : signed/unsigned mismatch (caused by googletest)
     PUBLIC
     )
