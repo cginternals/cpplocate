@@ -13,14 +13,14 @@ However, a software should be able to locate its data assets as easy as possible
 ## Professional Support
 
 CG Internals offers computer graphics R&D as well as reliable technology and innovative concepts to support your computer graphics visions. 
-We provide trainings and can help you integrate and customize cpplocate in your next project.
+We provide trainings and can help you integrate and customize *cpplocate* in your next project.
 
 Visit [Professional Support and Services](https://www.cginternals.com) for more details.
 
 
 # Resources
 
-* [C Port of cpplocate: liblocate](#c-port-of-cpplocate-liblocate)
+* [C Port of *cpplocate*: liblocate](#c-port-of-cpplocate-liblocate)
 
 ###### Installation and Development
 
@@ -91,15 +91,15 @@ In order to compile the project, either use you favorite Editor/IDE with the cre
 
 # Tips for Linking
 
-We suggest using the build system of *cpplocate* for a smooth integration: [CMake](https://cmake.org/)
-For it, *cpplocate* provides a find configuration script that should be installed into your system or at least accessible by CMake. 
-In the projects CMakeLists.txt, add one of the following lines:
+For a smooth integration we suggest using [CMake](https://cmake.org/), the build system employed by *cpplocate*.
+In this case, *cpplocate* provides a find configuration script that should be either installed into your system or at least accessible by CMake.
+In your project's CMakeLists.txt, add one of the following lines:
 
 ```cmake
 find_package(cpplocate QUIET) # if you want to check for existence
 find_package(cpplocate REQUIRED) # if it is really required in your project
 ```
-Finally, just link cpplocate to your own library or executable:
+Finally, just link *cpplocate* to your own library or executable:
 
 ```cmake
 target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)
@@ -108,7 +108,7 @@ target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)
 
 # Examples and Documentation
 
-cpplocate supports to query different paths, depending on the type of component that is queried (application, library, or application bundle). For the most basic use case, cpplocate is used to detect run-time data that is associated with a module and we provide a convenience location function.
+*cpplocate* supports to query different paths, depending on the type of component that is queried (application, library, or application bundle). For the most basic use case, *cpplocate* is used to detect run-time data that is associated with a module and we provide a convenience location function.
 
 ## Query Executable Path
 
@@ -172,7 +172,7 @@ const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glb
 
 # C Port of cpplocate: liblocate
 
-Internally, cpplocate is implemented using plain C, providing a C++ interface for ease of use. For communities and software that don't want to use C++, the `liblocate` within this project can be used instead.
+Internally, *cpplocate* is implemented using plain C, providing a C++ interface for ease of use. For communities and software that don't want to use C++, the `liblocate` within this project can be used instead.
 
 The adapted CMake integration is:
 
