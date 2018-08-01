@@ -18,9 +18,10 @@ namespace cpplocate
 *  @return
 *    Path to executable (including filename)
 *
-*  @remarks
+*  @remark
 *    The path is returned in native format, e.g., backslashes on Windows.
 *
+*  @remark
 *    It is assumed the executable path is static throughout the process.
 */
 CPPLOCATE_API std::string getExecutablePath();
@@ -32,12 +33,15 @@ CPPLOCATE_API std::string getExecutablePath();
 *  @return
 *    Path to bundle (including filename)
 *
-*  @remarks
+*  @remark
 *    The path is returned in unified format (forward slashes).
+*
+*  @remark
 *    If the current executable is part of a macOS application bundle,
 *    this function returns the part to the bundle. Otherwise, an
 *    empty string is returned.
 *
+*  @remark
 *    It is assumed the bundle path is static throughout the process.
 */
 CPPLOCATE_API std::string getBundlePath();
@@ -49,9 +53,10 @@ CPPLOCATE_API std::string getBundlePath();
 *  @return
 *    Path to module (directory in which the executable is located)
 *
-*  @remarks
+*  @remark
 *    The path is returned in unified format (forward slashes).
 *
+*  @remark
 *    It is assumed the executable name is static throughout the process.
 */
 CPPLOCATE_API std::string getModulePath();
@@ -66,8 +71,10 @@ CPPLOCATE_API std::string getModulePath();
 *  @return
 *    Path to library (including filename)
 *
-*  @remarks
+*  @remark
 *    The path is returned in unified format (forward slashes).
+*
+*  @remark
 *    If symbol is nullptr, an empty string is returned.
 */
 CPPLOCATE_API std::string getLibraryPath(void * symbol);
@@ -86,13 +93,14 @@ CPPLOCATE_API std::string getLibraryPath(void * symbol);
 *  @return
 *    Path to file or directory
 *
-*  @remarks
+*  @remark
 *    This function tries to locate the named file or directory based
 *    on the location of the current executable or library. If the
 *    file or directory could be found, the base path from which the
 *    relative path can be resolved is returned. Otherwise, an empty
 *    string is returned.
 *
+*  @remark
 *    The path is returned in unified format (forward slashes).
 */
 CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol);

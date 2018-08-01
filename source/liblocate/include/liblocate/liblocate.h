@@ -20,9 +20,10 @@ extern "C"
 *  @param[out] pathLength
 *    Number of characters of path without null byte
 *
-*  @remarks
+*  @remark
 *    The path is returned in native format, e.g., backslashes on Windows.
 *
+*  @remark
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getExecutablePath(char ** path, unsigned int * pathLength);
@@ -36,12 +37,15 @@ LIBLOCATE_API void getExecutablePath(char ** path, unsigned int * pathLength);
 *  @param[out] pathLength
 *    Number of characters of path without null byte
 *
-*  @remarks
+*  @remark
 *    The path is returned in unified format (forward slashes).
+*
+*  @remark
 *    If the current executable is part of a macOS application bundle,
 *    this function returns the part to the bundle. Otherwise, an
 *    empty string is returned.
 *
+*  @remark
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getBundlePath(char ** path, unsigned int * pathLength);
@@ -55,9 +59,10 @@ LIBLOCATE_API void getBundlePath(char ** path, unsigned int * pathLength);
 *  @param[out] pathLength
 *    Number of characters of path without null byte
 *
-*  @remarks
+*  @remark
 *    The path is returned in unified format (forward slashes).
 *
+*  @remark
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
@@ -73,10 +78,13 @@ LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
 *  @param[out] pathLength
 *    Length of path
 *
-*  @remarks
+*  @remark
 *    The path is returned in unified format (forward slashes).
+*
+*  @remark
 *    If symbol is null pointer, an empty string is returned.
 *
+*  @remark
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength);
@@ -100,15 +108,17 @@ LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pa
 *  @param[in] symbol
 *    A symbol from the library, e.g., a function or variable pointer
 *
-*  @remarks
+*  @remark
 *    This function tries to locate the named file or directory based
 *    on the location of the current executable or library. If the
 *    file or directory could be found, the base path from which the
 *    relative path can be resolved is returned. Otherwise, an empty
 *    string is returned.
 *
+*  @remark
 *    The path is returned in unified format (forward slashes).
 *
+*  @remark
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
