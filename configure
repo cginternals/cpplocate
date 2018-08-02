@@ -106,7 +106,7 @@ echo ""
 # Create build directory
 if [ ! -d "$BUILD_DIR" ]
 then
-    mkdir -p $BUILD_DIR
+    mkdir -p "$BUILD_DIR"
 fi
 
 # Configure project
