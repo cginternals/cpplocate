@@ -51,9 +51,9 @@ matrix:
 
 before_script:
   - eval "${MATRIX_EVAL}"
-  - chmod -x ./configure
+  - chmod +x ./configure
   - ./configure
-  - ./configure &CMAKE_CONFIGURATION
+  - ./configure $CMAKE_CONFIGURATION
 
 script:
   - cmake --build $BUILD_DIR
