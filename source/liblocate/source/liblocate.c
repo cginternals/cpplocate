@@ -235,7 +235,7 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
         GetModuleFileNameA(module, systemPath, MAX_PATH);
     }
 
-    unsigned int len = strnlen(systemPath, MAX_PATH);
+    unsigned int len = (unsigned int)strnlen(systemPath, MAX_PATH);
 
     copyToStringOutParameter(systemPath, len, path, pathLength);
 

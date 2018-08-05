@@ -33,6 +33,17 @@ else()
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 endif()
 
+# additional MSVC compiler options
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
+
+    set(DEFAULT_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS}
+    PRIVATE
+        /wd4267       # -> disable warning: 'var' : conversion from 'size_t' to 'type', possible loss of data (int and long are 32bit, even on x64 arch)
+        /wd4018       # -> disable warning: 'expression' : signed/unsigned mismatch (caused by googletest)
+    PUBLIC
+    )
+endif ()
+
 # Function: Build test and add command to execute it via target 'test'
 function(add_test_without_ctest target)
     add_subdirectory(${target})

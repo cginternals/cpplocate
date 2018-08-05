@@ -91,7 +91,7 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
     char * path = nullptr;
     unsigned int length = 0;
 
-    ::locatePath(&path, &length, relPath.c_str(), relPath.size(), systemDir.c_str(), systemDir.size(), symbol);
+    ::locatePath(&path, &length, relPath.c_str(), (unsigned int)relPath.size(), systemDir.c_str(), (unsigned int)systemDir.size(), symbol);
 
     auto result = std::string();
 
