@@ -2,17 +2,17 @@
 
 # C++ Locator Library
 
-*cpplocate* is an [MIT licensed](http://opensource.org/licenses/MIT), cross-platform C++ library that provides tools for applications to locate themselves, their data assets, as well as dependent modules.
+*cpplocate* is an [MIT licensed](http://opensource.org/licenses/MIT), cross-platform C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.
 
-In the context of cross-platform applications, locating data assets belonging to an application or library is not an easy task. 
-Depending on the situation, data assets can occupy different locations on a system: in a development tree, data might be located relative to the executable in a build directory, when installed into the system, they might be located in a global directory such as ```/usr/share``` or ```C:\Users\...\AppData```, while for self-contained installs they might be located relative to the executable. 
-When projects are deployed using software installers or archives, the final location can be controlled by the user installing the software, therefore it cannot be known at build-time. 
-The situation gets even more complicated when an application does not only need access to its own data assets, but depends on other modules, such as dynamic libraries or even plugins, which bring their own data. 
-However, a software should be able to locate its data assets as easy as possible and still be relocatable for typical deployment and installation routines to work as expected.
+In the context of cross-platform applications, locating data assets belonging to an application or library is not an easy task.
+Depending on the situation, data assets can occupy different locations on a system: in a development tree, data might be located relative to the executable in a build directory, when installed into the system, they might be located in a global directory such as ```/usr/share``` or ```C:\Users\...\AppData```, while for self-contained installs they might be located relative to the executable again.
+When projects are deployed using software installers or archives, the final location can be controlled by the user installing the software, therefore it cannot be known at build-time.
+The situation gets even more complicated when an application does not only need access to its own data assets, but depends on other modules, such as dynamic libraries or even plugins, which bring their own data.
+However, software should be able to locate its data assets as easy as possible and still be relocatable for typical deployment and installation routines to work as expected.
 
 ## Professional Support
 
-CG Internals offers computer graphics R&D as well as reliable technology and innovative concepts to support your computer graphics visions. 
+CG Internals offers computer graphics R&D as well as reliable technology and innovative concepts to support your computer graphics visions.
 We provide trainings and can help you integrate and customize *cpplocate* in your next project.
 
 Visit [Professional Support and Services](https://www.cginternals.com) for more details.
@@ -40,7 +40,7 @@ Visit [Professional Support and Services](https://www.cginternals.com) for more 
 
 ##### Prerequisites and Dependencies
 
-The only mandatory run-time dependencies of *cpplocate* are the STL of the used compiler. 
+The only mandatory run-time dependencies of *cpplocate* are the STL of the used compiler.
 Building *cpplocate* utilizes:
 * [CMake](https://cmake.org/) 3.0 or higher for building *cpplocate* from source (mandatory for any build from source)
 * [git](https://git-scm.com/) for version control (optional)
@@ -75,7 +75,7 @@ First create a build directory (we do not recommend in-source builds):
 > cd build
 ```
 
-Configure *cpplocate* with your prefered or default generator, e.g., for Visual Studio 2015 in x64 use
+Configure *cpplocate* with your prefered or default generator, e.g., for Visual Studio 2017 in x64 use
 (note: some IDEs have integrated support for CMake projects, e.g., Qt Creator, and allow you to skip the manual project configuration):
 
 ```bash
@@ -108,7 +108,7 @@ target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)
 
 # Examples and Documentation
 
-*cpplocate* supports to query different paths, depending on the type of component that is queried (application, library, or application bundle). For the most basic use case, *cpplocate* is used to detect run-time data that is associated with a module and we provide a convenience location function.
+*cpplocate* supports queries of different paths, depending on the type of the component in question (application, library, or application bundle). For the most basic use case, *cpplocate* is used to detect run-time data that is associated with a module, and we provide a convenience location function.
 
 ## Query Executable Path
 
