@@ -47,3 +47,9 @@ only_commits:
     - appveyor.yml
     - source/
     - cmake/
+
+test_script:
+  - if %CONFIGURATION%==Debug set SUFFIX=d
+  - pushd %CONFIGURATION%
+  - for /f %%f in ('dir /b *-test%SUFFIX%.exe') do %%f
+  - popd
