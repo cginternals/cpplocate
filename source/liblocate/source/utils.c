@@ -107,7 +107,7 @@ void getDirectoryPart(const char * fullpath, unsigned int length, unsigned int *
         --iter;
     }
 
-    *newLength = (unsigned int)(iter > fullpath ? iter - fullpath : length);
+    *newLength = iter > fullpath ? (unsigned int)(iter - fullpath) : length;
 }
 
 void getBundlePart(const char * fullpath, unsigned int length, unsigned int * newLength)
