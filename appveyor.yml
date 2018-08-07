@@ -50,6 +50,6 @@ only_commits:
 
 test_script:
   - if %CONFIGURATION%==Debug set SUFFIX=d
-  - pushd %CONFIGURATION%
+  - cd %CONFIGURATION%
   - for /f %%f in ('dir /b *-test%SUFFIX%.exe') do %%f
-  - popd
+  - cd ..
