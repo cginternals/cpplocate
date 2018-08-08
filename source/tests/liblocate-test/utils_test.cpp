@@ -161,7 +161,7 @@ TEST_F(utils_test, getSystemBasePath_NoPath)
 
     getSystemBasePath(source, length, &newLength);
 
-    EXPECT_EQ(0, newLength);
+    EXPECT_EQ(0, newLength); // ""
 }
 
 TEST_F(utils_test, getSystemBasePath_SystemPath)
@@ -172,7 +172,7 @@ TEST_F(utils_test, getSystemBasePath_SystemPath)
 
     getSystemBasePath(source, length, &newLength);
 
-    EXPECT_EQ(11, newLength);
+    EXPECT_EQ(11, newLength); // "/usr/local/"
 }
 
 TEST_F(utils_test, getSystemBasePath_ChrootPath)
@@ -183,7 +183,7 @@ TEST_F(utils_test, getSystemBasePath_ChrootPath)
 
     getSystemBasePath(source, length, &newLength);
 
-    EXPECT_EQ(32, newLength);
+    EXPECT_EQ(32, newLength); // "/home/user/dev/deploy/usr/local/"
 }
 
 TEST_F(utils_test, getEnv_NoName)
@@ -239,7 +239,7 @@ TEST_F(utils_test, getEnv_Value)
     getEnv(key, keyLength, &value, &valueLength);
 
     // Display is in format ':[display number]'
-    EXPECT_LT(1, valueLength);
+    ASSERT_LT(1, valueLength);
     EXPECT_EQ(':', value[0]);
     EXPECT_EQ(0, value[valueLength]);
     EXPECT_EQ(valueLength, strlen(value));
