@@ -57,5 +57,5 @@ before_script:
 
 script:
   - cmake --build $BUILD_DIR
-  - cmake --build $BUILD_DIR --target test -- -k
+  - cmake --build $BUILD_DIR --target test -- -i
   - cmake --build $BUILD_DIR --target check-all
