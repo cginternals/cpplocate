@@ -3,7 +3,7 @@ language: c++
 env:
   global:
     - CMAKE_OPTIONS=""
-    - GTEST_FILTER=-cpplocate_test.getBundlePath_Return:-liblocate_test.getBundlePath_Return:-utils_test.getEnv_Value
+    - GTEST_FILTER=-cpplocate_test.getBundlePath_Return:liblocate_test.getBundlePath_Return:utils_test.getEnv_Value
 
 matrix:
   include:
