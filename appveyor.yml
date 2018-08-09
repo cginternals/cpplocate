@@ -49,7 +49,4 @@ only_commits:
     - cmake/
 
 test_script:
-  - if %CONFIGURATION%==Debug set SUFFIX=d
-  - cd %CONFIGURATION%
-  - for /f %%f in ('dir /b *-test%SUFFIX%.exe') do %%f
-  - cd ..
+  - cmake --build build --target test
