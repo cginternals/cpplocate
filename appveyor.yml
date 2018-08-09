@@ -49,4 +49,4 @@ only_commits:
     - cmake/
 
 test_script:
-  - cmake --build build --target test
+  - cmake --build . --target test
