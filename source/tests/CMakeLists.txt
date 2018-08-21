@@ -93,5 +93,6 @@ set_target_properties(test PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 # Tests
 # 
 
-add_test_without_ctest(cpplocate-test)
+# test liblocate first
 add_test_without_ctest(liblocate-test)
+add_test_without_ctest(cpplocate-test)

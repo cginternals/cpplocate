@@ -27,7 +27,7 @@ TEST_F(liblocate_test, getExecutablePath_Return)
     getExecutablePath(&executablePath, &length);
 
     EXPECT_LT(0, length);
-    EXPECT_FALSE(executablePath == 0x0);
+    ASSERT_FALSE(executablePath == 0x0);
     EXPECT_EQ(0, executablePath[length]);
     EXPECT_EQ(length, strlen(executablePath));
 
@@ -50,7 +50,7 @@ TEST_F(liblocate_test, getBundlePath_Return)
     getBundlePath(&bundlePath, &length);
 
     EXPECT_LT(0, length);
-    EXPECT_FALSE(bundlePath == 0x0);
+    ASSERT_FALSE(bundlePath == 0x0);
     EXPECT_EQ(0, bundlePath[length]);
     EXPECT_EQ(length, strlen(bundlePath));
 
@@ -75,7 +75,7 @@ TEST_F(liblocate_test, getModulePath_Return)
     getModulePath(&modulePath, &length);
 
     EXPECT_LT(0, length);
-    EXPECT_FALSE(modulePath == 0x0);
+    ASSERT_FALSE(modulePath == 0x0);
     EXPECT_EQ(0, modulePath[length]);
     EXPECT_EQ(length, strlen(modulePath));
 
@@ -97,7 +97,7 @@ TEST_F(liblocate_test, getLibraryPath_Return)
     getLibraryPath(reinterpret_cast<void*>(getExecutablePath), &libraryPath, &length);
 
     EXPECT_LT(0, length);
-    EXPECT_FALSE(libraryPath == 0x0);
+    ASSERT_FALSE(libraryPath == 0x0);
     EXPECT_EQ(0, libraryPath[length]);
     EXPECT_EQ(length, strlen(libraryPath));
 
@@ -132,7 +132,7 @@ TEST_F(liblocate_test, locatePath_Return)
     locatePath(&path, &length, relPath, strlen(relPath), systemPath, strlen(systemPath), reinterpret_cast<void*>(getExecutablePath));
 
     EXPECT_LT(0, length);
-    EXPECT_FALSE(path == 0x0);
+    ASSERT_FALSE(path == 0x0);
     EXPECT_EQ(0, path[length]);
     EXPECT_EQ(length, strlen(path));
 
@@ -150,7 +150,7 @@ TEST_F(liblocate_test, locatePath_ReturnNoSymbol)
     locatePath(&path, &length, relPath, strlen(relPath), systemPath, strlen(systemPath), nullptr);
 
     EXPECT_LT(0, length);
-    EXPECT_FALSE(path == 0x0);
+    ASSERT_FALSE(path == 0x0);
     EXPECT_EQ(0, path[length]);
     EXPECT_EQ(length, strlen(path));
 
@@ -167,7 +167,7 @@ TEST_F(liblocate_test, locatePath_ReturnNoSystemDir)
     locatePath(&path, &length, relPath, strlen(relPath), nullptr, 0, reinterpret_cast<void*>(getExecutablePath));
 
     EXPECT_LT(0, length);
-    EXPECT_FALSE(path == 0x0);
+    ASSERT_FALSE(path == 0x0);
     EXPECT_EQ(0, path[length]);
     EXPECT_EQ(length, strlen(path));
 

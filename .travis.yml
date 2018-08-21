@@ -3,6 +3,7 @@ language: c++
 env:
   global:
     - CMAKE_OPTIONS=""
+    - GTEST_FILTER=-cpplocate_test.getBundlePath_Return:liblocate_test.getBundlePath_Return:utils_test.getEnv_Value
 
 matrix:
   include:
@@ -57,3 +58,5 @@ before_script:
 
 script:
   - cmake --build $BUILD_DIR
+  - cmake --build $BUILD_DIR --target test
+  - cmake --build $BUILD_DIR --target check-all
