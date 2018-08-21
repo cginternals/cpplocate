@@ -754,8 +754,7 @@ WARN_LOGFILE           =
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = @CMAKE_SOURCE_DIR@/source/cpplocate/include
-                                @CMAKE_SOURCE_DIR@/source/liblocate/include 
+INPUT                  = @CMAKE_SOURCE_DIR@/source/cpplocate/include @CMAKE_SOURCE_DIR@/source/liblocate/include
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1960,8 +1959,7 @@ SEARCH_INCLUDES        = YES
 # preprocessor.
 # This tag requires that the tag SEARCH_INCLUDES is set to YES.
 
-INCLUDE_PATH           = @CMAKE_SOURCE_DIR@/source/cpplocate/include
-                                        @CMAKE_SOURCE_DIR@/source/liblocate/include
+INCLUDE_PATH           = @CMAKE_SOURCE_DIR@/source/cpplocate/include @CMAKE_SOURCE_DIR@/source/liblocate/include
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
