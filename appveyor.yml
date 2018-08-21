@@ -47,3 +47,6 @@ only_commits:
     - appveyor.yml
     - source/
     - cmake/
+
+test_script:
+  - cmake --build . --target test
