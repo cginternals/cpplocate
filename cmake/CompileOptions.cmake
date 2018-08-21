@@ -143,6 +143,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCH
 
         $<$<VERSION_LESS:${CMAKE_VERSION},3.1>:
             -std=c++11
+            -std=c11
         >
     )
 endif ()
