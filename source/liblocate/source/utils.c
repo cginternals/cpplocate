@@ -26,7 +26,7 @@
     #define pathsDelim ':'
 #endif
 
-#define macOSBundlePath "/MacOS/Contents"
+#define macOSBundlePath "/Contents/MacOS"
 #define macOSBundlePathLength 15
 
 
@@ -124,7 +124,7 @@ void getBundlePart(const char * fullpath, unsigned int length, unsigned int * ne
         return;
     }
 
-    // check for /MacOS/Contents
+    // check for /Contents/MacOS
     const char * potentialBundleStart = fullpath + length - macOSBundlePathLength;
 
     if (strncmp(potentialBundleStart, macOSBundlePath, macOSBundlePathLength) != 0)
