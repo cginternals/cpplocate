@@ -385,7 +385,7 @@ out:
     free(subdir);
 }
 
-void pathSeperator(char * sep)
+void pathSeparator(char * sep)
 {
     if (sep != 0x0)
     {

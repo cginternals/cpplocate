@@ -174,17 +174,17 @@ TEST_F(liblocate_test, locatePath_ReturnNoSystemDir)
     free(path);
 }
 
-TEST_F(liblocate_test, pathSeperator_NoReturn)
+TEST_F(liblocate_test, pathSeparator_NoReturn)
 {
-    pathSeperator(nullptr);
+    pathSeparator(nullptr);
 
     SUCCEED();
 }
 
-TEST_F(liblocate_test, pathSeperator_Return)
+TEST_F(liblocate_test, pathSeparator_Return)
 {
     char sep = 0;
-    pathSeperator(&sep);
+    pathSeparator(&sep);
 
     #ifdef WIN32
         ASSERT_EQ('\\', sep);

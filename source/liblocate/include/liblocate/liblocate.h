@@ -126,12 +126,12 @@ LIBLOCATE_API void locatePath(char ** path, unsigned int * pathLength, const cha
 
 /**
 *  @brief
-*    Get platform specific path seperator
+*    Get platform specific path separator
 *
 *  @param[out] sep
-*    Path seperator (e.g., '`/`' or '`\`')
+*    Path separator (e.g., '`/`' or '`\`')
 */
-LIBLOCATE_API void pathSeperator(char * sep);
+LIBLOCATE_API void pathSeparator(char * sep);
 
 /**
 *  @brief

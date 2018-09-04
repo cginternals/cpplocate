@@ -107,12 +107,12 @@ CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::str
 
 /**
 *  @brief
-*    Get platform specific path seperator
+*    Get platform specific path separator
 *
 *  @return
-*    Path seperator (e.g., '`/`' or '`\`')
+*    Path separator (e.g., '`/`' or '`\`')
 */
-CPPLOCATE_API std::string pathSeperator();
+CPPLOCATE_API std::string pathSeparator();
 
 /**
 *  @brief

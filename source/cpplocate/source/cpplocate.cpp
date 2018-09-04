@@ -105,11 +105,11 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
     return result;
 }
 
-std::string pathSeperator()
+std::string pathSeparator()
 {
     char sep;
 
-    ::pathSeperator(&sep);
+    ::pathSeparator(&sep);
 
     return std::string(1, sep);
 }
