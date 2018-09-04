@@ -173,3 +173,82 @@ TEST_F(liblocate_test, locatePath_ReturnNoSystemDir)
 
     free(path);
 }
+
+TEST_F(liblocate_test, pathSeperator_NoReturn)
+{
+    pathSeperator(nullptr);
+
+    SUCCEED();
+}
+
+TEST_F(liblocate_test, pathSeperator_Return)
+{
+    char sep = 0;
+    pathSeperator(&sep);
+
+    #ifdef WIN32
+        ASSERT_EQ('\\', sep);
+    #elif __APPLE__
+        ASSERT_EQ('/', sep);
+    #else
+        ASSERT_EQ('/', sep);
+    #endif
+}
+
+TEST_F(liblocate_test, libPrefix_NoReturn)
+{
+    libPrefix(nullptr, nullptr);
+
+    SUCCEED();
+}
+
+TEST_F(liblocate_test, libPrefix_Return)
+{
+    char * prefix;
+    unsigned int length;
+
+    libPrefix(&prefix, &length);
+
+    #ifdef WIN32
+        EXPECT_EQ(0, length);
+        ASSERT_NE(nullptr, prefix);
+        EXPECT_STREQ("", prefix);
+    #elif __APPLE__
+        EXPECT_EQ(0, length);
+        ASSERT_NE(nullptr, prefix);
+        EXPECT_STREQ("", prefix);
+    #else
+        EXPECT_EQ(3, length);
+        ASSERT_NE(nullptr, prefix);
+        EXPECT_STREQ("lib", prefix);
+    #endif
+}
+
+TEST_F(liblocate_test, libExtension_NoReturn)
+{
+    libExtension(nullptr, nullptr);
+
+    SUCCEED();
+}
+
+TEST_F(liblocate_test, libExtension_Return)
+{
+    char * extension;
+    unsigned int length;
+
+    libExtension(&extension, &length);
+
+    #ifdef WIN32
+        EXPECT_EQ(3, length);
+        ASSERT_NE(nullptr, extension);
+        EXPECT_STREQ("dll", extension);
+    #elif __APPLE__
+        EXPECT_EQ(5, length);
+        ASSERT_NE(nullptr, extension);
+        EXPECT_STREQ("dylib", extension);
+    #else
+        EXPECT_EQ(2, length);
+        ASSERT_NE(nullptr, extension);
+        EXPECT_STREQ("so", extension);
+    #endif
+}
