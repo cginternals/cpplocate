@@ -437,8 +437,8 @@ void homeDir(char ** dir, unsigned int * dirLength)
     #ifdef SYSTEM_WINDOWS
         char * homeDrive, homePath;
         unsigned int homeDriveLen, homePathLen;
-        getEnv("HOMEDRIVE", 9, homeDrive, homeDriveLen);
-        getEnv("HOMEPATH", 8, homePath, homePathLen);
+        getEnv("HOMEDRIVE", 9, &homeDrive, &homeDriveLen);
+        getEnv("HOMEPATH", 8, &homePath, &homePathLen);
 
         unsigned int homeLen = homeDriveLen + homePathLen;
         char * home = (char *)malloc(sizeof(char) * homeLen);
@@ -453,7 +453,7 @@ void homeDir(char ** dir, unsigned int * dirLength)
     #else
         char * home;
         unsigned int homeLen;
-        getEnv("HOME", 4, home, homeLen);
+        getEnv("HOME", 4, &home, &homeLen);
         copyToStringOutParameter(home, homeLen, dir, dirLength);
         free(home);
     #endif
@@ -472,7 +472,7 @@ void configDir(char ** dir, unsigned int * dirLength, const char * application, 
     #if defined SYSTEM_WINDOWS
         char * appData;
         unsigned int appDataLen;
-        getEnv("APPDATA", 7, appData, appDataLen);
+        getEnv("APPDATA", 7, &appData, &appDataLen);
 
         configPathLen = appDataLen + 1 + applicationLength;
         configPath = (char *)malloc(sizeof(char) * configPathLen);
@@ -483,7 +483,7 @@ void configDir(char ** dir, unsigned int * dirLength, const char * application, 
     #elif defined SYSTEM_DARWIN
         char * home;
         unsigned int homeLen;
-        getEnv("HOME", 4, home, homeLen);
+        getEnv("HOME", 4, &home, &homeLen);
 
         configPathLen = homeLen + 21 + applicationLength;
         configPath = (char *)malloc(sizeof(char) * configPathLen);
@@ -494,7 +494,7 @@ void configDir(char ** dir, unsigned int * dirLength, const char * application, 
     #else
         char * home;
         unsigned int homeLen;
-        getEnv("HOME", 4, home, homeLen);
+        getEnv("HOME", 4, &home, &homeLen);
 
         configPathLen = homeLen + 9 + applicationLength;
         configPath = (char *)malloc(sizeof(char) * configPathLen);
