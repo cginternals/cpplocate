@@ -384,3 +384,129 @@ out:
     free(bundlePath);
     free(subdir);
 }
+
+void pathSeperator(char * sep)
+{
+    if (sep != 0x0)
+    {
+#ifdef SYSTEM_WINDOWS
+        *sep = '\\';
+#else
+        *sep = '/';
+#endif
+    }
+}
+
+void libPrefix(char ** prefix, unsigned int * prefixLength)
+{
+    if (!checkStringOutParameter(prefix, prefixLength))
+    {
+        return;
+    }
+
+#if defined SYSTEM_WINDOWS || defined SYSTEM_DARWIN
+    copyToStringOutParameter("", 0, prefix, prefixLength);
+#else
+    copyToStringOutParameter("lib", 3, prefix, prefixLength);
+#endif
+}
+
+void libExtension(char ** extension, unsigned int * extensionLength)
+{
+    if (!checkStringOutParameter(extension, extensionLength))
+    {
+        return;
+    }
+
+#if defined SYSTEM_WINDOWS
+    copyToStringOutParameter("dll", 3, extension, extensionLength);
+#elif defined SYSTEM_DARWIN
+    copyToStringOutParameter("dylib", 5, extension, extensionLength);
+#else
+    copyToStringOutParameter("so", 2, extension, extensionLength);
+#endif
+}
+
+void homeDir(char ** dir, unsigned int * dirLength)
+{
+    if (!checkStringOutParameter(dir, dirLength))
+    {
+        return;
+    }
+
+    #ifdef SYSTEM_WINDOWS
+        char * homeDrive, homePath;
+        unsigned int homeDriveLen, homePathLen;
+        getEnv("HOMEDRIVE", 9, homeDrive, homeDriveLen);
+        getEnv("HOMEPATH", 8, homePath, homePathLen);
+
+        unsigned int homeLen = homeDriveLen + homePathLen;
+        char * home = (char *)malloc(sizeof(char) * homeLen);
+        memcpy(home, homeDrive, homeDriveLen);
+        memcpy(home + homeDriveLen, homePath, homePathLen);
+
+        copyToStringOutParameter(home, homeLen, dir, dirLength);
+
+        free(home);
+        free(homePath);
+        free(homeDrive);
+    #else
+        char * home;
+        unsigned int homeLen;
+        getEnv("HOME", 4, home, homeLen);
+        copyToStringOutParameter(home, homeLen, dir, dirLength);
+        free(home);
+    #endif
+}
+
+void configDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength)
+{
+    if (!checkStringOutParameter(dir, dirLength))
+    {
+        return;
+    }
+
+    char * configPath;
+    unsigned int configPathLen;
+
+    #if defined SYSTEM_WINDOWS
+        char * appData;
+        unsigned int appDataLen;
+        getEnv("APPDATA", 7, appData, appDataLen);
+
+        configPathLen = appDataLen + 1 + applicationLength;
+        configPath = (char *)malloc(sizeof(char) * configPathLen);
+        memcpy(configPath, appData, appDataLen);
+        configPath[appDataLen] = '\\';
+
+        free(appData);
+    #elif defined SYSTEM_DARWIN
+        char * home;
+        unsigned int homeLen;
+        getEnv("HOME", 4, home, homeLen);
+
+        configPathLen = homeLen + 21 + applicationLength;
+        configPath = (char *)malloc(sizeof(char) * configPathLen);
+        memcpy(configPath, home, homeLen);
+        memcpy(configPath + homeLen, "/Library/Preferences/", 21);
+
+        free(home);
+    #else
+        char * home;
+        unsigned int homeLen;
+        getEnv("HOME", 4, home, homeLen);
+
+        configPathLen = homeLen + 9 + applicationLength;
+        configPath = (char *)malloc(sizeof(char) * configPathLen);
+        memcpy(configPath, home, homeLen);
+        memcpy(configPath + homeLen, "/.config/", 9);
+
+        free(home);
+    #endif
+
+    unsigned int configPrefixLen = configPathLen - applicationLength;
+    memcpy(configPath + configPrefixLen, application, applicationLength);
+    copyToStringOutParameter(configPath, configPathLen, dir, dirLength);
+
+    free(configPath);
+}

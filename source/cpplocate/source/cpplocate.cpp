@@ -105,5 +105,90 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
     return result;
 }
 
+std::string pathSeperator()
+{
+    char sep;
+
+    ::pathSeperator(&sep);
+
+    return std::string(1, sep);
+}
+
+std::string libPrefix()
+{
+    char * prefix = nullptr;
+    unsigned int length = 0;
+
+    ::libPrefix(&prefix, &length);
+
+    auto result = std::string();
+
+    if (length > 0)
+    {
+        result = std::string(prefix, length);
+    }
+
+    free(prefix);
+
+    return result;
+}
+
+std::string libExtension()
+{
+    char * extension = nullptr;
+    unsigned int length = 0;
+
+    ::libExtension(&extension, &length);
+
+    auto result = std::string();
+
+    if (length > 0)
+    {
+        result = std::string(extension, length);
+    }
+
+    free(extension);
+
+    return result;
+}
+
+std::string homeDir()
+{
+    char * dir = nullptr;
+    unsigned int length = 0;
+
+    ::homeDir(&dir, &length);
+
+    auto result = std::string();
+
+    if (length > 0)
+    {
+        result = std::string(dir, length);
+    }
+
+    free(dir);
+
+    return result;
+}
+
+std::string configDir(const std::string & application)
+{
+    char * dir = nullptr;
+    unsigned int length = 0;
+
+    ::configDir(&dir, &length, application.c_str(), (unsigned int)application.size());
+
+    auto result = std::string();
+
+    if (length > 0)
+    {
+        result = std::string(dir, length);
+    }
+
+    free(dir);
+
+    return result;
+}
+
 
 } // namespace cpplocate
