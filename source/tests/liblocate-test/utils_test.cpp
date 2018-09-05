@@ -137,7 +137,7 @@ TEST_F(utils_test, getBundlePart_NoPath)
 
 TEST_F(utils_test, getBundlePart_BundlePath)
 {
-    const char * source = "/home/user/liblocate/test.app/MacOS/Contents";
+    const char * source = "/home/user/liblocate/test.app/Contents/MacOS";
     const unsigned int length = strlen(source);
     unsigned int newLength = 0;
 
