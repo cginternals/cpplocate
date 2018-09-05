@@ -169,7 +169,7 @@ void getBundlePath(char ** path, unsigned int * pathLength)
 
     unifyPathDelimiters(executablePath, executablePathDirectoryLength);
 
-    // check for /MacOS/Contents
+    // check for /Contents/MacOS
     unsigned int bundlePathLength = 0;
     getBundlePart(executablePath, executablePathDirectoryLength, &bundlePathLength);
 
