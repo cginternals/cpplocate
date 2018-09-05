@@ -124,6 +124,80 @@ LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pa
 LIBLOCATE_API void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
     const char * systemDir, unsigned int systemDirLength, void * symbol);
 
+/**
+*  @brief
+*    Get platform specific path separator
+*
+*  @param[out] sep
+*    Path separator (e.g., '`/`' or '`\`')
+*/
+LIBLOCATE_API void pathSeparator(char * sep);
+
+/**
+*  @brief
+*    Get platform specific shared library prefix (e.g., 'lib' on UNIX systems, '' on Windows)
+*
+*  @param[out] prefix
+*    Library prefix
+*  @param[out] prefixLength
+*    Length of prefix
+*
+*  @remark
+*    The caller takes memory ownership over *prefix.
+*/
+LIBLOCATE_API void libPrefix(char ** prefix, unsigned int * prefixLength);
+
+/**
+*  @brief
+*    Get platform specific shared library extension (e.g., 'dll', or 'so')
+*
+*  @param[out] extension
+*    Library extension
+*  @param[out] extensionLength
+*    Length of extension
+*
+*  @remark
+*    The caller takes memory ownership over *extension.
+*/
+LIBLOCATE_API void libExtension(char ** extension, unsigned int * extensionLength);
+
+/**
+*  @brief
+*    Get home directory of the current user
+*
+*  @param[out] dir
+*    Home directory
+*  @param[out] dirLength
+*    Length of directory
+*
+*  @remark
+*    The path is returned in native format, e.g., backslashes on Windows.
+*
+*  @remark
+*    The caller takes memory ownership over *dir.
+*/
+LIBLOCATE_API void homeDir(char ** dir, unsigned int * dirLength);
+
+/**
+*  @brief
+*    Get config directory for the named application
+*
+*  @param[out] dir
+*    Config directory
+*  @param[out] dirLength
+*    Length of directory
+*  @param[in] application
+*    Application name
+*  @param[in] applicationLength
+*    Length of application name
+*
+*  @remark
+*    The path is returned in native format, e.g., backslashes on Windows.
+*
+*  @remark
+*    The caller takes memory ownership over *dir.
+*/
+LIBLOCATE_API void configDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength);
 
 #ifdef __cplusplus
 }

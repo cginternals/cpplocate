@@ -58,3 +58,36 @@ TEST_F(cpplocate_test, locatePath_Return)
     EXPECT_LT(0, result.size());
     EXPECT_NE(nullptr, result.c_str());
 }
+
+TEST_F(cpplocate_test, pathSeperator)
+{
+    #ifdef WIN32
+        ASSERT_EQ("\\", cpplocate::pathSeparator());
+    #elif __APPLE__
+        ASSERT_EQ("/", cpplocate::pathSeparator());
+    #else
+        ASSERT_EQ("/", cpplocate::pathSeparator());
+    #endif
+}
+
+TEST_F(cpplocate_test, libPrefix)
+{
+    #ifdef WIN32
+        ASSERT_EQ("", cpplocate::libPrefix());
+    #elif __APPLE__
+        ASSERT_EQ("", cpplocate::libPrefix());
+    #else
+        ASSERT_EQ("lib", cpplocate::libPrefix());
+    #endif
+}
+
+TEST_F(cpplocate_test, libExtension)
+{
+    #ifdef WIN32
+        ASSERT_EQ("dll", cpplocate::libExtension());
+    #elif __APPLE__
+        ASSERT_EQ("dylib", cpplocate::libExtension());
+    #else
+        ASSERT_EQ("so", cpplocate::libExtension());
+    #endif
+}

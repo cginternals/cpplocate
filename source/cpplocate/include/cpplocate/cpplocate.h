@@ -105,5 +105,59 @@ CPPLOCATE_API std::string getLibraryPath(void * symbol);
 */
 CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol);
 
+/**
+*  @brief
+*    Get platform specific path separator
+*
+*  @return
+*    Path separator (e.g., '`/`' or '`\`')
+*/
+CPPLOCATE_API std::string pathSeparator();
+
+/**
+*  @brief
+*    Get platform specific shared library prefix
+*
+*  @return
+*    Library prefix (e.g., 'lib' on UNIX systems, '' on Windows)
+*/
+CPPLOCATE_API std::string libPrefix();
+
+/**
+*  @brief
+*    Get platform specific shared library extension
+*
+*  @return
+*    Library prefix (e.g., 'dll', or 'so')
+*/
+CPPLOCATE_API std::string libExtension();
+
+/**
+*  @brief
+*    Get home directory of the current user
+*
+*  @return
+*    Home directory
+*
+*  @remark
+*    The path is returned in native format, e.g., backslashes on Windows.
+*/
+CPPLOCATE_API std::string homeDir();
+
+/**
+*  @brief
+*    Get config directory for the named application
+*
+*  @param[in] application
+*    Application name
+*
+*  @return
+*    Config directory
+*
+*  @remark
+*    The path is returned in native format, e.g., backslashes on Windows.
+*/
+CPPLOCATE_API std::string configDir(const std::string & application);
+
 
 } // namespace cpplocate
