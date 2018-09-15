@@ -4,18 +4,25 @@
 
 *cpplocate* is an [MIT licensed](http://opensource.org/licenses/MIT), cross-platform C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.
 
+[![Travis](https://img.shields.io/travis/cginternals/cpplocate/master.svg?style=flat&logo=travis)](https://travis-ci.org/cginternals/cpplocate)
+[![Appveyor](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?style=flat&logo=appveyor)](https://ci.appveyor.com/project/scheibel/cpplocate/branch/master)
+[![Tokei](https://tokei.rs/b1/github/cginternals/cpplocate)](https://github.com/Aaronepower/tokei)
+
 In the context of cross-platform applications, locating data assets belonging to an application or library is not an easy task.
 Depending on the situation, data assets can occupy different locations on a system: in a development tree, data might be located relative to the executable in a build directory, when installed into the system, they might be located in a global directory such as ```/usr/share``` or ```C:\Users\...\AppData```, while for self-contained installs they might be located relative to the executable again.
-When projects are deployed using software installers or archives, the final location can be controlled by the user installing the software, therefore it cannot be known at build-time.
+When projects are deployed using installers or archives, the final location can be controlled by the user installing the software, therefore it cannot be known at build-time.
 The situation gets even more complicated when an application does not only need access to its own data assets, but depends on other modules, such as dynamic libraries or even plugins, which bring their own data.
 However, software should be able to locate its data assets as easy as possible and still be relocatable for typical deployment and installation routines to work as expected.
 
-## Professional Support
+*cpplocate* provides interfaces to locate such data assets. Following, a short example on how [glbinding](https://github.com/cginternals/glbinding) examples locate their run-time assets:
+```cpp
+#include <cpplocate/cpplocate.h>
 
-CG Internals offers computer graphics R&D as well as reliable technology and innovative concepts to support your computer graphics visions.
-We provide trainings and can help you integrate and customize *cpplocate* in your next project.
+#include <glbinding/gl/gl.h>
 
-Visit [Professional Support and Services](https://www.cginternals.com) for more details.
+const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glbinding", reinterpret_cast<void *>(&gl::glCreateShader));
+// assetPath now contains the path to the directory containing "data/cubescape"
+```
 
 
 # Resources
@@ -246,3 +253,10 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength);
 // Locate path to a file or directory
 void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength, const char * systemDir, unsigned int systemDirLength, void * symbol);
 ```
+
+## Professional Support
+
+CG Internals offers computer graphics R&D as well as reliable technology and innovative concepts to support your computer graphics visions.
+We provide trainings and can help you integrate and customize *cpplocate* in your next project.
+
+Visit [Professional Support and Services](https://www.cginternals.com) for more details.
