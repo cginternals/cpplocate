@@ -331,9 +331,10 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             continue;
 
         // Check if it is a system path
+        // length + 1 points to the '/' of the directory part of the path
 
         unsigned int systemBasePathLength;
-        getSystemBasePath(dir, length, &systemBasePathLength);
+        getSystemBasePath(dir, length + 1, &systemBasePathLength);
 
         if (systemBasePathLength > 0)
         {
