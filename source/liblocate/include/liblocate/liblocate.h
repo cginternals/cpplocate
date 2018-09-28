@@ -21,9 +21,6 @@ extern "C"
 *    Number of characters of path without null byte
 *
 *  @remark
-*    The path is returned in native format, e.g., backslashes on Windows.
-*
-*  @remark
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getExecutablePath(char ** path, unsigned int * pathLength);
@@ -36,9 +33,6 @@ LIBLOCATE_API void getExecutablePath(char ** path, unsigned int * pathLength);
 *    Path to bundle (including filename)
 *  @param[out] pathLength
 *    Number of characters of path without null byte
-*
-*  @remark
-*    The path is returned in unified format (forward slashes).
 *
 *  @remark
 *    If the current executable is part of a macOS application bundle,
@@ -60,9 +54,6 @@ LIBLOCATE_API void getBundlePath(char ** path, unsigned int * pathLength);
 *    Number of characters of path without null byte
 *
 *  @remark
-*    The path is returned in unified format (forward slashes).
-*
-*  @remark
 *    The caller takes memory ownership over *path.
 */
 LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
@@ -77,9 +68,6 @@ LIBLOCATE_API void getModulePath(char ** path, unsigned int * pathLength);
 *    Path to library (including filename)
 *  @param[out] pathLength
 *    Length of path
-*
-*  @remark
-*    The path is returned in unified format (forward slashes).
 *
 *  @remark
 *    If symbol is null pointer, an empty string is returned.
@@ -114,9 +102,6 @@ LIBLOCATE_API void getLibraryPath(void * symbol, char ** path, unsigned int * pa
 *    file or directory could be found, the base path from which the
 *    relative path can be resolved is returned. Otherwise, an empty
 *    string is returned.
-*
-*  @remark
-*    The path is returned in unified format (forward slashes).
 *
 *  @remark
 *    The caller takes memory ownership over *path.
@@ -171,9 +156,6 @@ LIBLOCATE_API void libExtension(char ** extension, unsigned int * extensionLengt
 *    Length of directory
 *
 *  @remark
-*    The path is returned in native format, e.g., backslashes on Windows.
-*
-*  @remark
 *    The caller takes memory ownership over *dir.
 */
 LIBLOCATE_API void homeDir(char ** dir, unsigned int * dirLength);
@@ -190,9 +172,6 @@ LIBLOCATE_API void homeDir(char ** dir, unsigned int * dirLength);
 *    Application name
 *  @param[in] applicationLength
 *    Length of application name
-*
-*  @remark
-*    The path is returned in native format, e.g., backslashes on Windows.
 *
 *  @remark
 *    The caller takes memory ownership over *dir.

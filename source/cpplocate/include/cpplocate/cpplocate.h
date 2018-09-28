@@ -19,9 +19,6 @@ namespace cpplocate
 *    Path to executable (including filename)
 *
 *  @remark
-*    The path is returned in native format, e.g., backslashes on Windows.
-*
-*  @remark
 *    It is assumed the executable path is static throughout the process.
 */
 CPPLOCATE_API std::string getExecutablePath();
@@ -32,9 +29,6 @@ CPPLOCATE_API std::string getExecutablePath();
 *
 *  @return
 *    Path to bundle (including filename)
-*
-*  @remark
-*    The path is returned in unified format (forward slashes).
 *
 *  @remark
 *    If the current executable is part of a macOS application bundle,
@@ -54,9 +48,6 @@ CPPLOCATE_API std::string getBundlePath();
 *    Path to module (directory in which the executable is located)
 *
 *  @remark
-*    The path is returned in unified format (forward slashes).
-*
-*  @remark
 *    It is assumed the executable name is static throughout the process.
 */
 CPPLOCATE_API std::string getModulePath();
@@ -70,9 +61,6 @@ CPPLOCATE_API std::string getModulePath();
 *
 *  @return
 *    Path to library (including filename)
-*
-*  @remark
-*    The path is returned in unified format (forward slashes).
 *
 *  @remark
 *    If symbol is nullptr, an empty string is returned.
@@ -99,9 +87,6 @@ CPPLOCATE_API std::string getLibraryPath(void * symbol);
 *    file or directory could be found, the base path from which the
 *    relative path can be resolved is returned. Otherwise, an empty
 *    string is returned.
-*
-*  @remark
-*    The path is returned in unified format (forward slashes).
 */
 CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol);
 
@@ -138,9 +123,6 @@ CPPLOCATE_API std::string libExtension();
 *
 *  @return
 *    Home directory
-*
-*  @remark
-*    The path is returned in native format, e.g., backslashes on Windows.
 */
 CPPLOCATE_API std::string homeDir();
 
@@ -153,9 +135,6 @@ CPPLOCATE_API std::string homeDir();
 *
 *  @return
 *    Config directory
-*
-*  @remark
-*    The path is returned in native format, e.g., backslashes on Windows.
 */
 CPPLOCATE_API std::string configDir(const std::string & application);
 
