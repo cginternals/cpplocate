@@ -1,3 +1,9 @@
+libcpplocate (2.1.0-0) wily xenial; urgency=low
+
+  * Minor version release.
+
+ -- Willy Scheibel <willy.scheibel@cginternals.com>  Fri, 12 Oct 2018 11:00:00 +0200
+
 libcpplocate (2.0.0-0) wily xenial; urgency=low
 
   * Major version release.
