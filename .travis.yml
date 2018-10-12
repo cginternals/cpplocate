@@ -51,14 +51,13 @@ matrix:
           - g++-5
     - os: windows
       env:
-        - CMAKE_CONFIGURATION=debug BUILD_DIR=build-debug CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
+        - CMAKE_CONFIGURATION=debug BUILD_DIR=build-debug CMAKE_GENERATOR="Visual Studio 15 2017 Win64" PATH="$PATH;C:/Program Files/CMake/bin/"
     - os: windows
       env:
-        - CMAKE_CONFIGURATION=release BUILD_DIR=build CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
+        - CMAKE_CONFIGURATION=release BUILD_DIR=build CMAKE_GENERATOR="Visual Studio 15 2017 Win64" PATH="$PATH;C:/Program Files/CMake/bin/"
 
 before_script:
   - eval "${MATRIX_EVAL}"
-  - choco install cmake
   - cmake --version
   - chmod +x ./configure
   - ./configure
