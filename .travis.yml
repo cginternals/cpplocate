@@ -58,6 +58,7 @@ matrix:
 
 before_script:
   - eval "${MATRIX_EVAL}"
+  - choco install cmake
   - cmake --version
   - chmod +x ./configure
   - ./configure
