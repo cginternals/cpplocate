@@ -57,10 +57,6 @@ libcpplocate-dbg:
 	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev-cpp make component_install
 	rm -rf debian/tmp/usr/include
 	rm debian/tmp/usr/share/*/*-config.cmake
-	rm debian/tmp/usr/share/*/AUTHORS
-	rm debian/tmp/usr/share/*/LICENSE
-	rm debian/tmp/usr/share/*/README.md
-	rm debian/tmp/usr/share/*/VERSION
 	rm debian/tmp/usr/share/*/cmake/*/*-export.cmake
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibcpplocate-dbg
@@ -98,10 +94,6 @@ liblocate-dbg:
 	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev-c make component_install
 	rm -rf debian/tmp/usr/include
 	rm debian/tmp/usr/share/*/*-config.cmake
-	rm debian/tmp/usr/share/*/AUTHORS
-	rm debian/tmp/usr/share/*/LICENSE
-	rm debian/tmp/usr/share/*/README.md
-	rm debian/tmp/usr/share/*/VERSION
 	rm debian/tmp/usr/share/*/cmake/*/*-export.cmake
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -pliblocate-dbg
