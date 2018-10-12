@@ -185,8 +185,8 @@ add_subdirectory(deploy)
 install(FILES "${PROJECT_BINARY_DIR}/VERSION" DESTINATION ${INSTALL_ROOT} COMPONENT meta)
 
 # Install cmake find script for the project
-install(FILES cpplocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev-cpp)
-install(FILES liblocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev-c)
+install(FILES cpplocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev_cpp)
+install(FILES liblocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev_c)
 
 # Install the project meta files
 install(FILES AUTHORS   DESTINATION ${INSTALL_ROOT} COMPONENT meta)
