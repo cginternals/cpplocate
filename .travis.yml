@@ -49,6 +49,12 @@ matrix:
           packages:
           - cmake
           - g++-5
+    - os: windows
+      env:
+        - CMAKE_CONFIGURATION=debug BUILD_DIR=build-debug
+    - os: windows
+      env:
+        - CMAKE_CONFIGURATION=release BUILD_DIR=build
 
 before_script:
   - eval "${MATRIX_EVAL}"
