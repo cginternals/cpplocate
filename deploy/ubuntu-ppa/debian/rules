@@ -22,7 +22,7 @@ build-arch:
 # thirdly called by launchpad
 binary: binary-arch
 
-binary-arch: libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all liblocate liblocate-dev liblocate-docs liblocate-dbg liblocate-all
+binary-arch: libcpplocate-meta libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all liblocate liblocate-dev liblocate-docs liblocate-dbg liblocate-all
 
 libcpplocate-meta:
 	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=meta make component_install
@@ -106,4 +106,4 @@ liblocate-all:
 	dpkg --build debian/tmp ..
 	rm -rf debian/tmp
 
-.PHONY: build build-arch binary binary-arch clean libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all liblocate liblocate-dev liblocate-docs liblocate-dbg liblocate-all
+.PHONY: build build-arch binary binary-arch clean libcpplocate-meta libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all liblocate liblocate-dev liblocate-docs liblocate-dbg liblocate-all
