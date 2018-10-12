@@ -182,12 +182,13 @@ add_subdirectory(deploy)
 # 
 
 # Install version file
-install(FILES "${PROJECT_BINARY_DIR}/VERSION" DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
+install(FILES "${PROJECT_BINARY_DIR}/VERSION" DESTINATION ${INSTALL_ROOT} COMPONENT meta)
 
 # Install cmake find script for the project
-install(FILES ${META_PROJECT_NAME}-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev)
+install(FILES cpplocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev-cpp)
+install(FILES liblocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev-c)
 
 # Install the project meta files
-install(FILES AUTHORS   DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
-install(FILES LICENSE   DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
-install(FILES README.md DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
+install(FILES AUTHORS   DESTINATION ${INSTALL_ROOT} COMPONENT meta)
+install(FILES LICENSE   DESTINATION ${INSTALL_ROOT} COMPONENT meta)
+install(FILES README.md DESTINATION ${INSTALL_ROOT} COMPONENT meta)

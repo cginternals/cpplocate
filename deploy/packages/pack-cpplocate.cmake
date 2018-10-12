@@ -47,19 +47,29 @@ endif()
 # Package components
 # 
 
-set(CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "${META_PROJECT_NAME} library")
-set(CPACK_COMPONENT_RUNTIME_DESCRIPTION "Runtime components for ${META_PROJECT_NAME} library")
+set(CPACK_COMPONENT_META_DISPLAY_NAME "${META_PROJECT_NAME} library")
+set(CPACK_COMPONENT_META_DESCRIPTION "Meta information for ${META_PROJECT_NAME} library")
 
-set(CPACK_COMPONENT_DEV_DISPLAY_NAME "C/C++ development files")
-set(CPACK_COMPONENT_DEV_DESCRIPTION "Development files for ${META_PROJECT_NAME} library")
-set(CPACK_COMPONENT_DEV_DEPENDS runtime)
+set(CPACK_COMPONENT_RUNTIME_CPP_DISPLAY_NAME "${META_PROJECT_NAME} C++ library")
+set(CPACK_COMPONENT_RUNTIME_CPP_DESCRIPTION "Runtime components for ${META_PROJECT_NAME} C++ library")
 
-set(CPACK_COMPONENTS_ALL runtime dev)
+set(CPACK_COMPONENT_RUNTIME_C_DISPLAY_NAME "${META_PROJECT_NAME} C library")
+set(CPACK_COMPONENT_RUNTIME_C_DESCRIPTION "Runtime components for ${META_PROJECT_NAME} C library")
+
+set(CPACK_COMPONENT_DEV_CPP_DISPLAY_NAME "C++ development files")
+set(CPACK_COMPONENT_DEV_CPP_DESCRIPTION "Development files for ${META_PROJECT_NAME} C++ library")
+set(CPACK_COMPONENT_DEV_CPP_DEPENDS runtime-cpp)
+
+set(CPACK_COMPONENT_DEV_C_DISPLAY_NAME "C development files")
+set(CPACK_COMPONENT_DEV_C_DESCRIPTION "Development files for ${META_PROJECT_NAME} C library")
+set(CPACK_COMPONENT_DEV_C_DEPENDS runtime-c)
+
+set(CPACK_COMPONENTS_ALL meta runtime-cpp dev-cpp runtime-c dev-c)
 
 if (OPTION_BUILD_EXAMPLES)
     set(CPACK_COMPONENT_EXAMPLES_DISPLAY_NAME "Example applications")
     set(CPACK_COMPONENT_EXAMPLES_DESCRIPTION "Example applications for ${META_PROJECT_NAME} library")
-    set(CPACK_COMPONENT_EXAMPLES_DEPENDS runtime)
+    set(CPACK_COMPONENT_EXAMPLES_DEPENDS runtime-cpp)
 
     set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} examples)
 endif()

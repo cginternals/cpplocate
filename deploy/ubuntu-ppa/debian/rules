@@ -22,17 +22,24 @@ build-arch:
 # thirdly called by launchpad
 binary: binary-arch
 
-binary-arch: libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all
+binary-arch: libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all liblocate liblocate-dev liblocate-docs liblocate-dbg liblocate-all
+
+libcpplocate-meta:
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=meta make component_install
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -plibcpplocate-meta
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
 
 libcpplocate:
-	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=runtime make component_install
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=runtime-cpp make component_install
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibcpplocate
 	dpkg --build debian/tmp ..
 	rm -rf debian/tmp
 
 libcpplocate-dev:
-	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=dev make component_install
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=dev-cpp make component_install
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibcpplocate-dev
 	dpkg --build debian/tmp ..
@@ -46,8 +53,8 @@ libcpplocate-docs:
 	rm -rf debian/tmp
 
 libcpplocate-dbg:
-	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=runtime make component_install
-	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev make component_install
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=runtime-cpp make component_install
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev-cpp make component_install
 	rm -rf debian/tmp/usr/include
 	rm debian/tmp/usr/share/*/*-config.cmake
 	rm debian/tmp/usr/share/*/AUTHORS
@@ -66,4 +73,45 @@ libcpplocate-all:
 	dpkg --build debian/tmp ..
 	rm -rf debian/tmp
 
-.PHONY: build build-arch binary binary-arch clean libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all
+liblocate:
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=runtime-c make component_install
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -pliblocate
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+liblocate-dev:
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=dev-c make component_install
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -pliblocate-dev
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+liblocate-docs:
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -pliblocate-docs
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+liblocate-dbg:
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=runtime-c make component_install
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev-c make component_install
+	rm -rf debian/tmp/usr/include
+	rm debian/tmp/usr/share/*/*-config.cmake
+	rm debian/tmp/usr/share/*/AUTHORS
+	rm debian/tmp/usr/share/*/LICENSE
+	rm debian/tmp/usr/share/*/README.md
+	rm debian/tmp/usr/share/*/VERSION
+	rm debian/tmp/usr/share/*/cmake/*/*-export.cmake
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -pliblocate-dbg
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+liblocate-all:
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -pliblocate-all
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+.PHONY: build build-arch binary binary-arch clean libcpplocate libcpplocate-dev libcpplocate-docs libcpplocate-dbg libcpplocate-all liblocate liblocate-dev liblocate-docs liblocate-dbg liblocate-all

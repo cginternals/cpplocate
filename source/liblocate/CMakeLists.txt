@@ -185,27 +185,27 @@ perform_health_checks(
 
 # Library
 install(TARGETS ${target}
-    EXPORT  "${target}-export"            COMPONENT dev
-    RUNTIME DESTINATION ${INSTALL_BIN}    COMPONENT runtime
-    LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
-    ARCHIVE DESTINATION ${INSTALL_LIB}    COMPONENT dev
+    EXPORT  "${target}-export"            COMPONENT dev-c
+    RUNTIME DESTINATION ${INSTALL_BIN}    COMPONENT runtime-c
+    LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime-c
+    ARCHIVE DESTINATION ${INSTALL_LIB}    COMPONENT dev-c
 )
 
 # Header files
 install(DIRECTORY
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${target} DESTINATION ${INSTALL_INCLUDE}
-    COMPONENT dev
+    COMPONENT dev-c
 )
 
 # Generated header files
 install(DIRECTORY
     ${CMAKE_CURRENT_BINARY_DIR}/include/${target} DESTINATION ${INSTALL_INCLUDE}
-    COMPONENT dev
+    COMPONENT dev-c
 )
 
 # CMake config
 install(EXPORT ${target}-export
     NAMESPACE   ${META_PROJECT_NAME}::
     DESTINATION ${INSTALL_CMAKE}/${target}
-    COMPONENT   dev
+    COMPONENT   dev-c
 )
