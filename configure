@@ -2,7 +2,11 @@
 
 # Default options
 BUILD_DIR="build"
-CMAKE_GENERATOR="Unix Makefiles"
+CMAKE_GENERATOR="$CMAKE_GENERATOR"
+if [ "$CMAKE_GENERATOR" == "" ]
+then
+  CMAKE_GENERATOR="Unix Makefiles"
+fi
 BUILD_TYPE="Release"
 CMAKE_OPTIONS="$CMAKE_OPTIONS"
 
