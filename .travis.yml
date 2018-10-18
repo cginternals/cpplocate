@@ -59,6 +59,7 @@ matrix:
 before_script:
   - eval "${MATRIX_EVAL}"
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="$PATH:/c/Program Files/CMake/"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then ls "/c/Program Files/CMake/"; fi
   - echo "$PATH"
   - cmake --version
   - chmod +x ./configure
