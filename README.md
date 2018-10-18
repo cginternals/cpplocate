@@ -2,7 +2,7 @@
 
 <br><a href="https://github.com/cginternals/cpplocate/"><img src="https://raw.githubusercontent.com/cginternals/cpplocate/master/cpplocate-logo.svg?sanitize=true" width="50%"></a>
 
-*cpplocate* is an [MIT licensed](http://opensource.org/licenses/MIT), cross-platform C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.
+*cpplocate* is a cross-platform C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.
 
 ![GitHub release](https://img.shields.io/github/release/cginternals/cpplocate.svg)
 [![Travis](https://img.shields.io/travis/cginternals/cpplocate/master.svg?style=flat&logo=travis)](https://travis-ci.org/cginternals/cpplocate)
