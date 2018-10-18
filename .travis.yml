@@ -9,11 +9,13 @@ matrix:
   include:
     - os: windows
       env:
-        - MATRIX_EVAL="CMAKE_GENERATOR='Visual Studio 15 2017 Win64' BUILD_DIR=build-debug"
+        - CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
+        - BUILD_DIR=build-debug
         - CMAKE_CONFIGURATION=debug
     - os: windows
       env:
-        - MATRIX_EVAL="CMAKE_GENERATOR='Visual Studio 15 2017 Win64' BUILD_DIR=build"
+        - CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
+        - BUILD_DIR=build
         - CMAKE_CONFIGURATION=release
 
 before_script:
