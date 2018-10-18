@@ -462,7 +462,7 @@ void homeDir(char ** dir, unsigned int * dirLength)
     }
 
     #ifdef SYSTEM_WINDOWS
-        char * homeDrive, homePath;
+        char * homeDrive, * homePath;
         unsigned int homeDriveLen, homePathLen;
         getEnv("HOMEDRIVE", 9, &homeDrive, &homeDriveLen);
         getEnv("HOMEPATH", 8, &homePath, &homePathLen);

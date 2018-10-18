@@ -48,7 +48,7 @@ configure_file(${doxyfile_in} ${doxyfile})
 # Invoke doxygen
 add_custom_command(
     OUTPUT              ${doxyfile_html}
-    DEPENDS             ${doxyfile} ${META_PROJECT_NAME}::cpplocate
+    DEPENDS             ${doxyfile} ${META_PROJECT_NAME}::cpplocate ${META_PROJECT_NAME}::liblocate
     WORKING_DIRECTORY   ${path}
     COMMAND             ${CMAKE_COMMAND} -E copy_directory ${path} ${doxyfile_directory} # ToDO, configure doxygen to use source as is
     COMMAND             ${DOXYGEN} \"${doxyfile}\"

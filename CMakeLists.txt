@@ -49,7 +49,7 @@ set(META_AUTHOR_ORGANIZATION "CG Internals GmbH")
 set(META_AUTHOR_DOMAIN       "https://github.com/cginternals/cpplocate/")
 set(META_AUTHOR_MAINTAINER   "opensource@cginternals.com")
 set(META_VERSION_MAJOR       "2")
-set(META_VERSION_MINOR       "0")
+set(META_VERSION_MINOR       "1")
 set(META_VERSION_PATCH       "0")
 set(META_VERSION_REVISION    "${GIT_REV}")
 set(META_VERSION             "${META_VERSION_MAJOR}.${META_VERSION_MINOR}.${META_VERSION_PATCH}")
@@ -182,12 +182,13 @@ add_subdirectory(deploy)
 # 
 
 # Install version file
-install(FILES "${PROJECT_BINARY_DIR}/VERSION" DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
+install(FILES "${PROJECT_BINARY_DIR}/VERSION" DESTINATION ${INSTALL_ROOT} COMPONENT meta)
 
 # Install cmake find script for the project
-install(FILES ${META_PROJECT_NAME}-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev)
+install(FILES cpplocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev_cpp)
+install(FILES liblocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev_c)
 
 # Install the project meta files
-install(FILES AUTHORS   DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
-install(FILES LICENSE   DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
-install(FILES README.md DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
+install(FILES AUTHORS   DESTINATION ${INSTALL_ROOT} COMPONENT meta)
+install(FILES LICENSE   DESTINATION ${INSTALL_ROOT} COMPONENT meta)
+install(FILES README.md DESTINATION ${INSTALL_ROOT} COMPONENT meta)
