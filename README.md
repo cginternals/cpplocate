@@ -6,7 +6,7 @@
 
 ![GitHub release](https://img.shields.io/github/release/cginternals/cpplocate.svg)
 [![Travis](https://img.shields.io/travis/cginternals/cpplocate/master.svg?style=flat&logo=travis)](https://travis-ci.org/cginternals/cpplocate)
-[![Appveyor](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?style=flat&logo=appveyor)](https://ci.appveyor.com/project/scheibel/cpplocate/branch/master)
+[![Appveyor](https://img.shields.io/appveyor/ci/scheibel/cpplocate/master.svg?style=flat&logo=appveyor)](https://ci.appveyor.com/project/scheibel/cpplocate/branch/master)
 [![Tokei](https://tokei.rs/b1/github/cginternals/cpplocate)](https://github.com/Aaronepower/tokei)
 
 In the context of cross-platform applications, locating data assets belonging to an application or library is not an easy task.
