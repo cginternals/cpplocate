@@ -58,6 +58,7 @@ matrix:
 
 before_script:
   - eval "${MATRIX_EVAL}"
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install cmake.install --installargs '"ADD_CMAKE_TO_PATH=User"'; fi
   - cmake --version
   - chmod +x ./configure
   - ./configure
