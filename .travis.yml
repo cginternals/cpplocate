@@ -9,10 +9,10 @@ matrix:
   include:
     - os: windows
       env:
-        - MATRIX_EVAL="CMAKE_GENERATOR=\"Visual Studio 15 2017 Win64\" CMAKE_CONFIGURATION=debug BUILD_DIR=build-debug"
+        - MATRIX_EVAL='CMAKE_GENERATOR=\"Visual Studio 15 2017 Win64\" CMAKE_CONFIGURATION=debug BUILD_DIR=build-debug'
     - os: windows
       env:
-        - MATRIX_EVAL="CMAKE_GENERATOR=\"Visual Studio 15 2017 Win64\" CMAKE_CONFIGURATION=release BUILD_DIR=build"
+        - MATRIX_EVAL='CMAKE_GENERATOR=\"Visual Studio 15 2017 Win64\" CMAKE_CONFIGURATION=release BUILD_DIR=build'
 
 before_script:
   - export $MATRIX_EVAL
