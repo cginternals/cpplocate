@@ -58,7 +58,7 @@ matrix:
 
 before_script:
   - eval "${MATRIX_EVAL}"
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cat "C:/ProgramData/chocolatey/logs/chocolatey.log"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="$PATH;C:/Program Files/CMake/"; fi
   - cmake --version
   - chmod +x ./configure
   - ./configure
