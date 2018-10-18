@@ -2,11 +2,7 @@
 
 # Default options
 BUILD_DIR="build"
-CMAKE_GENERATOR="$CMAKE_GENERATOR"
-if [ "$CMAKE_GENERATOR" == "" ]
-then
-  CMAKE_GENERATOR="Unix Makefiles"
-fi
+OPTION_CMAKE_GENERATOR="$OPTION_CMAKE_GENERATOR"
 BUILD_TYPE="Release"
 CMAKE_OPTIONS="$CMAKE_OPTIONS"
 
@@ -102,6 +98,11 @@ do
         echo "Configuration \"$ARG\" not found (searched in ./.localconfig and ~/.localconfig)"
     fi
 done
+
+if [ "$OPTION_CMAKE_GENERATOR" != "" ]
+then
+  CMAKE_GENERATOR="$OPTION_CMAKE_GENERATOR"
+fi
 
 # Configure build
 echo "Configuring in $BUILD_DIR..."
