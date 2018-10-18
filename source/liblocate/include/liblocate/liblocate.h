@@ -199,6 +199,7 @@ LIBLOCATE_API void homeDir(char ** dir, unsigned int * dirLength);
 */
 LIBLOCATE_API void configDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength);
 
+
 #ifdef __cplusplus
-}
+} // extern "C"
 #endif
