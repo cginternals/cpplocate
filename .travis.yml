@@ -51,6 +51,7 @@ matrix:
           - g++-5
 
 before_script:
+  - cmake -h
   - eval "${MATRIX_EVAL}"
   - chmod +x ./configure
   - ./configure
