@@ -22,6 +22,7 @@ before_script:
   - eval "export ${MATRIX_EVAL}"
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="$PATH:/c/Program Files/CMake/bin"; fi
   - cmake --version
+  - cmake --help
   - chmod +x ./configure
   - ./configure
   - ./configure $CMAKE_CONFIGURATION
