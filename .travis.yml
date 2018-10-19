@@ -1,4 +1,4 @@
-language: c++
+language: sh
 
 env:
   global:
@@ -50,9 +50,21 @@ matrix:
           - cmake
           - g++-5
 
+    - os: windows
+      env:
+        - CMAKE_GENERATOR_OVERRIDE="Visual Studio 15 2017 Win64"
+        - BUILD_DIR=build-debug
+        - CMAKE_CONFIGURATION=debug
+
+    - os: windows
+      env:
+        - CMAKE_GENERATOR_OVERRIDE="Visual Studio 15 2017 Win64"
+        - BUILD_DIR=build
+        - CMAKE_CONFIGURATION=release
+
 before_script:
-  - cmake -h
   - eval "${MATRIX_EVAL}"
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="$PATH:/c/Program Files/CMake/bin"; fi
   - chmod +x ./configure
   - ./configure
   - ./configure $CMAKE_CONFIGURATION
