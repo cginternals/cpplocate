@@ -32,6 +32,7 @@
 
 void getExecutablePath(char ** path, unsigned int * pathLength)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(path, pathLength))
     {
         return;
@@ -39,56 +40,64 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
 #if defined SYSTEM_LINUX
 
+    // Preallocate PATH_MAX (e.g., 4096) characters and hope the executable path isn't longer (including null byte)
     char exePath[PATH_MAX];
 
+    // Return written bytes, indicating if memory was sufficient
     int len = readlink("/proc/self/exe", exePath, PATH_MAX);
 
-    if (len <= 0 || len == PATH_MAX)
+    if (len <= 0 || len == PATH_MAX) // memory not sufficient or general error occured
     {
         invalidateStringOutParameter(path, pathLength);
         return;
     }
 
+    // Copy contents to caller, create caller ownership
     copyToStringOutParameter(exePath, len, path, pathLength);
 
 #elif defined SYSTEM_WINDOWS
 
+    // Preallocate MAX_PATH (e.g., 4095) characters and hope the executable path isn't longer (including null byte)
     char exePath[MAX_PATH];
 
+    // Return written bytes, indicating if memory was sufficient
     unsigned int len = GetModuleFileNameA(GetModuleHandleA(0x0), exePath, MAX_PATH);
-    if (len == 0)
+    if (len == 0) // memory not sufficient or general error occured
     {
-        *path = 0x0;
-        if (pathLength != 0x0)
-        {
-            *pathLength = 0;
-        }
+        invalidateStringOutParameter(path, pathLength);
         return;
     }
 
+    // Copy contents to caller, create caller ownership
     copyToStringOutParameter(exePath, len, path, pathLength);
 
 #elif defined SYSTEM_SOLARIS
 
+    // Preallocate PATH_MAX (e.g., 4096) characters and hope the executable path isn't longer (including null byte)
     char exePath[PATH_MAX];
 
+    // Convert executable path to canonical path, return null pointer on error
     if (realpath(getexecname(), exePath) == 0x0)
     {
         invalidateStringOutParameter(path, pathLength);
         return;
     }
 
+    // Copy contents to caller, create caller ownership
     unsigned int len = strlen(exePath);
     copyToStringOutParameter(exePath, len, path, pathLength);
 
 #elif defined SYSTEM_DARWIN
 
+    // Preallocate PATH_MAX (e.g., 4096) characters and hope the executable path isn't longer (including null byte)
     char exePath[PATH_MAX];
 
     unsigned int len = (unsigned int)PATH_MAX;
 
+    // Obtain executable path to canonical path, return zero on success
     if (_NSGetExecutablePath(exePath, &len) == 0)
     {
+        // Convert executable path to canonical path, return null pointer on error
         char * realPath = realpath(exePath, 0x0);
 
         if (realPath == 0x0)
@@ -97,15 +106,17 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
             return;
         }
 
+        // Copy contents to caller, create caller ownership
         unsigned int len = strlen(realPath);
         copyToStringOutParameter(realPath, len, path, pathLength);
 
         free(realPath);
     }
-    else
+    else // len is initialized with the required number of bytes (including zero byte)
     {
         char * intermediatePath = (char *)malloc(sizeof(char) * len);
 
+        // Convert executable path to canonical path, return null pointer on error
         if (_NSGetExecutablePath(intermediatePath, &len) != 0)
         {
             free(intermediatePath);
@@ -117,12 +128,14 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
         free(intermediatePath);
 
+        // Check if conversion to canonical path succeeded
         if (realPath == 0x0)
         {
             invalidateStringOutParameter(path, pathLength);
             return;
         }
 
+        // Copy contents to caller, create caller ownership
         unsigned int len = strlen(realPath);
         copyToStringOutParameter(realPath, len, path, pathLength);
 
@@ -131,22 +144,26 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
 #elif defined SYSTEM_FREEBSD
 
+    // Preallocate characters and hope the executable path isn't longer (including null byte)
     char exePath[2048];
 
     unsigned int len = 2048;
 
     int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
 
+    // Obtain executable path by syscall
     if (sysctl(mib, 4, exePath, &len, 0x0, 0) != 0)
     {
         invalidateStringOutParameter(path, pathLength);
         return;
     }
 
+    // Copy contents to caller, create caller ownership
     copyToStringOutParameter(exePath, len, path, pathLength);
 
 #else
 
+    // If no OS could be detected ... degrade gracefully
     invalidateStringOutParameter(path, pathLength);
 
 #endif
@@ -154,6 +171,7 @@ void getExecutablePath(char ** path, unsigned int * pathLength)
 
 void getBundlePath(char ** path, unsigned int * pathLength)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(path, pathLength))
     {
         return;
@@ -164,23 +182,25 @@ void getBundlePath(char ** path, unsigned int * pathLength)
     unsigned int executablePathLength = 0;
     getExecutablePath(&executablePath, &executablePathLength);
 
+    // Extract directory part from executable path (without trailing slash)
     unsigned int executablePathDirectoryLength = 0;
     getDirectoryPart(executablePath, executablePathLength, &executablePathDirectoryLength);
 
+    // Convert to canonical path
     unifyPathDelimiters(executablePath, executablePathDirectoryLength);
 
     // check for /Contents/MacOS
     unsigned int bundlePathLength = 0;
     getBundlePart(executablePath, executablePathDirectoryLength, &bundlePathLength);
 
-    if (bundlePathLength == 0)
+    if (bundlePathLength == 0) // No bundle
     {
-        // No bundle
         free(executablePath);
         invalidateStringOutParameter(path, pathLength);
         return;
     }
 
+    // Copy contents to caller, create caller ownership
     *path = executablePath;
     if (pathLength != 0x0)
     {
@@ -190,6 +210,7 @@ void getBundlePath(char ** path, unsigned int * pathLength)
 
 void getModulePath(char ** path, unsigned int * pathLength)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(path, pathLength))
     {
         return;
@@ -209,6 +230,7 @@ void getModulePath(char ** path, unsigned int * pathLength)
 
 void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(path, pathLength))
     {
         return;
@@ -261,6 +283,7 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength,
     const char * systemDir, unsigned int systemDirLength, void * symbol)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(path, pathLength))
     {
         return;
@@ -400,6 +423,7 @@ void pathSeparator(char * sep)
 
 void libPrefix(char ** prefix, unsigned int * prefixLength)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(prefix, prefixLength))
     {
         return;
@@ -414,6 +438,7 @@ void libPrefix(char ** prefix, unsigned int * prefixLength)
 
 void libExtension(char ** extension, unsigned int * extensionLength)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(extension, extensionLength))
     {
         return;
@@ -430,6 +455,7 @@ void libExtension(char ** extension, unsigned int * extensionLength)
 
 void homeDir(char ** dir, unsigned int * dirLength)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(dir, dirLength))
     {
         return;
@@ -462,6 +488,7 @@ void homeDir(char ** dir, unsigned int * dirLength)
 
 void configDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength)
 {
+    // Early exit when invalid out-parameters are passed
     if (!checkStringOutParameter(dir, dirLength))
     {
         return;

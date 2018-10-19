@@ -2,11 +2,12 @@
 
 <br><a href="https://github.com/cginternals/cpplocate/"><img src="https://raw.githubusercontent.com/cginternals/cpplocate/master/cpplocate-logo.svg?sanitize=true" width="50%"></a>
 
-*cpplocate* is an [MIT licensed](http://opensource.org/licenses/MIT), cross-platform C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.
+*cpplocate* is a cross-platform C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.
 
+![GitHub release](https://img.shields.io/github/release/cginternals/cpplocate.svg)
 [![Travis](https://img.shields.io/travis/cginternals/cpplocate/master.svg?style=flat&logo=travis)](https://travis-ci.org/cginternals/cpplocate)
-[![Appveyor](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?style=flat&logo=appveyor)](https://ci.appveyor.com/project/scheibel/cpplocate/branch/master)
-[![Tokei](https://tokei.rs/b1/github/cginternals/cpplocate)](https://github.com/Aaronepower/tokei)
+[![Appveyor](https://img.shields.io/appveyor/ci/scheibel/cpplocate/master.svg?style=flat&logo=appveyor)](https://ci.appveyor.com/project/scheibel/cpplocate/branch/master)
+[![Tokei](https://tokei.rs/b1/github/cginternals/cpplocate)](https://github.com/Aaronepower/tokei) 
 
 In the context of cross-platform applications, locating data assets belonging to an application or library is not an easy task.
 Depending on the situation, data assets can occupy different locations on a system: in a development tree, data might be located relative to the executable in a build directory, when installed into the system, they might be located in a global directory such as ```/usr/share``` or ```C:\Users\...\AppData```, while for self-contained installs they might be located relative to the executable again.

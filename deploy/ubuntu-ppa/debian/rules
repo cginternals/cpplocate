@@ -32,14 +32,14 @@ libcpplocate-meta:
 	rm -rf debian/tmp
 
 libcpplocate:
-	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=runtime-cpp make component_install
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=runtime_cpp make component_install
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibcpplocate
 	dpkg --build debian/tmp ..
 	rm -rf debian/tmp
 
 libcpplocate-dev:
-	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=dev-cpp make component_install
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=dev_cpp make component_install
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -plibcpplocate-dev
 	dpkg --build debian/tmp ..
@@ -53,8 +53,8 @@ libcpplocate-docs:
 	rm -rf debian/tmp
 
 libcpplocate-dbg:
-	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=runtime-cpp make component_install
-	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev-cpp make component_install
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=runtime_cpp make component_install
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev_cpp make component_install
 	rm -rf debian/tmp/usr/include
 	rm debian/tmp/usr/share/*/*-config.cmake
 	rm debian/tmp/usr/share/*/cmake/*/*-export.cmake
@@ -70,14 +70,14 @@ libcpplocate-all:
 	rm -rf debian/tmp
 
 liblocate:
-	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=runtime-c make component_install
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=runtime_c make component_install
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -pliblocate
 	dpkg --build debian/tmp ..
 	rm -rf debian/tmp
 
 liblocate-dev:
-	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=dev-c make component_install
+	cd $(BUILDDIR); DESTDIR=../debian/tmp COMPONENT=dev_c make component_install
 	mkdir -p debian/tmp/DEBIAN
 	dpkg-gencontrol -pliblocate-dev
 	dpkg --build debian/tmp ..
@@ -90,8 +90,8 @@ liblocate-docs:
 	rm -rf debian/tmp
 
 liblocate-dbg:
-	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=runtime-c make component_install
-	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev-c make component_install
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=runtime_c make component_install
+	cd $(BUILDDEBUGDIR); DESTDIR=../debian/tmp COMPONENT=dev_c make component_install
 	rm -rf debian/tmp/usr/include
 	rm debian/tmp/usr/share/*/*-config.cmake
 	rm debian/tmp/usr/share/*/cmake/*/*-export.cmake

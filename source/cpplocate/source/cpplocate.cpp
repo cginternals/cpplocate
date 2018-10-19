@@ -24,6 +24,7 @@ std::string getExecutablePath()
         result = std::string(path, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(path);
 
     return result;
@@ -43,6 +44,7 @@ std::string getBundlePath()
         result = std::string(path, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(path);
 
     return result;
@@ -62,6 +64,7 @@ std::string getModulePath()
         result = std::string(path, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(path);
 
     return result;
@@ -81,6 +84,7 @@ std::string getLibraryPath(void * symbol)
         result = std::string(path, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(path);
 
     return result;
@@ -100,6 +104,7 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
         result = std::string(path, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(path);
 
     return result;
@@ -128,6 +133,7 @@ std::string libPrefix()
         result = std::string(prefix, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(prefix);
 
     return result;
@@ -147,6 +153,7 @@ std::string libExtension()
         result = std::string(extension, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(extension);
 
     return result;
@@ -166,6 +173,7 @@ std::string homeDir()
         result = std::string(dir, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(dir);
 
     return result;
@@ -185,6 +193,7 @@ std::string configDir(const std::string & application)
         result = std::string(dir, length);
     }
 
+    // liblocate transfer ownership of pointer behind path variable
     free(dir);
 
     return result;
