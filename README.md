@@ -258,10 +258,3 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength);
 void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength, 
     const char * systemDir, unsigned int systemDirLength, void * symbol);
 ```
-
-# Professional Support
-
-CG Internals offers computer graphics R&D as well as reliable technology and innovative concepts to support your computer graphics visions.
-We provide trainings and can help you integrate and customize *cpplocate* in your next project.
-
-Visit [Professional Support and Services](https://www.cginternals.com) for more details.
