@@ -32,13 +32,13 @@ const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glb
 
 * [C Port of *cpplocate*: liblocate](#c-port-of-cpplocate-liblocate)
 
-###### Installation and Development
+##### Installation and Development
 
 * [Install Instructions](#install-instructions)
 * [Build form Source](#build-instructions)
 * [Tips for Linking](#tips-for-linking)
 
-###### Feature Documentation and Code Snippets
+##### Feature Documentation and Code Snippets
 
 * [Query Executable Path](#query-executable-path)
 * [Query Library Path](#query-library-path)
@@ -53,11 +53,11 @@ const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glb
 You can either download the source and manually [compile](#build-instructions) it or use one of the [pre-compiled releases](https://github.com/cginternals/cpplocate/releases) of this repository.
 For systems providing package managers, we generally strive to provide packages.
 
-###### Windows
+##### Windows
 
 There is currently no precompiled package maintained. Please download the source code and commence [building from source](#build-instructions).
 
-###### Ubuntu
+##### Ubuntu
 
 *cpplocate* is provided on Ubuntu using PPAs.
 For Ubuntu 15.04 (vivid) and more recent versions use the [current PPA](https://launchpad.net/~cginternals/+archive/ubuntu/ppa), for Ubuntu 14.04 (trusty) use the [backports PPA](https://launchpad.net/~cginternals/+archive/ubuntu/backports-ppa).
@@ -77,11 +77,11 @@ To use *cpplocate* as dependency, install the development package:
 
 Alternatively, download the source code and commence [building from source](#build-instructions).
 
-###### OS X
+##### OS X
 
 There is currently no precompiled package maintained. Please download the source code and commence [building from source](#build-instructions).
 
-###### Debian-based Systems
+##### Debian-based Systems
 
 There is currently no precompiled package maintained. Please download the source code and commence [building from source](#build-instructions).
 
