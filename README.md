@@ -107,11 +107,11 @@ First, download the source code [as archive](https://github.com/cginternals/cppl
 > git clone https://github.com/cginternals/cpplocate.git
 > cd cpplocate
 ```
-Then, depending on the version of *cpplocate* you want to build, choose the appropriate tag or branch, e.g., for the 1.0.0 release:
+Then, depending on the version of *cpplocate* you want to build, choose the appropriate tag or branch, e.g., for the 2.0.0 release:
 
 ```bash
 > git fetch --tags
-> git checkout v1.0.0
+> git checkout v2.0.0
 ```
 
 The actual compilation can be done using CMake and your favorite compiler and IDE.
