@@ -115,7 +115,7 @@ CPPLOCATE_API std::string libPrefix();
 *    Get main platform specific shared library extension
 *
 *  @return
-*    Library prefix (e.g., 'dll', 'dylib', or 'so')
+*    Library extension (e.g., 'dll', 'dylib', or 'so')
 */
 CPPLOCATE_API std::string libExtension();
 
@@ -124,7 +124,7 @@ CPPLOCATE_API std::string libExtension();
 *    Get the list platform specific shared library extensions
 *
 *  @return
-*    List of library prefixes (e.g., ['dll'], ['so'], or ['dylib', 'so'])
+*    List of library extensions (e.g., ['dll'], ['so'], or ['dylib', 'so'])
 */
 CPPLOCATE_API std::vector<std::string> libExtensions();
 
@@ -149,10 +149,10 @@ CPPLOCATE_API std::string profileDir();
 
 /**
 *  @brief
-*    Get home directory of the current user
+*    Get document directory of the current user
 *
 *  @return
-*    Home directory
+*    Document directory
 */
 CPPLOCATE_API std::string documentDir();
 
@@ -171,37 +171,37 @@ CPPLOCATE_API std::string configDir(const std::string & application);
 
 /**
 *  @brief
-*    Get config directory for the named application
+*    Get roaming directory for the named application
 *
 *  @param[in] application
 *    Application name
 *
 *  @return
-*    Config directory
+*    Roaming directory
 */
 CPPLOCATE_API std::string roamingDir(const std::string & application);
 
 /**
 *  @brief
-*    Get config directory for the named application
+*    Get local directory for the named application
 *
 *  @param[in] application
 *    Application name
 *
 *  @return
-*    Config directory
+*    Local directory
 */
 CPPLOCATE_API std::string localDir(const std::string & application);
 
 /**
 *  @brief
-*    Get config directory for the named application
+*    Get temporary directory for the named application
 *
 *  @param[in] application
 *    Application name
 *
 *  @return
-*    Config directory
+*    Temporary directory
 */
 CPPLOCATE_API std::string tempDir(const std::string & application);
 
