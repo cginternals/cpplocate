@@ -50,6 +50,29 @@ unsigned char checkStringOutParameter(char ** path, unsigned int * pathLength)
     return path != 0x0;
 }
 
+unsigned char checkStringVectorOutParameter(char *** paths, unsigned int ** lengths, unsigned int * count)
+{
+    if (paths == 0x0 || count == 0x0 || lengths == 0x0)
+    {
+        if (paths != 0x0)
+        {
+            *paths = 0x0;
+        }
+
+        if (lengths != 0x0)
+        {
+            *lengths = 0x0;
+        }
+
+        if (count != 0x0)
+        {
+            *count = 0;
+        }
+    }
+
+    return paths != 0x0;
+}
+
 void invalidateStringOutParameter(char ** path, unsigned int * pathLength)
 {
     *path = 0x0;

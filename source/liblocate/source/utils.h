@@ -10,6 +10,7 @@ extern "C"
 
 unsigned char checkStringParameter(const char * path, unsigned int * pathLength);
 unsigned char checkStringOutParameter(char ** path, unsigned int * pathLength);
+unsigned char checkStringVectorOutParameter(char *** paths, unsigned int ** lengths, unsigned int * count);
 void invalidateStringOutParameter(char ** path, unsigned int * pathLength);
 void copyToStringOutParameter(const char * source, unsigned int length, char ** target, unsigned int * targetLength);
 

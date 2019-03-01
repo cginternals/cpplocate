@@ -134,7 +134,7 @@ LIBLOCATE_API void libPrefix(char ** prefix, unsigned int * prefixLength);
 
 /**
 *  @brief
-*    Get platform specific shared library extension (e.g., 'dll', or 'so')
+*    Get main platform specific shared library extension (e.g., 'dll', 'dylib', or 'so')
 *
 *  @param[out] extension
 *    Library extension
@@ -145,6 +145,22 @@ LIBLOCATE_API void libPrefix(char ** prefix, unsigned int * prefixLength);
 *    The caller takes memory ownership over *extension.
 */
 LIBLOCATE_API void libExtension(char ** extension, unsigned int * extensionLength);
+
+/**
+*  @brief
+*    Get platform specific shared library extensions (e.g., ['dll'], ['so'], or ['so', 'dylib'])
+*
+*  @param[out] extensions
+*    Library extensions
+*  @param[out] extensionLengths
+*    Length of extensions
+*  @param[out] extensionCount
+*    Number of extensions (the length of both arrays)
+*
+*  @remark
+*    The caller takes memory ownership over *extensions and every string pointer within as well as *extensionLengths.
+*/
+LIBLOCATE_API void libExtensions(char *** extensions, unsigned int ** extensionLengths, unsigned int * extensionCount);
 
 /**
 *  @brief
@@ -159,6 +175,70 @@ LIBLOCATE_API void libExtension(char ** extension, unsigned int * extensionLengt
 *    The caller takes memory ownership over *dir.
 */
 LIBLOCATE_API void homeDir(char ** dir, unsigned int * dirLength);
+
+/**
+*  @brief
+*    Get profile directory of the current user
+*
+*  @param[out] dir
+*    Profile directory
+*  @param[out] dirLength
+*    Length of directory
+*
+*  @remark
+*    The caller takes memory ownership over *dir.
+*/
+LIBLOCATE_API void profileDir(char ** dir, unsigned int * dirLength);
+
+/**
+*  @brief
+*    Get document directory of the current user
+*
+*  @param[out] dir
+*    Document directory
+*  @param[out] dirLength
+*    Length of directory
+*
+*  @remark
+*    The caller takes memory ownership over *dir.
+*/
+LIBLOCATE_API void documentDir(char ** dir, unsigned int * dirLength);
+
+/**
+*  @brief
+*    Get roaming directory for the named application
+*
+*  @param[out] dir
+*    Roaming directory
+*  @param[out] dirLength
+*    Length of directory
+*  @param[in] application
+*    Application name
+*  @param[in] applicationLength
+*    Length of application name
+*
+*  @remark
+*    The caller takes memory ownership over *dir.
+*/
+LIBLOCATE_API void roamingDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength);
+
+/**
+*  @brief
+*    Get local directory for the named application
+*
+*  @param[out] dir
+*    Local directory
+*  @param[out] dirLength
+*    Length of directory
+*  @param[in] application
+*    Application name
+*  @param[in] applicationLength
+*    Length of application name
+*
+*  @remark
+*    The caller takes memory ownership over *dir.
+*/
+LIBLOCATE_API void localDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength);
 
 /**
 *  @brief
@@ -177,6 +257,24 @@ LIBLOCATE_API void homeDir(char ** dir, unsigned int * dirLength);
 *    The caller takes memory ownership over *dir.
 */
 LIBLOCATE_API void configDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength);
+
+/**
+*  @brief
+*    Get temporary directory for the named application
+*
+*  @param[out] dir
+*    Temporary directory
+*  @param[out] dirLength
+*    Length of directory
+*  @param[in] application
+*    Application name
+*  @param[in] applicationLength
+*    Length of application name
+*
+*  @remark
+*    The caller takes memory ownership over *dir.
+*/
+LIBLOCATE_API void tempDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength);
 
 
 #ifdef __cplusplus

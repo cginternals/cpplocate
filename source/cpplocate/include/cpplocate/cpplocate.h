@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <vector>
 
 #include <cpplocate/cpplocate_api.h>
 
@@ -90,6 +91,7 @@ CPPLOCATE_API std::string getLibraryPath(void * symbol);
 */
 CPPLOCATE_API std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol);
 
+
 /**
 *  @brief
 *    Get platform specific path separator
@@ -110,12 +112,22 @@ CPPLOCATE_API std::string libPrefix();
 
 /**
 *  @brief
-*    Get platform specific shared library extension
+*    Get main platform specific shared library extension
 *
 *  @return
-*    Library prefix (e.g., 'dll', or 'so')
+*    Library prefix (e.g., 'dll', 'dylib', or 'so')
 */
 CPPLOCATE_API std::string libExtension();
+
+/**
+*  @brief
+*    Get the list platform specific shared library extensions
+*
+*  @return
+*    List of library prefixes (e.g., ['dll'], ['so'], or ['dylib', 'so'])
+*/
+CPPLOCATE_API std::vector<std::string> libExtensions();
+
 
 /**
 *  @brief
@@ -128,6 +140,25 @@ CPPLOCATE_API std::string homeDir();
 
 /**
 *  @brief
+*    Get profile directory of the current user
+*
+*  @return
+*    Profile directory
+*/
+CPPLOCATE_API std::string profileDir();
+
+/**
+*  @brief
+*    Get home directory of the current user
+*
+*  @return
+*    Home directory
+*/
+CPPLOCATE_API std::string documentDir();
+
+
+/**
+*  @brief
 *    Get config directory for the named application
 *
 *  @param[in] application
@@ -137,6 +168,42 @@ CPPLOCATE_API std::string homeDir();
 *    Config directory
 */
 CPPLOCATE_API std::string configDir(const std::string & application);
+
+/**
+*  @brief
+*    Get config directory for the named application
+*
+*  @param[in] application
+*    Application name
+*
+*  @return
+*    Config directory
+*/
+CPPLOCATE_API std::string roamingDir(const std::string & application);
+
+/**
+*  @brief
+*    Get config directory for the named application
+*
+*  @param[in] application
+*    Application name
+*
+*  @return
+*    Config directory
+*/
+CPPLOCATE_API std::string localDir(const std::string & application);
+
+/**
+*  @brief
+*    Get config directory for the named application
+*
+*  @param[in] application
+*    Application name
+*
+*  @return
+*    Config directory
+*/
+CPPLOCATE_API std::string tempDir(const std::string & application);
 
 
 } // namespace cpplocate

@@ -252,3 +252,42 @@ TEST_F(liblocate_test, libExtension_Return)
         EXPECT_STREQ("so", extension);
     #endif
 }
+
+TEST_F(liblocate_test, libExtensions_NoReturn)
+{
+    libExtensions(nullptr, nullptr, nullptr);
+
+    SUCCEED();
+}
+
+TEST_F(liblocate_test, libExtensions_Return)
+{
+    char ** extensions;
+    unsigned int * lengths;
+    unsigned int count;
+
+    libExtensions(&extensions, &lengths, &count);
+
+    #ifdef WIN32
+        EXPECT_EQ(1, count);
+        ASSERT_NE(nullptr, lengths);
+        EXPECT_EQ(3, lengths[0]);
+        ASSERT_NE(nullptr, extensions);
+        ASSERT_NE(nullptr, extensions[0]);
+        EXPECT_STREQ("dll", extensions[0]);
+    #elif __APPLE__
+        EXPECT_EQ(2, count);
+        ASSERT_NE(nullptr, lengths);
+        EXPECT_EQ(5, lengths[0]);
+        ASSERT_NE(nullptr, extensions);
+        ASSERT_NE(nullptr, extensions[0]);
+        EXPECT_STREQ("dylib", extensions[0]);
+    #else
+        EXPECT_EQ(1, count);
+        ASSERT_NE(nullptr, lengths);
+        EXPECT_EQ(2, lengths[0]);
+        ASSERT_NE(nullptr, extensions);
+        ASSERT_NE(nullptr, extensions[0]);
+        EXPECT_STREQ("so", extensions[0]);
+    #endif
+}

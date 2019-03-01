@@ -91,3 +91,18 @@ TEST_F(cpplocate_test, libExtension)
         ASSERT_EQ("so", cpplocate::libExtension());
     #endif
 }
+
+TEST_F(cpplocate_test, libExtensions)
+{
+    const auto extensions = cpplocate::libExtensions();
+    #ifdef WIN32
+        ASSERT_EQ(1, extensions.size());
+        ASSERT_EQ("dll", extensions[0]);
+    #elif __APPLE__
+        ASSERT_EQ(2, extensions.size());
+        ASSERT_EQ("dylib", extensions[0]);
+    #else
+        ASSERT_EQ(1, extensions.size());
+        ASSERT_EQ("so", extensions[0]);
+    #endif
+}

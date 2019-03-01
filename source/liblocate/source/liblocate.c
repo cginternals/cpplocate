@@ -453,6 +453,33 @@ void libExtension(char ** extension, unsigned int * extensionLength)
 #endif
 }
 
+void libExtensions(char *** extensions, unsigned int ** extensionLengths, unsigned int * extensionCount)
+{
+    // Early exit when invalid out-parameters are passed
+    if (!checkStringVectorOutParameter(extensions, extensionLengths, extensionCount))
+    {
+        return;
+    }
+
+#if defined SYSTEM_WINDOWS
+    *extensionCount = 1;
+    *extensions = (char **)malloc(sizeof(char *) * *extensionCount);
+    *extensionLengths = (unsigned int *)malloc(sizeof(unsigned int) * *extensionCount);
+    copyToStringOutParameter("dll", 3, extensions[0], extensionLengths[0]);
+#elif defined SYSTEM_DARWIN
+    *extensionCount = 2;
+    *extensions = (char **)malloc(sizeof(char *) * *extensionCount);
+    *extensionLengths = (unsigned int *)malloc(sizeof(unsigned int) * *extensionCount);
+    copyToStringOutParameter("dylib", 5, extensions[0], extensionLengths[0]);
+    copyToStringOutParameter("so", 2, extensions[1], extensionLengths[1]);
+#else
+    *extensionCount = 1;
+    *extensions = (char **)malloc(sizeof(char *) * *extensionCount);
+    *extensionLengths = (unsigned int *)malloc(sizeof(unsigned int) * *extensionCount);
+    copyToStringOutParameter("so", 2, extensions[0], extensionLengths[0]);
+#endif
+}
+
 void homeDir(char ** dir, unsigned int * dirLength)
 {
     // Early exit when invalid out-parameters are passed
@@ -484,6 +511,16 @@ void homeDir(char ** dir, unsigned int * dirLength)
         copyToStringOutParameter(home, homeLen, dir, dirLength);
         free(home);
     #endif
+}
+
+void profileDir(char ** dir, unsigned int * dirLength)
+{
+    homeDir(dir, dirLength);
+}
+
+void documentDir(char ** dir, unsigned int * dirLength)
+{
+    homeDir(dir, dirLength);
 }
 
 void configDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength)
@@ -537,4 +574,19 @@ void configDir(char ** dir, unsigned int * dirLength, const char * application, 
     copyToStringOutParameter(configPath, configPathLen, dir, dirLength);
 
     free(configPath);
+}
+
+void roamingDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength)
+{
+    configDir(dir, dirLength, application, applicationLength);
+}
+
+void localDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength)
+{
+    configDir(dir, dirLength, application, applicationLength);
+}
+
+void tempDir(char ** dir, unsigned int * dirLength, const char * application, unsigned int applicationLength)
+{
+    configDir(dir, dirLength, application, applicationLength);
 }

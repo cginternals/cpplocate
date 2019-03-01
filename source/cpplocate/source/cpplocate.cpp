@@ -6,6 +6,29 @@
 #include <liblocate/liblocate.h>
 
 
+namespace
+{
+
+
+std::string obtainStringFromLibLocate(char * path, unsigned int length)
+{
+    if (path == nullptr || length == 0)
+    {
+        return std::string();
+    }
+
+    auto result = std::string(path, length);
+
+    // liblocate transfer ownership of pointer behind path variable
+    free(path);
+
+    return result;
+}
+
+
+} // namespace
+
+
 namespace cpplocate
 {
 
@@ -17,17 +40,7 @@ std::string getExecutablePath()
 
     ::getExecutablePath(&path, &length);
 
-    auto result = std::string();
-
-    if (length > 0)
-    {
-        result = std::string(path, length);
-    }
-
-    // liblocate transfer ownership of pointer behind path variable
-    free(path);
-
-    return result;
+    return obtainStringFromLibLocate(path, length);
 }
 
 std::string getBundlePath()
@@ -37,17 +50,7 @@ std::string getBundlePath()
 
     ::getBundlePath(&path, &length);
 
-    auto result = std::string();
-
-    if (length > 0)
-    {
-        result = std::string(path, length);
-    }
-
-    // liblocate transfer ownership of pointer behind path variable
-    free(path);
-
-    return result;
+    return obtainStringFromLibLocate(path, length);
 }
 
 std::string getModulePath()
@@ -57,17 +60,7 @@ std::string getModulePath()
 
     ::getModulePath(&path, &length);
 
-    auto result = std::string();
-
-    if (length > 0)
-    {
-        result = std::string(path, length);
-    }
-
-    // liblocate transfer ownership of pointer behind path variable
-    free(path);
-
-    return result;
+    return obtainStringFromLibLocate(path, length);
 }
 
 std::string getLibraryPath(void * symbol)
@@ -77,17 +70,7 @@ std::string getLibraryPath(void * symbol)
 
     ::getLibraryPath(symbol, &path, &length);
 
-    auto result = std::string();
-
-    if (length > 0)
-    {
-        result = std::string(path, length);
-    }
-
-    // liblocate transfer ownership of pointer behind path variable
-    free(path);
-
-    return result;
+    return obtainStringFromLibLocate(path, length);
 }
 
 std::string locatePath(const std::string & relPath, const std::string & systemDir, void * symbol)
@@ -97,17 +80,7 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
 
     ::locatePath(&path, &length, relPath.c_str(), (unsigned int)relPath.size(), systemDir.c_str(), (unsigned int)systemDir.size(), symbol);
 
-    auto result = std::string();
-
-    if (length > 0)
-    {
-        result = std::string(path, length);
-    }
-
-    // liblocate transfer ownership of pointer behind path variable
-    free(path);
-
-    return result;
+    return obtainStringFromLibLocate(path, length);
 }
 
 std::string pathSeparator()
@@ -126,17 +99,7 @@ std::string libPrefix()
 
     ::libPrefix(&prefix, &length);
 
-    auto result = std::string();
-
-    if (length > 0)
-    {
-        result = std::string(prefix, length);
-    }
-
-    // liblocate transfer ownership of pointer behind path variable
-    free(prefix);
-
-    return result;
+    return obtainStringFromLibLocate(prefix, length);
 }
 
 std::string libExtension()
@@ -146,15 +109,29 @@ std::string libExtension()
 
     ::libExtension(&extension, &length);
 
-    auto result = std::string();
+    return obtainStringFromLibLocate(extension, length);
+}
 
-    if (length > 0)
+std::vector<std::string> libExtensions()
+{
+    char ** extensions = nullptr;
+    unsigned int * lengths = nullptr;
+    unsigned int count = 0;
+
+    ::libExtensions(&extensions, &lengths, &count);
+
+    auto result = std::vector<std::string>(count);
+
+    for (auto i = 0u; i < count; ++i)
     {
-        result = std::string(extension, length);
+        result[i] = obtainStringFromLibLocate(extensions[i], lengths[i]);
     }
 
-    // liblocate transfer ownership of pointer behind path variable
-    free(extension);
+    if (count > 0)
+    {
+        free(extensions);
+        free(lengths);
+    }
 
     return result;
 }
@@ -166,17 +143,47 @@ std::string homeDir()
 
     ::homeDir(&dir, &length);
 
-    auto result = std::string();
+    return obtainStringFromLibLocate(dir, length);
+}
 
-    if (length > 0)
-    {
-        result = std::string(dir, length);
-    }
+std::string profileDir()
+{
+    char * dir = nullptr;
+    unsigned int length = 0;
 
-    // liblocate transfer ownership of pointer behind path variable
-    free(dir);
+    ::profileDir(&dir, &length);
 
-    return result;
+    return obtainStringFromLibLocate(dir, length);
+}
+
+std::string documentDir()
+{
+    char * dir = nullptr;
+    unsigned int length = 0;
+
+    ::documentDir(&dir, &length);
+
+    return obtainStringFromLibLocate(dir, length);
+}
+
+std::string roamingDir(const std::string & application)
+{
+    char * dir = nullptr;
+    unsigned int length = 0;
+
+    ::roamingDir(&dir, &length, application.c_str(), (unsigned int)application.size());
+
+    return obtainStringFromLibLocate(dir, length);
+}
+
+std::string localDir(const std::string & application)
+{
+    char * dir = nullptr;
+    unsigned int length = 0;
+
+    ::localDir(&dir, &length, application.c_str(), (unsigned int)application.size());
+
+    return obtainStringFromLibLocate(dir, length);
 }
 
 std::string configDir(const std::string & application)
@@ -186,17 +193,17 @@ std::string configDir(const std::string & application)
 
     ::configDir(&dir, &length, application.c_str(), (unsigned int)application.size());
 
-    auto result = std::string();
+    return obtainStringFromLibLocate(dir, length);
+}
 
-    if (length > 0)
-    {
-        result = std::string(dir, length);
-    }
+std::string tempDir(const std::string & application)
+{
+    char * dir = nullptr;
+    unsigned int length = 0;
 
-    // liblocate transfer ownership of pointer behind path variable
-    free(dir);
+    ::tempDir(&dir, &length, application.c_str(), (unsigned int)application.size());
 
-    return result;
+    return obtainStringFromLibLocate(dir, length);
 }
 
 
