@@ -465,18 +465,18 @@ void libExtensions(char *** extensions, unsigned int ** extensionLengths, unsign
     *extensionCount = 1;
     *extensions = (char **)malloc(sizeof(char *) * *extensionCount);
     *extensionLengths = (unsigned int *)malloc(sizeof(unsigned int) * *extensionCount);
-    copyToStringOutParameter("dll", 3, extensions[0], extensionLengths[0]);
+    copyToStringOutParameter("dll", 3, *extensions + 0, *extensionLengths + 0);
 #elif defined SYSTEM_DARWIN
     *extensionCount = 2;
     *extensions = (char **)malloc(sizeof(char *) * *extensionCount);
     *extensionLengths = (unsigned int *)malloc(sizeof(unsigned int) * *extensionCount);
-    copyToStringOutParameter("dylib", 5, extensions[0], extensionLengths[0]);
-    copyToStringOutParameter("so", 2, extensions[1], extensionLengths[1]);
+    copyToStringOutParameter("dylib", 5, *extensions + 0, *extensionLengths + 0);
+    copyToStringOutParameter("so", 2, *extensions + 1, *extensionLengths + 1);
 #else
     *extensionCount = 1;
     *extensions = (char **)malloc(sizeof(char *) * *extensionCount);
     *extensionLengths = (unsigned int *)malloc(sizeof(unsigned int) * *extensionCount);
-    copyToStringOutParameter("so", 2, extensions[0], extensionLengths[0]);
+    copyToStringOutParameter("so", 2, *extensions + 0, *extensionLengths + 0);
 #endif
 }
 
