@@ -10,6 +10,21 @@ namespace
 {
 
 
+/**
+*  @brief
+*    Convert c-string to std::string.
+*
+*  @param[in] path
+*    The character array
+*  @param[in] length
+*    The length of the character array (i.e., the number of characters)
+*
+*  @return
+*    The contents of path as string
+*
+*  @remark
+*    The path-pointer is freed.
+*/
 std::string obtainStringFromLibLocate(char * path, unsigned int length)
 {
     if (path == nullptr || length == 0)
@@ -40,6 +55,7 @@ std::string getExecutablePath()
 
     ::getExecutablePath(&path, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(path, length);
 }
 
@@ -50,6 +66,7 @@ std::string getBundlePath()
 
     ::getBundlePath(&path, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(path, length);
 }
 
@@ -60,6 +77,7 @@ std::string getModulePath()
 
     ::getModulePath(&path, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(path, length);
 }
 
@@ -70,6 +88,7 @@ std::string getLibraryPath(void * symbol)
 
     ::getLibraryPath(symbol, &path, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(path, length);
 }
 
@@ -80,6 +99,7 @@ std::string locatePath(const std::string & relPath, const std::string & systemDi
 
     ::locatePath(&path, &length, relPath.c_str(), (unsigned int)relPath.size(), systemDir.c_str(), (unsigned int)systemDir.size(), symbol);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(path, length);
 }
 
@@ -99,6 +119,7 @@ std::string libPrefix()
 
     ::libPrefix(&prefix, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(prefix, length);
 }
 
@@ -109,6 +130,7 @@ std::string libExtension()
 
     ::libExtension(&extension, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(extension, length);
 }
 
@@ -120,10 +142,12 @@ std::vector<std::string> libExtensions()
 
     ::libExtensions(&extensions, &lengths, &count);
 
+    // Convert c-array of c-strings and handle memory ownership
     auto result = std::vector<std::string>(count);
 
     for (auto i = 0u; i < count; ++i)
     {
+        // Convert to string and free memory from liblocate
         result[i] = obtainStringFromLibLocate(extensions[i], lengths[i]);
     }
 
@@ -143,6 +167,7 @@ std::string homeDir()
 
     ::homeDir(&dir, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(dir, length);
 }
 
@@ -153,6 +178,7 @@ std::string profileDir()
 
     ::profileDir(&dir, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(dir, length);
 }
 
@@ -163,6 +189,7 @@ std::string documentDir()
 
     ::documentDir(&dir, &length);
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(dir, length);
 }
 
@@ -173,6 +200,7 @@ std::string roamingDir(const std::string & application)
 
     ::roamingDir(&dir, &length, application.c_str(), (unsigned int)application.size());
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(dir, length);
 }
 
@@ -183,6 +211,7 @@ std::string localDir(const std::string & application)
 
     ::localDir(&dir, &length, application.c_str(), (unsigned int)application.size());
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(dir, length);
 }
 
@@ -193,6 +222,7 @@ std::string configDir(const std::string & application)
 
     ::configDir(&dir, &length, application.c_str(), (unsigned int)application.size());
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(dir, length);
 }
 
@@ -203,6 +233,7 @@ std::string tempDir(const std::string & application)
 
     ::tempDir(&dir, &length, application.c_str(), (unsigned int)application.size());
 
+    // Convert to string and free memory from liblocate
     return obtainStringFromLibLocate(dir, length);
 }
 

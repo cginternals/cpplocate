@@ -106,3 +106,9 @@ TEST_F(cpplocate_test, libExtensions)
         ASSERT_EQ("so", extensions[0]);
     #endif
 }
+
+TEST_F(cpplocate_test, homeDirectory)
+{
+    const auto dir = cpplocate::homeDir();
+    ASSERT_LT(0, dir.size());
+}

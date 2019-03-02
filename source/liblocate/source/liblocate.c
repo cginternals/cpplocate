@@ -7,6 +7,7 @@
 #if defined(SYSTEM_LINUX)
     #include <unistd.h>
     #include <limits.h>
+    #include <pwd.h>
     #include <linux/limits.h>
     #define _GNU_SOURCE
     #define __USE_GNU
@@ -14,17 +15,22 @@
 #elif defined(SYSTEM_WINDOWS)
     #include <Windows.h>
 #elif defined(SYSTEM_SOLARIS)
-    #include <stdlib.h>
     #include <limits.h>
     #include <dlfcn.h>
+    #include <unistd.h>
+    #include <pwd.h>
 #elif defined(SYSTEM_DARWIN)
     #include <mach-o/dyld.h>
     #include <dlfcn.h>
     #include <sys/syslimits.h>
+    #include <unistd.h>
+    #include <pwd.h>
 #elif defined(SYSTEM_FREEBSD)
     #include <sys/types.h>
     #include <sys/sysctl.h>
     #include <dlfcn.h>
+    #include <unistd.h>
+    #include <pwd.h>
 #endif
 
 #include "utils.h"
@@ -277,6 +283,7 @@ void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength)
 
 #endif
 
+    // Return path with system path delimiters
     // unifyPathDelimiters(*path, *pathLength);
 }
 
@@ -289,23 +296,28 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         return;
     }
 
+    // Obtain executable path
     char * executablePath = 0x0;
     unsigned int executablePathLength = 0;
     getExecutablePath(&executablePath, &executablePathLength);
     unsigned int executablePathDirectoryLength = 0;
 
+    // Obtain bundle path (in case of macOS)
     char * bundlePath = 0x0;
     unsigned int bundlePathLength = 0;
     getBundlePath(&bundlePath, &bundlePathLength);
 
+    // Obtain library path
     char * libraryPath = 0x0;
     unsigned int libraryPathLength = 0;
     getLibraryPath(symbol, &libraryPath, &libraryPathLength);
     unsigned int libraryPathDirectoryLength = 0;
 
+    // Extract directory parts of executable and library paths
     getDirectoryPart(libraryPath, libraryPathLength, &libraryPathDirectoryLength);
     getDirectoryPart(executablePath, executablePathLength, &executablePathDirectoryLength);
 
+    // Compute the size of the maximal possible path to circumvent reallocation of output
     unsigned int maxLength = executablePathDirectoryLength;
     maxLength = maxLength > libraryPathDirectoryLength ? maxLength : libraryPathDirectoryLength;
     maxLength = maxLength > bundlePathLength + 19 ? maxLength : bundlePathLength + 19; // for "/Contents/Resources"
@@ -317,16 +329,21 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
     char * subdir = (char *)malloc(sizeof(char) * maxLength);
     unsigned int subdirLength = 0;
     unsigned int resultdirLength = 0;
+
+    // Check libraryPath, executablePath, and bundlePath as base directories
     for (unsigned char i = 0; i < 3; ++i)
     {
+        // Obtain current base directory and associated length
         const char * dir = dirs[i];
         const unsigned int length = lengths[i];
 
+        // Early out for missing base directory
         if (length <= 0)
         {
             continue;
         }
 
+        // Initialize directory to test with base directory
         memcpy(subdir, dir, length);
 
         // Check <basedir>/<relpath>, <basedir>/../<relpath>, and <basedir>/../../<relpath>
@@ -335,14 +352,17 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             unsigned char relDirLength = j * 3 + 1;
 
             subdirLength = length;
+            // Copy either '/', '/../', or '/../../', depending on current iteration
             memcpy(subdir+subdirLength, "/../../", relDirLength);
             subdirLength += relDirLength;
             memcpy(subdir+subdirLength, relPath, relPathLength);
             resultdirLength = subdirLength;
             subdirLength += relPathLength;
+
+            // End subdirectory with null byte for system functions
             subdir[subdirLength] = 0;
 
-            if (fileExists(subdir, subdirLength))
+            if (fileExists(subdir, subdirLength)) // successfully found directory
             {
                 copyToStringOutParameter(subdir, resultdirLength, path, pathLength);
 
@@ -371,26 +391,11 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
             memcpy(subdir+subdirLength, relPath, relPathLength);
             resultdirLength = subdirLength;
             subdirLength += relPathLength;
-            subdir[subdirLength] = 0;
-            if (fileExists(subdir, subdirLength))
-            {
-                copyToStringOutParameter(subdir, resultdirLength, path, pathLength);
 
-                goto out;
-            }
-        }
-
-        // Check app bundle resources
-        if (i == 2) // only for bundle path
-        {
-            subdirLength = length;
-            memcpy(subdir+subdirLength, "/Contents/Resources/", 20);
-            subdirLength += 20;
-            memcpy(subdir+subdirLength, relPath, relPathLength);
-            resultdirLength = subdirLength;
-            subdirLength += relPathLength;
+            // End subdirectory with null byte for system functions
             subdir[subdirLength] = 0;
-            if (fileExists(subdir, subdirLength))
+
+            if (fileExists(subdir, subdirLength)) // successfully found directory
             {
                 copyToStringOutParameter(subdir, resultdirLength, path, pathLength);
 
@@ -399,10 +404,38 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
         }
     }
 
+    // Check app bundle resources
+    {
+        // Obtain current base directory and associated length
+        const char * dir = dirs[2];
+        const unsigned int length = lengths[2];
+
+        // Initialize directory to test with base directory
+        memcpy(subdir, dir, length);
+
+        subdirLength = length;
+        memcpy(subdir+subdirLength, "/Contents/Resources/", 20);
+        subdirLength += 20;
+        memcpy(subdir+subdirLength, relPath, relPathLength);
+        resultdirLength = subdirLength;
+        subdirLength += relPathLength;
+
+        // End subdirectory with null byte for system functions
+        subdir[subdirLength] = 0;
+
+        if (fileExists(subdir, subdirLength)) // successfully found directory
+        {
+            copyToStringOutParameter(subdir, resultdirLength, path, pathLength);
+
+            goto out;
+        }
+    }
+
     // Could not find path
     invalidateStringOutParameter(path, pathLength);
 
 out:
+    // Free temporary memory
     free(libraryPath);
     free(executablePath);
     free(bundlePath);
@@ -489,6 +522,7 @@ void homeDir(char ** dir, unsigned int * dirLength)
     }
 
     #ifdef SYSTEM_WINDOWS
+
         char * homeDrive, * homePath;
         unsigned int homeDriveLen, homePathLen;
         getEnv("HOMEDRIVE", 9, &homeDrive, &homeDriveLen);
@@ -501,16 +535,42 @@ void homeDir(char ** dir, unsigned int * dirLength)
 
         copyToStringOutParameter(home, homeLen, dir, dirLength);
 
-        free(home);
         free(homePath);
         free(homeDrive);
-    #else
+
+    #else // every other UNIX, including Linux and macOS
+
         char * home;
         unsigned int homeLen;
+
+        // First, test
         getEnv("HOME", 4, &home, &homeLen);
-        copyToStringOutParameter(home, homeLen, dir, dirLength);
+
+        if (home != 0x0 && homeLen > 0) {
+            copyToStringOutParameter(home, homeLen, dir, dirLength);
+
+            free(home);
+
+            return;
+        }
+
         free(home);
+
+        // Fallback using UNIX passwd structure for the current user
+        struct passwd* pwd = getpwuid(getuid());
+
+        if (pwd != 0x0)
+        {
+            copyToStringOutParameter(pwd->pw_dir, strlen(pwd->pw_dir), dir, dirLength);
+
+            return;
+        }
+
+        // No home directory was found
+        invalidateStringOutParameter(dir, dirLength);
+
     #endif
+
 }
 
 void profileDir(char ** dir, unsigned int * dirLength)

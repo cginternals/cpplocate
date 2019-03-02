@@ -291,3 +291,14 @@ TEST_F(liblocate_test, libExtensions_Return)
         EXPECT_STREQ("so", extensions[0]);
     #endif
 }
+
+TEST_F(liblocate_test, homeDir)
+{
+    char * dir;
+    unsigned int length;
+
+    homeDir(&dir, &length);
+
+    EXPECT_NE(nullptr, dir);
+    EXPECT_LE(0, length);
+}
