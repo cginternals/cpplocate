@@ -222,6 +222,8 @@ TEST_F(liblocate_test, libPrefix_Return)
         ASSERT_NE(nullptr, prefix);
         EXPECT_STREQ("lib", prefix);
     #endif
+
+    free(prefix);
 }
 
 TEST_F(liblocate_test, libExtension_NoReturn)
@@ -251,6 +253,8 @@ TEST_F(liblocate_test, libExtension_Return)
         ASSERT_NE(nullptr, extension);
         EXPECT_STREQ("so", extension);
     #endif
+
+    free(extension);
 }
 
 TEST_F(liblocate_test, libExtensions_NoReturn)
@@ -265,6 +269,7 @@ TEST_F(liblocate_test, libExtensions_Return)
     char ** extensions;
     unsigned int * lengths;
     unsigned int count;
+    unsigned int i;
 
     libExtensions(&extensions, &lengths, &count);
 
@@ -290,6 +295,14 @@ TEST_F(liblocate_test, libExtensions_Return)
         ASSERT_NE(nullptr, extensions[0]);
         EXPECT_STREQ("so", extensions[0]);
     #endif
+
+    for (i = 0; i < count; ++i)
+    {
+        free(extensions[i]);
+    }
+
+    free(lengths);
+    free(extensions);
 }
 
 TEST_F(liblocate_test, homeDir)
@@ -301,4 +314,6 @@ TEST_F(liblocate_test, homeDir)
 
     EXPECT_NE(nullptr, dir);
     EXPECT_LE(0, length);
+
+    free(dir);
 }
