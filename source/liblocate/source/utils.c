@@ -242,6 +242,11 @@ unsigned char fileExists(const char * path, unsigned int pathLength)
 {
     (void)pathLength;
 
+    if (path == 0)
+    {
+        return 0;
+    }
+
 #ifdef SYSTEM_WINDOWS
 
     WIN32_FILE_ATTRIBUTE_DATA fileInfo;
