@@ -207,11 +207,9 @@ void getBundlePath(char ** path, unsigned int * pathLength)
     }
 
     // Copy contents to caller, create caller ownership
-    *path = executablePath;
-    if (pathLength != 0x0)
-    {
-        *pathLength = bundlePathLength;
-    }
+    copyToStringOutParameter(executablePath, bundlePathLength, path, pathLength);
+
+    free(executablePath);
 }
 
 void getModulePath(char ** path, unsigned int * pathLength)
