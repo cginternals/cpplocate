@@ -238,11 +238,14 @@ TEST_F(utils_test, getEnv_Value)
     char * value = nullptr;
     unsigned int valueLength = 0;
 
+    // Ensure a set environment variable through the C API
+    // This variable simulates the DISPLAY environment variable
     setenv(key, ":0", true);
 
+    // Retrieve environment variable through liblocate API
     getEnv(key, keyLength, &value, &valueLength);
 
-    // Display is in format ':[display number]'
+    // Content is in format ':[display number]'
     ASSERT_LT(1, valueLength);
     EXPECT_EQ(':', value[0]);
     EXPECT_EQ(0, value[valueLength]);
