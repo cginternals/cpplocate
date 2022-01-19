@@ -1,4 +1,6 @@
 
+#include <cstdlib>
+
 #include <gmock/gmock.h>
 
 #include "../../liblocate/source/utils.h"
@@ -230,11 +232,13 @@ TEST_F(utils_test, getEnv_Value)
 
     free(value);
 #else
-    const char * key = "DISPLAY";
+    const char * key = "CPPLOCATE_DISPLAY";
     const unsigned int keyLength = strlen(key);
 
     char * value = nullptr;
     unsigned int valueLength = 0;
+
+    setenv(key, ":0", true);
 
     getEnv(key, keyLength, &value, &valueLength);
 
