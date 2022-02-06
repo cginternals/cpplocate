@@ -26,6 +26,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(GenerateExportHeader)
 
 # Include custom cmake modules
+include(cmake/Coverage.cmake)
 include(cmake/GetGitRevisionDescription.cmake)
 include(cmake/HealthCheck.cmake)
 include(cmake/GenerateTemplateExportHeader.cmake)
