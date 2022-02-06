@@ -5,8 +5,7 @@
 *cpplocate* is a cross-platform C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.
 
 ![GitHub release](https://img.shields.io/github/release/cginternals/cpplocate.svg)
-[![Travis](https://img.shields.io/travis/cginternals/cpplocate/master.svg?style=flat&logo=travis)](https://travis-ci.org/cginternals/cpplocate)
-[![Appveyor](https://img.shields.io/appveyor/ci/scheibel/cpplocate/master.svg?style=flat&logo=appveyor)](https://ci.appveyor.com/project/scheibel/cpplocate/branch/master)
+[![C++ CI](https://github.com/cginternals/cpplocate/actions/workflows/ci.yml/badge.svg)](https://github.com/cginternals/cpplocate/actions/workflows/ci.yml)
 [![Tokei](https://tokei.rs/b1/github/cginternals/cpplocate)](https://github.com/Aaronepower/tokei) 
 [![Tokei](https://tokei.rs/b1/github/cginternals/cpplocate?category=comments)](https://github.com/Aaronepower/tokei) 
 
