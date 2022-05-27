@@ -1,5 +1,5 @@
-ARG BASE=willyscheibel/cpp-base:latest
-ARG BASE_DEV=willyscheibel/cpp-base:dev
+ARG BASE=cginternals/cpp-base:latest
+ARG BASE_DEV=cginternals/cpp-base:dev
 ARG PROJECT_NAME=cpplocate
 
 # BUILD
@@ -29,8 +29,18 @@ ADD README.md README.md
 ADD AUTHORS AUTHORS
 
 RUN ./configure
-RUN CMAKE_OPTIONS="-DOPTION_BUILD_TESTS=Off -DCMAKE_INSTALL_PREFIX=$WORKSPACE/$PROJECT_NAME-install" ./configure
+RUN CMAKE_OPTIONS="-DOPTION_BUILD_TESTS=Off" ./configure
 RUN cmake --build build -- $COMPILER_FLAGS
+
+# INSTALL
+
+FROM build as install
+
+ARG PROJECT_NAME
+
+WORKDIR $WORKSPACE/$PROJECT_NAME
+
+RUN CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=$WORKSPACE/$PROJECT_NAME-install" ./configure
 RUN cmake --build build --target install
 
 # DEPLOY
@@ -38,8 +48,9 @@ RUN cmake --build build --target install
 FROM $BASE AS deploy
 
 ARG PROJECT_NAME
-ARG WORKSPACE
 
-COPY --from=build $WORKSPACE/$PROJECT_NAME-install $WORKSPACE/$PROJECT_NAME
+ENV cpplocate_DIR="$WORKSPACE/$PROJECT_NAME"
+
+COPY --from=install $WORKSPACE/$PROJECT_NAME-install $WORKSPACE/$PROJECT_NAME
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WORKSPACE/$PROJECT_NAME/lib
