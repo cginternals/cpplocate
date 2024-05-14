@@ -100,7 +100,43 @@ Building *cpplocate* utilizes:
 
 For compilation, a C++11 compliant compiler, e.g., GCC 4.8, Clang 3.3, MSVC 2013 **Update 3**, is required.
 
-First, download the source code [as archive](https://github.com/cginternals/cpplocate/releases) or via git:
+You can use FetchContent (CMake v3.11 or above) to download the library at configure time by adding the following to your `CMakeLists.txt`:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(cpplocate
+  URL https://github.com/cginternals/cpplocate/archive/refs/tags/v2.3.0.zip  # Choose the desired version from Releases
+)
+FetchContent_MakeAvailable(cpplocate)
+
+target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)
+```
+
+If you instead wish to download the latest `master` branch, add the following:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(cpplocate
+  GIT_REPOSITORY https://github.com/cginternals/cpplocate.git  # Get the full repository if the releases are not up-to-date
+  GIT_TAG master
+  GIT_PROGRESS ON
+)
+FetchContent_MakeAvailable(cpplocate)
+
+target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)
+```
+
+Then simply include the header, like so:
+
+```cpp
+#include <cpplocate/cpplocate.h>
+
+auto path = cpplocate::getModulePath();
+```
+
+Alternatively, download the source code [as archive](https://github.com/cginternals/cpplocate/releases) or via git:
 
 ```bash
 > git clone https://github.com/cginternals/cpplocate.git
