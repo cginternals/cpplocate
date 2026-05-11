@@ -13,7 +13,7 @@
     #define __USE_GNU
     #include <dlfcn.h>
 #elif defined(SYSTEM_WINDOWS)
-    #include <Windows.h>
+    #include <windows.h>
 #elif defined(SYSTEM_SOLARIS)
     #include <limits.h>
     #include <dlfcn.h>
