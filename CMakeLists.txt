@@ -23,6 +23,7 @@ set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all ta
 # Include cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
 
 # Include custom cmake modules
@@ -185,8 +186,29 @@ add_subdirectory(deploy)
 install(FILES "${PROJECT_BINARY_DIR}/VERSION" DESTINATION ${INSTALL_ROOT} COMPONENT meta)
 
 # Install cmake find script for the project
-install(FILES cpplocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev_cpp)
-install(FILES liblocate-config.cmake DESTINATION ${INSTALL_ROOT} COMPONENT dev_c)
+# Install cmake find script for the project
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/cpplocate-config-version.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+install(FILES
+    cpplocate-config.cmake
+    "${PROJECT_BINARY_DIR}/cpplocate-config-version.cmake"
+    DESTINATION ${INSTALL_ROOT}
+    COMPONENT dev_cpp
+)
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/liblocate-config-version.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+install(FILES
+    liblocate-config.cmake
+    "${PROJECT_BINARY_DIR}/liblocate-config-version.cmake"
+    DESTINATION ${INSTALL_ROOT}
+    COMPONENT dev_c
+)
 
 # Install the project meta files
 install(FILES AUTHORS   DESTINATION ${INSTALL_ROOT} COMPONENT meta)
